@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>报名管理</title> [#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+<script type="text/javascript">
+
+var error="";
+
+[#if type=="1"]
+error = "抱歉,您不在征集范围内！";
+[/#if]
+[#if type=="2"]
+error = "抱歉,您没有编辑权限！";
+[/#if]
+[#if type=="3"]
+error = "投稿错误！";
+[/#if]
+[#if type=="4"]
+error = "编辑错误！";
+[/#if]
+[#if type=="5"]
+error = "作品不存在或已经删除！";
+[/#if]
+[#if type=="6"]
+error = "权限不足！";
+[/#if]
+
+[#if type=="7"]
+ error = "作品不能进行编辑！";
+[/#if]
+
+[#if type=="8"]
+ error = "禁止投稿！";
+[/#if]
+
+    $(document).ready(function () {
+    	if(error!=""){
+        alert(error);}
+    	window.history.go(-1);
+    });
+</script>
+</body>

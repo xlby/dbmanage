@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+	<div id="wap" style="width:852px;background:#f1f1f2;">
+
+		<div id="content" class="clear">
+				<div id="" class="active-selectactive-manage">
+					<div class="content-head mb20">
+						<span class="content-position pr10">您的位置：</span>
+						<span class="content-position">首页></span>
+						<span class="content-position">活动选择</span>
+					</div>
+					<table id="zpinmanage">
+						<tr class="t-title">
+							<th style="width:5%;">序号</th>
+							<th style="width:30%;">活动名称</th>
+							<th style="width:10%;">未审核</th>
+							<th style="width:10%;">已审核</th>
+							<th style="width:10%;">操作</th>
+
+						</tr>
+						[#list eventList as event]
+						<tr class="table-text">
+							<td>${event_index+1}</td>
+							<td><p title="${event.event_name}" class="elli add390 pl10">${event.event_name}</p></td>
+							<td>${event.unchecked}</td>
+
+							<td>${event.checked}</td>
+							<td>
+								[#if (event.unchecked=="0")&&(event.checked=="0")]
+									暂无作品审核
+								[#else]
+								<a href="${staticURL}/worksreview/staffworkslist/${event.event_id}" class="corblack">进入></a>
+								[/#if]
+							</td>
+						</tr>
+						[/#list]
+					</table>
+					[#include "collect/commonpage.htm"]
+				</div>
+		</div>
+	</div>
+</body>
+<script>
+	$('#on-button').click(function(){
+
+		$('#sys-active').hide();
+		$('#announce-active').show();
+	})
+</script>
+</html>

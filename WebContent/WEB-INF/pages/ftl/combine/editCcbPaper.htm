@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="../ccbManage/css/common.css"/>
+	<link rel="stylesheet" href="../ccbManage/css/style.css"/>
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="../ccbManage/js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="../ccbManage/js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="../ccbManage/js/placeholder.js"></script>
+    <title>后台管理-试卷列表</title>
+    <style>
+    .paperManage{margin:0 auto;width:800px;}
+	.searchRequire{}
+	.exam_type_title{width:85px}
+	.cet_title{width:65px}
+	.level_title{width:85px}
+	.search_paper{width:350px;}
+	.start_time{width:40px;}
+	.end_time{width:40px;}
+	.paper_value{width:300px;}
+    .containTestpaperList{margin-top:10px}
+    .containTestpaperList table{border-collapse: collapse;}
+	.containTestpaperList th{border:1px solid #ccc8cc;}
+    .containTestpaperList tr td{border:1px solid #ccc8cc;cell-padding:0;text-align:center;}
+	a:link{ text-decoration:none;}
+	.btn_back_div{
+		line-height:24px;
+		width:50px;
+		height:25px;
+		text-align:center;
+		background:url(../ccbManage/images/edit-cancel.png) no-repeat;
+	}
+	.btn_back{color:#5f5c5c;text-align:center;}
+	.paper_save{margin:10px auto; width:800px;text-align:center;}
+	
+	.coverDiv{
+		position: fixed;
+		background:#000;
+		z-index:99998;
+		width:100%;
+		height:100%;
+		left:0;
+		top:0;
+		opacity:0.3;
+	}
+	
+	.messageBox{
+		width:400px;
+		heigth:200px;
+		margin:0 auto;
+		display:none;
+		z-index: 99999;
+		background:#fff;
+		position:relative;
+	}
+	
+    </style>
+</head>
+<body>
+	<!-- 遮罩层 -->
+	<div class="coverDiv" style="display:none;"></div>
+	<!-- 试卷属性配置 -->
+	<div class="paperManage">
+		<div class="btn_back_div"><a href="javascript:void(0)" onclick="goBackTestpaper()" class="btn_back">返回</a></div>
+		<div class="editTestpaper">
+			<table>
+				<tr>
+					<td><span class="paper_title">试卷名称:</span></td>
+					<td><input type="text" class="paper_value"  onkeyup="changBtnCss()" placeholder="请输入试卷名称" disabled="disabled"/><input type="hidden"/></td>
+				</tr>
+				<tr>
+					<td><span class="cet_title">考试级别：</span></td>
+                    <td>
+                    	<input type="radio" value="4" name="examLevel" checked="checked" disabled="disabled"/><span>四级</span>
+                    	<input type="radio" value="6" name="examLevel" disabled="disabled"/><span>六级</span>
+                    </td>
+				</tr>
+				<tr>
+					<td><span class="exam_type_title">考试类型：</span></td>
+                    <td>
+                    	<input type="radio" value="0" name="examType" checked="checked" disabled="disabled"/><span>模考</span>
+                    	<input type="radio" value="1" name="examType" disabled="disabled"/><span>专练</span>
+                    </td>
+				</tr>
+				<tr>
+					<td><span class="level_title">轮数：</span></td>
+                    <td>
+                        <select class="level">
+                            <option value="0" selected="selected">-请选择-</option>
+                            <option value="1">第一轮</option>
+                            <option value="2">第二轮</option>
+                            <option value="3">第三轮</option>
+                            <option value="4">第四轮</option>
+                            <option value="5">巅峰冲刺</option>
+                        </select>
+                	</td>
+				</tr>
+			</table>
+		</div>
+		<div>
+			<div class="containTestpaperDiv"><span class="containTestpaper">包含试卷：</span></div>
+			<div class="containTestpaperList">
+				<table>
+					<tr>
+						<th width="20px"></th>
+						<th width="594px">试卷名称</th>
+						<th width="86px">组合顺序</th>
+					</tr>
+					[#list paperList as paper]
+						<tr>
+		                	<td>${paper_index+1}</td>
+							<td class="paperName"><span class="testpaper_name_cell" value="${paper.name}">${paper.name}</span></td>
+							<td><span style="color:gainsboro">上移</span>&nbsp;<span style="color:gainsboro">下移</span></td>
+						</tr>
+					[/#list]
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- 保存按钮 -->
+    <div class="paper_save">
+        <table style="text-align:center">
+        	<tr>
+                <td><input type="button" value="保存" class="save_ccb_paper" onclick="saveCcbPaper()"/></td>
+            </tr>
+        </table>
+    </div>
+		<!-- 提示弹窗 -->
+	<div class="messageBox">
+		<div class="resultMessage" style="display:none;z-index: 99999;">
+			<table style="width:100%;height:100%;">
+				<tr><td style="text-align:center;height:30px;" colspan="2"></td></tr>
+				<tr>
+					<td style="text-align:center;height:30px;"><input type="button" value="返回修改" onclick="goOnAddTestpaper()"/></td>
+					<td style="text-align:center;height:30px;"><input type="button" value="返回首页" onclick="goBackTestpaper()"/></td>
+				</tr>
+				<tr><td style="text-align:center;height:30px;" colspan="2"></td></tr>
+			</table>
+		</div>
+		<div class="repeatTestpaper" style="display:none;z-index: 99999;">
+			<table style="width:100%;height:100%;">
+				<tr><td style="text-align:center;height:30px;"></td></tr>
+				<tr><td style="text-align:center;height:30px;"><span class="hitMessage">当前试卷名称重复，请重新输入试卷名称！</span></td></tr>
+				<tr><td style="text-align:center;height:30px;"></td></tr>
+				<tr><td style="text-align:center;height:30px;"><input type="button" value="确定" onclick="repeatTestpaper()"/></td></tr>
+				<tr><td style="text-align:center;height:30px;"></td></tr>
+			</table>
+		</div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		$(function(){
+			/**1.初始化赋值**/
+			//设置试卷id
+			var ccbPaperId = '${paper.id}';
+			$(".paper_value").next().val(ccbPaperId);
+			//设置试卷名称
+			var paperValue = '${paper.name}';
+			$(".paper_value").val(paperValue);
+			//设置考试级别
+			var examLevel = '${paper.examType}';
+			var el = $(".editTestpaper").find("input[name='examLevel']");
+			if(el.length>0){
+				for(var i=0;i<el.length;i++){
+					var el_value = $(el[i]).val();
+					if(el_value === examLevel){
+						$(el[i]).prop("checked",true);
+					}
+				}
+			}
+			//设置考试类型
+			var examType = '${paper.practiceType}';
+			var et = $(".editTestpaper").find("input[name='examType']");
+			if(et.length>0){
+				for(var i=0;i<et.length;i++){
+					var et_value = $(et[i]).val();
+					if(et_value === examType){
+						$(et[i]).prop("checked",true);
+					}
+				}
+			}
+			//设置考试轮数
+			var level = '${paper.level}';
+			$(".level").val(level).prop("checked",true);
+			
+			/**2.判断确认导入按钮是否显示**/
+			changBtnCss();
+			
+			
+		});
+		
+		
+		
+		//返回首页
+		//function goBackTestpaper(){
+		//	window.location.href  = "${baseURL}/ccbPaperConfig/ccbCombineTestpaperList";
+		//}
+		
+		//保存试卷表
+		function saveCcbPaper(){
+			//试卷id
+			var ccbPaperId = $(".paper_value").next().val();
+			//试卷名称
+			var ccbPaperName = $(".paper_value").val();
+			//考试级别
+			var examLevel = $(".editTestpaper").find("input[name='examLevel']:checked").val();
+			//考试类型
+			var examType = $(".editTestpaper").find("input[name='examType']:checked").val();
+			//考试轮数
+			var level = $(".level option:selected").val();
+			
+			
+			var param = {};
+			param.id = ccbPaperId;//试卷id
+			param.name = ccbPaperName;//试卷名称
+			param.examType = examLevel;//考试级别（4四级,6六级）
+			param.practiceType = examType;//考试类型(0模考，1专练)
+			param.level = level;//轮数
+			//拼接参数
+			var paramValue = "?ccbPaperName="+ccbPaperName+"&examLevel="+examLevel+"&examType="+examType+"&level="+level+"&ccbPaperId="+ccbPaperId;
+			//获取到数据后检查数据保存
+			$.ajax({
+				type:"POST",
+				url:"${baseURL}/ccbPaperConfig/saveCcbPaper",
+				data:param,
+				success:function(msg){
+					if(msg.status === 'success'){
+						//显示提示弹窗
+						showMessageBox();
+					}else if(msg.status === 'name'){
+						//显示重复试卷弹窗提示
+						showHitMessageBox();
+					}
+				}
+			});
+		}
+		
+		
+		//选择轮数时检查试卷名称、轮数是否为空
+		$(".level").change(function(){
+			changBtnCss();
+		});
+		
+		
+		//判断确认导入按钮是否可点击
+		function changBtnCss(){
+			//试卷名称
+			var paperValue = $(".paper_value").val();
+			//轮数
+			var level = $(".level").val();
+			//都不为空时
+			if(paperValue !== "" && level !== "0"){
+				//确认导入的显示属性
+				$(".save_ccb_paper").removeAttr("disabled");
+			}else{
+				//确认导入的不显示属性
+				$(".save_ccb_paper").attr("disabled","true");
+			}
+		}
+		
+		
+		//显示提示弹窗
+		function showMessageBox(){
+			$(".messageBox").show();
+			$(".resultMessage").show();
+			$(".coverDiv").show();
+		}
+		
+		//隐藏提示弹窗
+		function hideMessageBox(){
+			$(".messageBox").hide();
+			$(".resultMessage").hide();
+			$(".coverDiv").hide();
+		} 
+		
+		//显示重复试卷名称提示弹窗
+		function showHitMessageBox(){
+			$(".messageBox").show();
+			$(".repeatTestpaper").show();
+			$(".coverDiv").show();
+		}
+		
+		//隐藏重复试卷名称提示弹窗
+		function hideHitMessageBox(){
+			$(".messageBox").hide();
+			$(".repeatTestpaper").hide();
+			$(".coverDiv").hide();
+		}
+		
+		//继续添加按钮
+		function goOnAddTestpaper(){
+			hideMessageBox();
+		}
+		
+		//返回首页
+		function goBackTestpaper(){
+			window.location.href  = "${baseURL}/ccbPaperConfig/ccbCombineTestpaperList";
+		}
+		
+		//提示重复添加按钮
+		function repeatTestpaper(){
+			hideHitMessageBox();
+		}
+		
+	</script>
+</body>
+</html>

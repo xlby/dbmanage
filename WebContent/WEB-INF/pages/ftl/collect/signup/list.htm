@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>报名管理</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div>
+        <!--系统活动首页-->
+        <div id="sys-active">
+            <div class="content-head">
+                <span class="content-position">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">活动管理></span>
+                <span class="content-position">报名管理></span>
+            </div>
+            <ul id="menu" class="mt40 pl10">
+                <li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}">活动设置</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}">人员管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/signup/list/${eventId}" class="add-on-style">报名管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}">评分管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+            </ul>
+            <div class="active-bm-wrap clear mt20">
+                <form id="pageform" action="${baseURL}/signup/list/${eventId}" method="post">
+                    <input type="hidden" value="${eventId}" name="eventId"/>
+                    <span class="name fl pl5">姓名</span>
+                    <input type="text" value="${paramMap.queryName}" name="queryName" class="input-text P5 fl mr10" style="width:10%;border-left:none;">
+                    <span class="name fl pl5">状态</span>
+                    <select name="queryHave" class="input-select fl mr5" style="width:10%;">
+                        <option [#if paramMap.queryHave== '']selected="selected"[/#if] value="">请选择...</option>
+                        <option [#if paramMap.queryHave== '0']selected="selected"[/#if] value="0" >禁用</option>
+                        <option [#if paramMap.queryHave== '1']selected="selected"[/#if] value="1">正常</option>
+                    </select>
+                    <span class="lookfor cir-angle fl ml5">
+                        <img src="${staticURL}/collect/img/big.png" alt="" onclick="javascript:$('#pageform').submit()">
+                    </span>
+                </form>
+                <p class="fr all-sum">
+                    <span class="mr5">当前已报名人数:<strong class="pl5">${countContributor}</strong></span>
+                    <span class="mr5">投稿人数:<strong class="pl5">${countWorks}</strong></span>
+                    <span class="">未投稿人数:<strong class="pl5">${countNotWorks}</strong></span>
+                </p>
+            </div>
+            <div class="button-wrap mt20 mb10 clear" id="ac-button">
+                <span class="cir-angle mr10 fl pr10 pl10 ac-color" onclick="batchDelete()">批量删除</span>
+                <span class="cir-angle mr10 fl pr10 pl10 ac-color" onclick="batchDisable()">批量禁用</span>
+                <span class="cir-angle mr10 fl pr10 pl10 ac-color" onclick="batchEnable()">批量恢复</span>
+                <span class="on-button cir-angle pr10 pl10 fr"><a href="javascript:doDownLoadExcel()" style="color:#fff;">导出信息</a></span>
+            </div>
+            <table id="active-bm-table" class="contributorTable">
+                <tr class="t-title">
+                    <th style="width:8%;" class="clear">
+                        <span class="mr5 allcheck fl ml10 mt10" style="width:14px;height:14px;">
+                            <input type="checkbox" value="全选" class="mr5 checkbox-on">
+                            <span class="choose-img mr5 nochoose-imgs"></span>
+                        </span>全选
+                    </th>
+                    <th style="width:5%;">序号</th>
+                    <th style="width:10%;">姓名</th>
+                    <th style="width:10%;">身份</th>
+                    <th style="width:20%;">工作单位</th>
+                    <th style="width:10%;">是否投稿</th>
+                    <th style="width:10%;">状态</th>
+                    <th style="width:30%;">操作</th>
+                </tr>
+                [#list listData as contributor]
+                <tr class="table-text">
+                    <td class="pl20 pr20">
+                        <span class="allcheck" style="width:14px;height:14px;">
+                            <input type="checkbox" class="mr5 checkbox-on radio-check">
+                            <span class="choose-img mr5 nochoose-imgs"></span>
+                        </span>
+                        <input type="hidden" value="${contributor.id}"/>
+                    </td>
+                    <td>${contributor_index+1}</td>
+                    <td><p title="${contributor.name}" class="elli addw85">${contributor.name}</p></td>
+                    <td><p title="${contributor.identity}" class="elli addw85">${contributor.identity}</p></td>
+                    <td><p title="${contributor.unit}" class="elli add170">${contributor.unit}</p></td>
+                    <td>[#if contributor.isWorked == 0]未投稿[#else]已投稿[/#if]</td>
+                    <td>[#if contributor.status == 0]禁用[#else]正常[/#if]</td>
+                    <td>
+                        <span class="mange" onclick="forShow('${contributor.id}')">查看</span>
+                        <span class="dele" onclick="deleteContributor('${contributor.id}','${contributor.isWorked}')">删除</span>
+                        <span class="on-off-wrap" style="width:70px;">
+                            <span class="on-two clear mr5 cir-angle [#if contributor.status == 1]forbid-c[#else]noforbid-c[/#if]">
+                                <span class="off cir-angle fl" onclick="changeStatus('${contributor.id}',1,this)" [#if
+                                      contributor.status== 1]style="display:none;"
+                                      [#else]style="display:display;" [/#if]></span>
+                                <span class="onn cir-angle fl" onclick="changeStatus('${contributor.id}',0,this)" [#if
+                                      contributor.status== 1]style="display:display;"
+                                      [#else]style="display:none;" [/#if]></span>
+                        </span>
+                        <span>[#if contributor.status == 1]禁用[#else]恢复[/#if]</span>
+                        </span>
+                    </td>
+                </tr>
+                [/#list]
+            </table>
+            [#include "collect/commonpage.htm"]
+        </div>
+    </div>
+</div>
+<div id="message-peop" style="display: none;width:400px;">
+    <div class="input-wrap mt15">
+        <span>姓名：</span>
+        <span id="pop-id"></span>
+    </div>
+    <div class="input-wrap mt15">
+        <span>是否投稿：</span>
+        <span id="pop-is-worked"></span>
+    </div>
+    <div class="input-wrap mt15">
+        <span>状态：</span>
+        <span id="pop-status"></span>
+    </div>
+    <div class="input-wrap mt15">
+        <span>身份：</span>
+        <span id="pop-identity"></span>
+    </div>
+    <div class="input-wrap mt15">
+        <span>所在单位：</span>
+        <span id="pop-unit"></span>
+    </div>
+    <div class="input-wrap mt15">
+        <span>联系电话：</span>
+        <span id="pop-phone"></span>
+    </div>
+    <div class="input-wrap mt15">
+        <span>邮箱：</span>
+        <span id="pop-email"></span>
+    </div>
+    <div class="input-wrap mt15">
+        <span>地址：</span>
+        <span id="pop-address"></span>
+    </div>
+</div>
+<script type="text/javascript">
+    var busy_dialog = dialog({title:"正在处理中..."});
+    var ok_dialog = dialog({content: "操作完成"});
+
+
+    function batchDelete() {
+        var ids = getListIds("contributorTable");
+        if(ids != null){
+            dialog({
+                title: '',
+                content: '确定要删除这些人员吗？',
+                okValue: '确定',
+                ok: function () {
+                    if (ids != null && ids.length != 0) {
+                        busy_dialog.showModal();
+                        $.getJSON("${baseURL}/signup/batchDelete", {
+                            batchIds: ids
+                        }, function (data) {
+                            if (data.result.status == 0) {
+                                window.location.href = "${staticURL}/signup/list/${eventId}";
+                            }
+                        });
+                    }
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            }).showModal();
+        }else{
+            alert("请先选择");
+        }
+
+    }
+
+    function batchDisable() {
+        var ids = getListIds("contributorTable");
+        if (ids != null) {
+            dialog({
+                title: '',
+                content: '确定要禁用这些人员吗？',
+                okValue: '确定',
+                ok: function () {
+                    if (ids != null && ids.length != 0) {
+                        batchChangeStatus(ids, 0);
+                    }
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            }).showModal();
+        } else {
+            alert("请先选择");
+        }
+    }
+
+    function batchEnable() {
+        var ids = getListIds("contributorTable");
+        if (ids != null) {
+            dialog({
+                title: '',
+                content: '确定要恢复这些人员吗？',
+                okValue: '确定',
+                ok: function () {
+                    var ids = getListIds("contributorTable");
+                    if (ids != null && ids.length != 0) {
+                        batchChangeStatus(ids, 1);
+                    }
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            }).showModal();
+        } else {
+            alert("请先选择");
+        }
+    }
+
+    function batchChangeStatus(v_ids, v_status) {
+        busy_dialog.showModal();
+//        $.ajaxSettings.async = false;
+        $.getJSON("${baseURL}/signup/batchChangeStatus", {
+            batchIds: v_ids,
+            status: v_status
+        }, function (data) {
+            if (data.result.status == 0) {
+                window.location.href = "${staticURL}/signup/list/${eventId}";
+            }
+        });
+    }
+
+    function forShow(contributorId) {
+        var showDialog = dialog({
+            title: '查看详情',
+            content: $('#message-peop'),
+            button: [
+                {
+                    value: '关闭'
+                }
+            ]
+        });
+        //使用同步方法
+        $.ajaxSettings.async = false;
+        $.getJSON("${baseURL}/signup/showDetail/" + contributorId, function (data) {
+            if (data.result.status == 0) {
+                var detail = eval('(' + data.result.data + ')');
+                $("#pop-id").html(detail.name);
+                var v_status = detail.status;
+                if (v_status == "0") {
+                    $("#pop-status").html("禁用");
+                } else {
+                    $("#pop-status").html("正常");
+                }
+                $("#pop-identity").html(detail.identity);
+                $("#pop-unit").html(detail.unit);
+                $("#pop-phone").html(detail.phone);
+                $("#pop-email").html(detail.email);
+                $("#pop-address").html(detail.address);
+                if (data.isWorked == "1") {
+                    $("#pop-is-worked").html("已投稿");
+                } else {
+                    $("#pop-is-worked").html("未投稿");
+                }
+            }
+        });
+        showDialog.showModal();
+    }
+
+    function deleteContributor(contributorId,isWorked) {
+        if(isWorked != 0){
+            alert("已投稿人员不允许删除");
+        }else{
+            dialog({
+                title: '',
+                content: '确认删除？',
+                okValue: '确定',
+                ok: function () {
+                    window.location.href = "${staticURL}/signup/delete/" + contributorId;
+                },
+                cancelValue: '取消',
+                cancel: function () {
+                }
+            }).showModal();
+        }
+    }
+
+    function changeStatus(v_contributorId, v_status, v_span) {
+        $.ajaxSettings.async = false;
+        $.getJSON("${baseURL}/signup/changeStatus", {
+            contributorId: v_contributorId,
+            status: v_status
+        }, function (data) {
+            if (data.result.status == 1) {
+                alert("更新失败，请联系管理员");
+            } else if (data.result.status == 0) {
+                if (v_status == 1) {
+                    $(v_span).parent().parent().parent().parent().find("td:eq(6)").html("正常");
+                }
+                if (v_status == 0) {
+                    $(v_span).parent().parent().parent().parent().find("td:eq(6)").html("禁用");
+                }
+            }
+        });
+    }
+
+    function doDownLoadExcel() {
+        var newTab = window.open('about:blank');
+        newTab.location.href = "${baseURL}/signup/downloadContributorList?eventId=${eventId}&" + $('#pageform').serialize();
+    }
+</script>
+</body>
+</html>

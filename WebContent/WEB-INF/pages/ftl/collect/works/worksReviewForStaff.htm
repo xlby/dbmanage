@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+<div id="wap-a">
+
+	<div id="content" class="clear">
+			<!--系统活动首页-->
+			
+			<div class="active-selectactive-manage">
+				<div class="content-head mb20">
+					<span class="content-position pr10">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">活动选择></span>
+					<span class="content-position">作品审核</span>
+				</div>
+                <form id="pageform" action="${staticURL}/worksreview/staffworkslist/${eventId}">
+                    <div class="input-wrap clear">
+						<span class="input-title fl add-width12">我的审核等级：</span>
+						<span class=" fl mr20 add-width12 input-title" style="text-align:left;">[#if checkRole==1]初审[/#if]
+																			[#if checkRole==2]复审[/#if]
+																			[#if checkRole==3]终审[/#if]</span>
+						<span class="input-title fl add-width12">我的审核状态：</span>
+						<select name="filter" type="text" value="" class="input-select p5 fl">
+							<option value="">全部</option>
+							<option [#if filter='0'] selected="selected" [/#if] value="0">未审核</option>
+							<option [#if filter='1'] selected="selected" [/#if] value="1">已审核</option>
+						</select>
+						<span class="lookfor cir-angle fl ml10 fl mr5">
+							<img src="${staticURL}/collect/img/big.png" alt="" onclick="javascript:$('#pageform').submit()">
+						</span>
+				</div>
+                </form>
+				<table id="zpinmanage" class="mt20">
+					<tr class="t-title">
+						<th style="width:5%;">序号</th>
+						<th style="width:30%;">作品名</th>
+						<th style="width:10%;">投稿人</th>
+						<th style="width:10%;">审核状态</th>
+						<th style="width:10%;">我的审核状态</th>
+						<th style="width:10%;">可用状态</th>
+						<th style="width:30%;">操作</th>
+					</tr>
+					[#list worksList as works]
+					<tr class="table-text">
+						<td>${works_index+1}</td>
+						<td><a href="" class="corblack elli add250" title="${works.works_name}">${works.works_name}</a></td>
+						<td>${works.author}</td>
+						<td>
+							[#switch works.check_status]
+                                [#case "1"]
+                                未审核
+                                [#break]
+                                [#case "2"]
+                                初审完
+                                [#break]
+                                [#case "3"]
+                                复审完
+                                [#break]
+                                [#case "4"]
+                                终审完
+                                [#break]
+                                [#case "5"]
+                                退回
+                                [#break]
+                                [#default]
+                                默认
+                            [/#switch]</td>
+						<td>[#if (works.my_check_status)=="0"]未审核[#else]已审核[/#if]</td>
+						<td>[#if (works.status)=="1"]正常[#else]销毁[/#if]</td>
+						<td>[#if works.status=="0"]
+								<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+							[#else]
+								[#if eventCheckLevel=="1"]
+										[#if checkRole=="3"]
+											[#if (works.my_check_status=="0")&&(works.check_status=="1")]
+												<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 check">审核</a>
+											[/#if]
+											[#if (works.my_check_status=="1")&&(works.check_status=="4")]
+												<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+												<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 re-check">重审</a>
+											[#elseif (works.check_status=="5")]
+												<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+												<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 re-check">重审</a>
+											[/#if]
+										[/#if]
+
+								[/#if]
+								[#if eventCheckLevel=="2"]
+									[#if checkRole=="1"]
+										[#if (works.my_check_status=="0")&&(works.check_status=="1")]
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 check">审核</a>
+										[#elseif (works.my_check_status=="1")&&(works.check_status=="2")]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 re-check">重审</a>
+										[#else]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 re-check">查看</a>
+										[/#if]
+									[/#if]
+									[#if checkRole=="3"]
+										[#if (works.my_check_status=="1")&&(works.check_status=="4")]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 check">查看</a>
+										[/#if]
+										[#if works.check_status=="1"]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 check">查看</a>
+										[/#if]
+										[#if (works.my_check_status=="0")&&(works.check_status=="2")]
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 check">审核</a>
+										[/#if]
+										[#if (works.my_check_status=="1")&&(works.check_status=="5")]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 re-check">重审</a>
+										[#elseif (works.my_check_status=="0")&&(works.check_status=="5")]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+										[/#if]
+
+									[/#if]
+								[/#if]
+								[#if eventCheckLevel=="3"]
+									[#if checkRole=="1"]
+										[#if (works.my_check_status=="1")&&(works.check_status=="2")]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 re-check">重审</a>
+										[#elseif works.check_status=="1"]
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 check">审核</a>
+										[#else]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+										[/#if]
+									[/#if]
+									[#if checkRole=="2"]
+										[#if (works.my_check_status=="1")&&(works.check_status=="3")]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 re-check">重审</a>
+										[#elseif works.check_status=="2"]
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 check">审核</a>
+										[#else]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+										[/#if]
+									[/#if]
+									[#if checkRole=="3"]
+										[#if (works.my_check_status=="1")&&(works.check_status=="4")]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 re-check">重审</a>
+										[#elseif works.check_status=="3"]
+											<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="corblack pl10 pr10 check">审核</a>
+										[#else]
+											<a href="${baseURL}/worksreview/worksView/${works.id}" class="corblack pl10 pr10 view">查看</a>
+										[/#if]
+									[/#if]
+								[/#if]
+							[/#if]
+						</td>
+					</tr>
+					[/#list]
+				</table>
+                [#include "collect/commonpage.htm"]
+			</div>
+
+
+        </div>
+ </div>
+</body>
+<script>
+	$('#on-button').click(function(){
+
+		$('#sys-active').hide();
+		$('#announce-active').show();
+	});
+	$('.view').click(function(){
+
+	});
+</script>
+</html>

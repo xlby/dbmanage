@@ -1,0 +1,66 @@
+<script>
+
+ 
+$(function(){
+	  
+	  page(${page.getTotalPage()!},${page.getPageNo()!});
+	}); 
+	
+ 
+
+	function doPage(currentPage){
+		$("#pageform").append("<input id='cleanInputi' type='hidden' name='pageNo' value='"+currentPage+"'>");
+		$("#pageform").submit();
+	}
+	
+
+	function toPage(totalPageNum,curPageNum){
+		doPage(curPageNum); 
+		
+	}
+	
+	function page(totalPageNum,curPageNum) {
+		
+		
+	 	 this.ph = function(m,c,p) {return ((m==1)?"<a href='#' onclick='toPage("+totalPageNum+","+c+")'  class='pagetab' id='"+c+"'>"+c+"</a>":"<a href='#' onclick='toPage("+totalPageNum+","+p+")' id=''>"+c+"</a>");};
+	 	 this.ag = function(c,s,e) {for (var i = s; i <= e; i++) {pageHtml.push(this.ph((i==c)?1:0,i,i));};}
+	 	 var pageHtml = new Array((curPageNum>1)?this.ph(0,"<",curPageNum-1):"");
+		if(totalPageNum<=10) {
+			this.ag(curPageNum,1,totalPageNum);
+	 	 } else if(curPageNum>=5&&(totalPageNum-curPageNum)>5) {
+	 		pageHtml.push(this.ph(0,"1...",1));
+	 		this.ag(curPageNum,curPageNum-2,curPageNum+2);
+			pageHtml.push(this.ph(0,"..."+totalPageNum,totalPageNum));
+	 	 } else if((totalPageNum-curPageNum)<=5) {
+	 		pageHtml.push(this.ph(0,"1...",1));
+	 	 	this.ag(curPageNum,totalPageNum-6,totalPageNum);
+	 	 } else if(curPageNum<5) {
+	 		this.ag(curPageNum,1,6);
+			pageHtml.push(this.ph(0,"..."+totalPageNum,totalPageNum));
+	 	 }
+	 		pageHtml.push((curPageNum==totalPageNum)?"":this.ph(0,">",curPageNum+1));
+	 	 	document.getElementById('page-tab').innerHTML =  '<div class="page-ul"  ><span class="all-num mr20">共<strong style="color:#0fe6b1;">${page.getTotalCount()!}</strong>条结果</span><span class="pl10 pr10  home" onclick="toPage('+totalPageNum+',1)" >首页</span>'+pageHtml.join('')+'<span class="pl10 pr10 back" onclick="toPage('+totalPageNum+',999999)">尾页</span></div>'
+	 	 }
+	
+</script>
+			<div id="page-tab" class="pt10 pb10 mt20">
+					<div class="page-ul">
+						<span class="all-num mr20">共<strong style="color:#0fe6b1;">168</strong>条结果</span>
+						<span class="pl10 pr10  home">首页</span>
+						<a href="javascript:void(0);"><</a>
+						<a href="javascript:void(0);">1</a>
+						<a href="javascript:void(0);">2</a>
+						<a href="javascript:void(0);">3</a>
+						<a href="javascript:void(0);">4</a>
+						<a href="javascript:void(0);">5</a>
+						<a href="javascript:void(0);">6</a>
+						<a href="javascript:void(0);">7</a>
+						<a href="javascript:void(0);">8</a>
+						<a href="javascript:void(0);">9</a>
+						<a href="javascript:void(0);">10</a>
+						<a href="javascript:void(0);">></a>
+						<span class="pl10 pr10 back" >尾页</span>
+
+					</div>
+				</div>
+

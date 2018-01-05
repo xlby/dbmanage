@@ -1,0 +1,369 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>评分任务分配</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div>
+        <div id="sys-active">
+            <div class="content-head">
+                <span class="content-position">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">评分管理></span>
+                <span class="content-position">评分任务分配></span>
+            </div>
+            <ul id="menu" class="mt40 pl10">
+                <li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}">活动设置</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}">人员管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/signup/list/${eventId}">报名管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}" class="add-on-style">评分管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+            </ul>
+            <h2 class="ac-title-h2 mt20">评分任务分配<strong>（${scoreGroupDetail.name!''}）</strong></h2>
+            <form id="pageform" action="${baseURL}/scoreManage/allocate/list" method="post">
+                <input type="hidden" value="${paramMap.eventId}" name="eventId"/>
+                <input type="hidden" value="${paramMap.scoreGroupId}" name="scoreGroupId"/>
+                <div class="active-bm-wrap clear mt10">
+                    <span class="input-title fl add-width-9">作品名称：</span>
+                    <input type="text" id="worksName" name="worksName" value="${paramMap.worksName}"
+                           class="input-text P5 fl mr10" style="width:10%;border-left:none;"
+                           placeholder="作品名称">
+                    <span class="input-title fl add-width-9">作品分组：</span>
+                    <select name="worksGroup" id="worksGroup" onchange="selectKnowledgePoint(this,'${eventId}')"
+                            class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        [#list cntbGroupList as cntbGroup]
+                        <option value="${cntbGroup.id}" [#if cntbGroup.id== paramMap.worksGroup]selected[/#if] >${cntbGroup.name}</option>
+                        [/#list]
+                    </select>
+                    <span class="input-title fl add-width-9">知识点：</span>
+                    <select name="knowledgePointId" id="knowledgePointId" class="input-select fl mr5"
+                            style="width:10%;">
+                        <option value="">请选择</option>
+                        [#list knowledgeList as knowledgeGroup]
+                        <option value="${knowledgeGroup.id}" [#if knowledgeGroup.id== paramMap.knowledgePointId]selected[/#if] >${knowledgeGroup.name}</option>
+                        [/#list]
+                    </select>
+                    <span class="input-title fl add-width-9">分配状况：</span>
+                    <select name="allocateStatus" id="allocateStatus" class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        <option value="1" [#if paramMap.allocateStatus== 1]selected[/#if] >分配完</option>
+                        <option value="2" [#if paramMap.allocateStatus== 2]selected[/#if] >未分配</option>
+                        <option value="3" [#if paramMap.allocateStatus== 3]selected[/#if] >部分分配</option>
+                    </select>
+                    <!--<span class="input-title fl add-width-9">评分人：</span>
+                    <select name="staffId" id="staffId" class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        [#list eventStaffList as eventStaff]
+                        <option value="${eventStaff.id}" [#if eventStaff.id== paramMap.staffId]selected[/#if] >${eventStaff.name}</option>
+                        [/#list]
+                    </select>-->
+                </div>
+                <div class="clear mt10">
+                    <span class="input-title fl" style="width:9%;">每页显示：</span>
+                    <select name="pageSizeStr" id="pageSizeStr" class="input-select fl mr5" style="width:10%;">
+                        <option value="20" [#if paramMap.pageSizeStr== 20]selected[/#if] >20</option>
+                        <option value="50" [#if paramMap.pageSizeStr== 50]selected[/#if] >50</option>
+                        <option value="200" [#if paramMap.pageSizeStr== 200]selected[/#if] >200</option>
+                    </select>
+                    <span class="input-title fl" style="width:2%;">条</span>
+					<span class="lookfor cir-angle fl ml10 fl mr5">
+						<img src="${staticURL}/collect/img/big.png" alt="" onclick="javascript:$('#pageform').submit()">
+					</span>
+                    <span class="cir-angle mr10 fr ac-color pl10 pr10 backs" onclick="backToList()">返回</span>
+                </div>
+            </form>
+            <div class="button-wrap mt20 mb10 clear" id="ac-button">
+                <div class="fl clear">
+                    <span class="cir-angle mr10 fl ac-color pl10 pr10" onclick="javascript:batchAllocate()">批量管理评分</span>
+                    <!--<span class="cir-angle mr10 fl ac-color pl10 pr10"><a href="javascript:void(0)" style="color:#fff;">批量管理评分人</a></span>-->
+                    <span class="cir-angle mr10 fl ac-color pl10 pr10" onclick="batchCleanAllocate(null,'${eventId}','${scoreGroupDetail.id}')">批量清空已分配</span>
+                    <!--<span class="cir-angle mr10 fl ac-color pl10 pr10">批量替换评分人</span>-->
+                </div>
+                <div class="fr clear">
+                    <span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:oneClickAllocate('${eventId}','${scoreGroupDetail.id}')" style="color:#fff;">一键分配</a></span>
+                    <span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:batchCleanAllocate(true,'${eventId}','${scoreGroupDetail.id}')" style="color:#fff;">全部清空分配</a></span>
+                    <span class="oon-button cir-angle fl pl10 pr10" style="background:#ffbf5d">
+                        <a href="javascript:viewScoreStaffsList('${eventId}','${paramMap.scoreGroupId}')" style="color:#fff;">查看评分人</a>
+                    </span>
+                </div>
+            </div>
+            <table id="active-bm-table" class="worksTable">
+                <tr class="t-title">
+                    <th style="width:7%;" class="clear">
+							<span class="mr5 allcheck fl ml10 mt10" style="width:14px;height:14px;">
+								<input type="checkbox" value="全选" class="mr5 checkbox-on">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>全选
+                    </th>
+                    <th>序号</th>
+                    <th width="15%">作品名</th>
+                    <th>分组</th>
+                    <th>知识点</th>
+                    <th>分配状况</th>
+                    [#list 1..scoreGroupDetail.num as staffLoopTh]
+                    <th>评分人${staffLoopTh}</th>
+                    [/#list]
+                    <th style="width:5%;">操作</th>
+                </tr>
+                [#list dataList as data]
+                <tr class="table-text">
+                    <td class="pl20 pr20">
+                        <span class="allcheck" style="width:14px;height:14px;">
+                            <input type="checkbox" class="mr5 checkbox-on radio-check">
+                            <span class="choose-img mr5 nochoose-imgs"></span>
+                        </span>
+                        <input type="hidden" value="${data.id}"/>
+                    </td>
+                    <td>${data_index + 1}</td>
+                    <td title="${data.name}">${data.name}</td>
+                    <td>${data.cg_name}</td>
+                    <td>${data.ck_name}</td>
+                    <td>[#if data.assign_cnt == 0]未分配[#elseif data.assign_cnt == data.num]分配完[#else]部分分配[/#if]</td>
+                    [#list 1..scoreGroupDetail.num as staffLoop]
+                    <td>
+                        [#list staffList as staffListData]
+                        [#if staffListData.inner_index == staffLoop && staffListData.works_id == data.id]${staffListData.staff_name}[/#if]
+                        [/#list]
+                    </td>
+                    [/#list]
+                    <td><a href="javascript:allocateStaff('${eventId}','${scoreGroupDetail.id}','${data.id}','${data.name}', '')" class="corgreen">分配</a></td>
+                </tr>
+                [/#list]
+            </table>
+            [#include "collect/commonpage.htm"]
+        </div>
+    </div>
+</div>
+<div id="score_staffs" style="display: none;width:420px;height:200px;overflow-y:auto;">
+    <table id="windows-table" class="" style="width:400px;" >
+    </table>
+</div>
+<div id="select_staff" class="window-wrap-a clear" style="display: none;width: 300px;">
+    [#list 1..scoreGroupDetail.num as staffLoop]
+    <div class="window-text-wrap mt10 mb10">
+        <span class="window-span">评分人${staffLoop_index + 1}：</span>
+        <select name="" id="" class="input-select" style="width:70%;">
+            [#list scoreStaffList as scoreStaff]
+            <option value="${scoreStaff.id}">${scoreStaff.name}</option>
+            [/#list]
+        </select>
+    </div>
+    [/#list]
+</div>
+<script type="text/javascript">
+    var busy_dialog = dialog({title: "正在处理中..."});
+    var ok_dialog = dialog({content: "操作完成"});
+
+    //*******************************************************************************
+    function backToList() {
+        window.location.href = "${baseURL}/scoreManage/list/${eventId}";
+    }
+
+    function selectKnowledgePoint(v_fz_option, v_event_id) {
+        var zpfz_selection_value = $(v_fz_option).val();
+        if (zpfz_selection_value != '') {
+            $.getJSON("${baseURL}/scoreManage/getSelectKnowledgePoint", {
+                eventId: v_event_id,
+                fzId: zpfz_selection_value
+            }, function (data) {
+                if (data.result.status == 0) {
+                    var selectOptions = $("#knowledgePointId");
+                    //清空option
+                    selectOptions.empty();
+                    //空option
+                    selectOptions.append("<option value=''>请选择</option>");
+                    var v_json_obj = eval('(' + data.result.data + ')');
+                    for (var i in v_json_obj) {
+                        var detail = v_json_obj[i];
+                        selectOptions.append("<option value='" + detail.id + "'>" + detail.name + "</option>");
+                    }
+                } else {
+                    dialog({content: data.result.message}).showModal();
+                }
+            });
+        }
+    }
+
+    function allocateStaff(v_event_id, v_score_group_id, v_work_id, v_work_name, v_message) {
+        dialog({
+            title: '选择评分人('+ v_work_name +')',
+            content: $('#select_staff'),
+            cancel: function () {
+                restOptions();
+            },
+            cancelValue: '关闭',
+            ok: function () {
+                busy_dialog.showModal();
+                var v_staff_array = new Array();
+                $("#select_staff select").each(function (index, element) {
+                    v_staff_array[index] = $(element).val();
+                });
+                $.getJSON("${baseURL}/scoreManage/allocate", {
+                    eventId: v_event_id,
+                    scoreGroupId: v_score_group_id,
+                    worksId: v_work_id,
+                    jsonStr: JSON.stringify(v_staff_array)
+                }, function (data) {
+                    if(data.result.status == 0){
+                        window.location.href = "${baseURL}/scoreManage/allocate/list?eventId=" + v_event_id + "&scoreGroupId=" + v_score_group_id;
+                    }else{
+                        dialog({
+                            title:'提示',
+                            content: data.result.message  + data.result.data + v_message,
+                            cancel: function () {
+                                window.location.href = "${baseURL}/scoreManage/allocate/list?eventId=" + v_event_id + "&scoreGroupId=" + v_score_group_id;
+                            },
+                            cancelValue:"确定"
+                        }).showModal();
+                    }
+                });
+                restOptions();
+            },
+            okValue:'分配'
+        }).showModal();
+    }
+
+    function restOptions() {
+        $("#select_staff select").each(function () {
+            $(this).find("option:first").attr("selected","selected");
+        });
+    }
+
+    function viewScoreStaffsList(v_event_id,v_score_group_id) {
+        var score_staffs_dialog = dialog({
+            title: '评分人列表',
+            content: $('#score_staffs'),
+            button: [
+                {
+                    value: '关闭'
+                }
+            ]
+        });
+        $.ajaxSettings.async = false;
+        $.getJSON("${baseURL}/scoreManage/allocate/scoreStaffList", {
+            eventId: v_event_id,
+            scoreGroupId: v_score_group_id
+        }, function (data) {
+            if (data.result.status == 0) {
+                var v_json_obj = eval('(' + data.result.data + ')');
+                $("#windows-table").empty();
+                $("#windows-table").append('<tr class="t-title"><th style="width:10%;">评分人</th><th style="width:10%;">已分配作品数</th></tr>');
+                for(var i in v_json_obj){
+                    $("#windows-table").append('<tr class="table-text"><td>'+ v_json_obj[i].name +'</td><td>'+ v_json_obj[i].pf +'</td></tr>');
+                }
+            }
+        });
+        score_staffs_dialog.showModal();
+    }
+
+    function batchAllocate() {
+        var ids = getListIds("worksTable");
+        var v_title = "批量分配";
+        var v_message = ",除有评分作品外,已分配完毕";
+        if (ids != null) {
+            allocateStaff('${eventId}', '${scoreGroupDetail.id}', ids, v_title, v_message);
+        }else{
+            alert("请选择作品");
+        }
+    }
+
+    function batchCleanAllocate(v_is_all, v_event_id, v_score_group_id) {
+        var ids = getListIds("worksTable");
+        var v_title = "";
+        if(v_is_all == true){
+            v_title = "全部清空";
+            ids = null;
+        }else {
+            v_title = "批量清空";
+        }
+
+        //批量清空提示
+        if(v_is_all == null && ids == null ){
+            alert("请选择作品");
+            return;
+        }
+
+        if(ids != null || v_is_all == true){
+            dialog({
+                title: v_title,
+                content: v_title + "所选内容?",
+                ok: function () {
+                    $.getJSON("${baseURL}/scoreManage/cleanAllocate", {
+                        eventId: v_event_id,
+                        scoreGroupId: v_score_group_id,
+                        worksId: ids
+                    }, function (data) {
+                        if(data.result.status == 0){
+                            var v_message = "已全部处理完毕";
+                            if(data.result.data != ""){
+                                v_message = data.result.data + "已存在评分结果不可清空分配人,其余" + v_message;
+                            }
+                            dialog({
+                                title:'提示',
+                                content: v_message,
+                                cancel: function () {
+                                    window.location.href = "${baseURL}/scoreManage/allocate/list?eventId=" + v_event_id + "&scoreGroupId=" + v_score_group_id;
+                                },
+                                cancelValue:"确定"
+                            }).showModal();
+                        }else{
+                            //window.location.href = "${baseURL}/scoreManage/allocate/list?eventId=" + v_event_id + "&scoreGroupId=" + v_score_group_id;
+                        }
+                    });
+                },
+                okValue: "确认",
+                cancel: function () {
+                },
+                cancelValue: "取消"
+            }).showModal();
+        }
+    }
+
+    function oneClickAllocate(v_event_id, v_score_group_id) {
+        dialog({
+            title: "一键分配",
+            content: "确认一键分配评分人?",
+            ok: function () {
+                $.getJSON("${baseURL}/scoreManage/oneClickAllocate", {
+                    eventId: v_event_id,
+                    scoreGroupId: v_score_group_id
+                }, function (data) {
+                    if(data.result.status == 0){
+                        dialog({
+                            title:'提示',
+                            content: "全部可分配作品已全部处理完毕",
+                            cancel: function () {
+                                window.location.href = "${baseURL}/scoreManage/allocate/list?eventId=" + v_event_id + "&scoreGroupId=" + v_score_group_id;
+                            },
+                            cancelValue:"确定"
+                        }).showModal();
+                    } else {
+                        dialog({
+                            title:'提示',
+                            content: data.result.message,
+                            button: [
+                                {
+                                    value: '关闭'
+                                }
+                            ]
+                        }).showModal();
+                    }
+                });
+            },
+            okValue: "确认",
+            cancel: function () {
+            },
+            cancelValue: "取消"
+        }).showModal();
+    }
+
+</script>
+</body>
+</html>

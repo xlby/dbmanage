@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="../js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="../js/placeholder.js"></script>
+    <title>后台管理-生成试卷-选择试卷</title>
+    <style>
+    .paperManage{margin:0 auto;width:800px;}
+	.addTestpaper{margin:10px auto; }
+	.exam_type_title{width:85px}
+	.cet_title{width:65px}
+	.level_title{width:85px}
+	.search_paper{width:550px;}
+    .paperList{margin-top:10px}
+    .paperList table{border-collapse: collapse;}
+    .paperList .paperName{width:600px;}
+	.paperList th{border:1px solid #ccc8cc;}
+    .paperList tr td{border:1px solid #ccc8cc;cell-padding:0;text-align:center;}
+	.paper_save{margin:10px auto; width:800px;text-align:center;}
+    </style>
+</head>
+<body>
+	<div class="paperManage">
+		<div class="testpaper_search">
+            <table>
+            	<tr>
+					<td><input type="text" class="search_paper" placeholder="请输入试卷名称"/></td>
+					<td><input type="button" value="搜索" /></td>
+				</tr>
+            </table>
+        </div>
+		<div class="paperList">
+			<table>
+				<tr>
+					<th></th>
+					<th>试卷名称</th>
+					<th></th>
+				</tr>
+				
+				<tr>
+                	<td>1</td>
+					<td class="paperName"><span class="testpaper_name_cell">2016年6月大学英语6级第一套</span></td>
+					<td><input type="checkbox" class="checkbox_cell" /></td>
+				</tr>
+                
+                <tr>
+                	<td>2</td>
+					<td class="paperName"><span class="testpaper_name_cell">2016年6月大学英语6级第一套</span></td>
+					<td><input type="checkbox" class="checkbox_cell" /></td>
+				</tr>
+                
+                <tr>
+                	<td>3</td>
+					<td class="paperName"><span class="testpaper_name_cell">2016年6月大学英语6级第一套</span></td>
+					<td><input type="checkbox" class="checkbox_cell" /></td>
+				</tr>
+                
+                <tr>
+                	<td>4</td>
+					<td class="paperName"><span class="testpaper_name_cell">2016年6月大学英语6级第一套</span></td>
+					<td><input type="checkbox" class="checkbox_cell" /></td>
+				</tr>
+                
+                <tr>
+                	<td>5</td>
+					<td class="paperName"><span class="testpaper_name_cell">2016年6月大学英语6级第一套</span></td>
+					<td><input type="checkbox" class="checkbox_cell" /></td>
+				</tr>
+			</table>
+		</div>
+		
+        <div class="add_pape">
+            <table>
+            	<tr>
+                    <td><input type="button" value="确定" class="add_testpaper"/></td>
+                </tr>
+            </table>
+        </div>
+	</div>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**点击搜索按钮根据试卷名称搜索**/
+			$(".searchButton").click(function(){
+				var testPaperName = $(".testPaperName").val();
+				window.location.href  = encodeURI("${baseURL}ccbAnalysisPaper/paperList?testPaperName="+testPaperName);
+			});
+			
+		});
+	</script>
+</body>
+</html>

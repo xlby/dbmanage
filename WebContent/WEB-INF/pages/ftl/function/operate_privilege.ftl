@@ -1,0 +1,5 @@
+[#macro privilege uri ]
+	[#if ((Session.authorizedUser)?? && Session.authorizedUser.isPass(uri))]
+		[#nested/]
+	[/#if]
+[/#macro]

@@ -1,0 +1,1 @@
+[#include "/function/ui/page.ftl"/]

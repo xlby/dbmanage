@@ -1,0 +1,272 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>作品查看</title>
+<link rel="stylesheet" href="${staticURL}/collect/css/common.css" />
+<link rel="stylesheet" href="${staticURL}/collect/css/put-contribute.css" />
+<link rel="stylesheet" href="${staticURL}/collect/css/ui-dialog.css">
+<script src="${staticURL}/collect/js/jquery-1.12.4.min.js"></script>
+<script src="${staticURL}/collect/js/art-dialog/dialog-plus.js"></script>
+<script src="${staticURL}/collect/js/c.js"></script>
+
+<script type="text/javascript">
+
+var baseURL_  = '${baseURL}';
+
+</script>
+</head>
+<body>
+<div class="addw852 clear pb20">
+	<div class="content-body  fl  cir-angles" style="width:100%;">
+
+		<div class="wrap-show" style=" margin-top: 3px; margin-left: 3px; ">
+			<div class="cir-angles p10" style="width: 97%;">
+				<div class="title-div cir-angle clear">
+					<span class="text-style-t bor-b ml20 fl col-g addborb addw10">标 题</span> <span  class="pt5 pb5 cir-angles addstyles content-textes fl addw80 ml20 pl10 pr10" title="">${works.name!""}</span>
+				</div>
+				<div class="title-div cir-angle clear mt20">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">关键词</span>
+					
+					[#if works.tag1??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.tag1!""}</span>
+					[/#if]
+					[#if works.tag2??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.tag2!""}</span>
+					[/#if]
+					[#if works.tag3??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.tag3!""}</span>
+					[/#if]
+					[#if works.tag4??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.tag4!""}</span>
+					[/#if]
+					[#if works.tag5??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.tag5!""}</span>
+					[/#if]
+
+				</div>
+				
+				[#if limit!="1"]
+				
+				<div class="title-div cir-angle clear mt20">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">作 者</span> 
+					[#if works.author1??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.author1!""}</span>
+					[/#if]
+					[#if works.author2??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.author2!""}</span>
+					[/#if]
+					[#if works.author3??]
+						<span class="pt5 pb5 cir-angles pl10 pr10 addstyles content-textes fl ml20" title="">${works.author3!""}</span>
+					[/#if]
+				</div>
+				
+				[#if cntbConfig??&&cntbConfig.directorSupport==1]
+				<div class="title-div cir-angle clear mt20">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">指导人</span> 
+					[#if works.director1??]
+						<span  class="pt5 pb5 addstyles cir-angles pl10 pr10 content-textes fl ml20" title="">${works.director1!""}</span> 
+					[/#if]
+					[#if works.director2??]
+						<span  class="pt5 pb5 addstyles cir-angles pl10 pr10 content-textes fl ml20" title="">${works.director2!""}</span> 
+					[/#if]
+					[#if works.director3??]
+						<span  class="pt5 pb5 addstyles cir-angles pl10 pr10 content-textes fl ml20" title="">${works.director3!""}</span> 
+					[/#if]
+				</div>
+				[/#if]
+				
+				[/#if]
+				
+				[#if cntbConfig??&&cntbConfig.groupSupport==1]
+				<div class="title-div cir-angle clear mt20">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">作品分组</span>
+					<span class="pt5 pb5 addstyles cir-angles pl10 pr10 content-textes fl ml20" title="">${works.cntbGroupId!""}</span>
+				</div>
+				[/#if]
+				
+				<div class="title-div cir-angle clear mt20">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">知识点</span> 
+					<span class="pt5 pb5 addstyles content-textes fl ml20 cir-angles pl10 pr10" title="">${works.cntbKnowledgeId!""}</span>
+				</div>
+				<div class="title-div cir-angle clear mt20">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">来源</span> 
+					<span class="pt5 pb5 addstyles content-textes fl ml20 cir-angles addstyles pl10 pr10" title="">
+						[#if works.source==1]
+							原创
+						[/#if]
+						[#if works.source==2]
+							转载
+						[/#if]
+					</span>
+				</div>
+				<div class="title-div cir-angle clear mt20 addh60">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">作品封面</span> <img src="${uploadURL}/${works.coverImg!""}" alt="" class="ml20 photo-show fl cir-angles">
+				</div>
+				<div class="textes-wrap mt20 clear">
+					<span class="addborb text-style-t bor-b ml20 fl col-g addw10">简介</span>
+					<textarea  cols="30" rows="10" class="addborbder ml20 textarea-in fl p5 cir-angle add-w85-h100" maxlength="500" disabled="disabled" style="margin-left: 20px;">${works.comment!""}</textarea>
+				</div>
+			</div>
+			
+			[#if works.resType==1]
+			<!-- 文章 -->
+			<div class="textes-wrap mt20 clear">
+				<span class="addborb text-style-t bor-b ml20 fl col-g addw10">内容</span>
+				<div class="addborbder p10 content-p cir-angles fl mb40 ml20" style="width:84%;">
+				${worksContent.body!""}
+				
+				</div>
+			</div>
+			<!-- 文章 -->
+			[/#if]
+			
+			[#if works.resType==2]
+			<!-- 文档  -->
+			<div class="textes-wrap mt20 clear">
+				<span class="addborb text-style-t bor-b ml20 fl col-g addw10">文档查看</span>
+				<div class="fl ml20" style="width: 80%;">
+				
+				[#list worksFileList as worksFile]
+					[#if worksFile.type==1]
+					<p style="height:42px;">
+						<a style="max-width: 100%;"  class="pt5 pb5 content-textes fl cir-angles pl10 pr10 t-add" title="${worksFile.title}">${worksFile.title}</a> <a class="on-button cir-angle mr10 pl10 pr10 addcc" onclick="previewResource('1','${worksFile.id}')">查看</a>
+					</p>
+					[/#if]
+				[/#list]
+
+				</div>
+
+			</div>
+			<!-- 文档 -->
+			[/#if]
+			
+			[#if works.resType==3]
+			<!-- 视频  -->
+			<div class="textes-wrap mt20 clear">
+				<span class="addborb text-style-t bor-b ml20 fl col-g addw10">视频查看</span>
+				<div class="fl ml20" style="width: 80%;">
+				
+				[#list worksFileList as worksFile]
+					[#if worksFile.type==1]
+					<p style="height:42px;">
+						<a style="max-width: 100%;"  class="pt5 pb5 content-textes fl cir-angles pl10 pr10 t-add" title="${worksFile.title}">${worksFile.title}</a> <a class="on-button cir-angle mr10 pl10 pr10 addcc" onclick="previewResource('1','${worksFile.id}')">查看</a>
+					</p>
+					[/#if]
+				[/#list]
+
+				</div>
+
+			</div>
+			<!-- 视频 -->
+			[/#if]
+			
+			[#if works.resType==4]
+			<!-- 图片  -->
+			<div class="textes-wrap mt20 clear">
+				<span class="addborb text-style-t bor-b ml20 fl col-g addw10">图片查看</span>
+				<div class="fl ml20" style="width: 80%;">
+				
+				[#list worksFileList as worksFile]
+					[#if worksFile.type==1]
+					<p style="height:42px;">
+						<a style="max-width: 100%;"  class="pt5 pb5 content-textes fl cir-angles pl10 pr10 t-add" title="${worksFile.title}">${worksFile.title}</a> <a class="on-button cir-angle mr10 pl10 pr10 addcc" onclick="previewResource('1','${worksFile.id}')">查看</a>
+					</p>
+					[/#if]
+				[/#list]
+
+				</div>
+
+			</div>
+			<!-- 图片 -->
+			[/#if]
+			
+			[#if works.resType==5]
+			<!-- 音频  -->
+			<div class="textes-wrap mt20 clear">
+				<span class="addborb text-style-t bor-b ml20 fl col-g addw10">音频查看</span>
+				<div class="fl ml20" style="width: 80%;">
+				
+				[#list worksFileList as worksFile]
+					[#if worksFile.type==1]
+					<p style="height:42px;">
+						<a style="max-width: 100%;"  class="pt5 pb5 content-textes fl cir-angles pl10 pr10 t-add" title="${worksFile.title}">${worksFile.title}</a> <a class="on-button cir-angle mr10 pl10 pr10 addcc" onclick="previewResource('1','${worksFile.id}')">查看</a>
+					</p>
+					[/#if]
+				[/#list]
+
+				</div>
+
+			</div>
+			<!-- 音频 -->
+			[/#if]
+			
+			[#if works.resType==6]
+			<!-- 综合  -->
+			[#list worksModuleList as worksModule]
+				[#if worksModule.type==1]
+                    <div class="cir-angles clear mt20 videos p10" >
+                        <span class="fl addw12 titlec">${worksModule.name!""}</span>
+                        <div class="fl addw84">
+                           <p class="t-text">${worksModule.title!""}</p>
+                           <p class="p5 jianj">${worksModule.comment!""}</p>
+                            <div class="textes-wrap mt20 clear">
+                                <div class="fl ml20" style="width:80%;"> 
+                                   <a class="on-button cir-angle mr10 pl10 pr10 addcc" onclick="previewResource('0','${worksModule.id}')">内容查看</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+				[/#if]
+				[#if worksModule.type==2]
+                    <div class="cir-angles clear mt20 videos p10" >
+                        <span class="fl addw12 titlec">${worksModule.name!""}</span>
+                        <div class="fl addw84">
+                           <p class="t-text">${worksModule.title!""}</p>
+                           <p class="p5 jianj">${worksModule.comment!""}</p>
+                            <div class="textes-wrap mt20 clear">
+                                <span class="addborb text-style-t bor-b ml20 fl col-g addw10">资源</span>
+                                <div class="fl ml20" style="width:80%;"> 
+                                [#list worksFileList as worksFile]
+                                [#if worksModule.id==worksFile.mdlId]
+                                    <p style="height:42px;"> 
+                                         <a style="max-width: 100%;" class="pt5 pb5 content-textes fl cir-angles pl10 pr10 t-add" title="">${worksFile.title!""}</a>
+                                         <a class="on-button cir-angle mr10 pl10 pr10 addcc" onclick="previewResource('1','${worksFile.id}')">查看</a>
+                                     </p> 
+								[/#if]
+								[/#list]
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                 [/#if]
+            [/#list]
+			<!-- 综合 -->
+			[/#if]
+			
+			
+			<div class="textes-wrap mt20 clear">
+				<span class="addborb text-style-t bor-b ml20 fl col-g addw10">附件查看</span>
+				<div class="fl ml20" style="width: 80%;">
+				
+				[#list worksFileList as worksFile]
+					[#if worksFile.type==3]
+					<p style="height:42px;">
+						<a style="max-width: 100%;"  class="pt5 pb5 content-textes fl cir-angles pl10 pr10 t-add" title="${worksFile.title}">${worksFile.title}</a> <a class="on-button cir-angle mr10 pl10 pr10 addcc" href="${uploadURL}/${worksFile.savePath}" target="_blank">下载</a>
+					</p>
+					[/#if]
+				[/#list]
+
+				</div>
+
+			</div>
+			
+
+		</div>
+	</div>
+</div>
+</body>
+</html>

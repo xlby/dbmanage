@@ -1,0 +1,76 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>投票管理</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<script type="text/javascript">
+function goPage(i){
+	window.location = "${baseURL}/vote/voteManage?eid=${eid}&name="+$("#name_").val()+"&author="+$("#author_").val()+"&pageNo="+i;
+}
+function search(){
+	window.location = "${baseURL}/vote/voteManage?eid=${eid}&name="+$("#name_").val()+"&author="+$("#author_").val();
+}
+</script>
+<body>
+	<div id="content" class="clear">
+		<div class="content-body">
+			<!--系统活动首页-->
+			<div id="active-manage">
+				<div class="content-head">
+					<span class="content-position">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">活动管理></span>
+					<span class="content-position">报名管理></span>
+				</div>
+				<ul id="menu" class="mt40 pl10">
+					<li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eid}">活动设置</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eid}">人员管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/signup/list/${eid}">报名管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/workslist/${eid}">审核管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eid}">评分管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eid}"  class="add-on-style">投票管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eid}">作品管理</a></li>
+				</ul>
+				<div class="active-bm-wrap clear mt20">
+					<span class="input-title fl" style="width:7%;">作品名：</span>
+					<input id="name_" value="${name_}" type="text" value="" class="input-text P5 fl mr10" style="width:18%;border-left:none;" placeholder="作品名">
+					<span  class="input-title fl" style="width:12%;">投稿人：</span>
+					<input id="author_" value="${author_}" type="text" value="" class="input-text P5 fl mr10" style="width:18%;border-left:none;" placeholder="投稿人">
+					<span class="lookfor cir-angle fl ml10 fl mr5" onclick="search()">
+						<img src="${staticURL}/collect/img/big.png" alt="">
+					</span>
+				</div>
+				<table id="zpin-manage" class="mt20">
+					<tr class="t-title">
+						<th style="width:5%;">序号</th>
+						<th style="width:9%;">作品名</th>
+						<th style="width:10%;">投稿人</th>
+						<th style="width:11%;">PC投票</th>
+						<th style="width:12%;">其他投票</th>
+						<th style="width:10%;">总票数</th>
+					</tr>
+					[#list page.data as item]
+					<tr class="table-text">
+					
+						<td>${item_index+1}</td>
+						<td><p title="${item.name!''}" class="elli add170">${item.name!''}</p></td>
+						<td>${item.author1!''}</td>
+						<td>${item.votePc!''}</td>
+						<td>${item.voteOther!''}</td>
+						<td>${item.voteAll!''}</td>
+						
+					</tr>
+					[/#list]
+				</table>
+
+			<!-- 分页 -->
+			[#include "collect/include/page.htm"]
+
+			</div>
+		</div>
+	</div>
+
+</body>

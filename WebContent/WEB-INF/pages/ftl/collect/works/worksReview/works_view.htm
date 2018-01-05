@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>作品查看</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+<div id="wap-a">
+
+	<div id="content" class="clear">
+		<div class="content-body" >
+			<!--系统活动首页-->
+			<div id="active-manage">
+				<div class="content-head">
+					<span class="content-position">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">作品审核></span>
+					<span class="content-position">作品查看></span>
+				</div>
+				<div class="wrap-show mt20">
+
+						<div class="textes-wrap mt5">
+							<span class="text-style-t corblack add-width10 tlalign">审核时间：</span>
+							<span class="textes-style-t corblack add-width85">${(works.lastUpdateTime?string("yyyy-MM-dd"))!}</span>
+						</div>
+
+						<div class="textes-wrap mt5">
+							<span class="text-style-t corblack tlalign">当前审核结果：</span>
+							<span class="textes-style-big corblack add-width85">
+								[#if works.status=="0"]
+									销毁
+								[#else]
+									[#if works.checkStatus=="5"]
+										退回
+									[#elseif works.checkStatus=="1"]
+										未审核
+									[#else]
+										通过
+									[/#if]
+								[/#if]
+							</span>
+						</div>
+						[#if works.checkStatus==5]
+							<div class="textes-wrap mt5">
+								<span class="text-style-t corblack add-width10" style="width:13%;text-align:left;" >退回原因分类：</span>
+								<span class="textes-style-t corblack add-width85">${dReturnType.name!""}</span>
+							</div>
+
+							<div class="textes-wrap mt5 clear">
+								<span class="text-style-t corblack add-width10 fl" style="text-align:left;">退回原因：</span>
+								<span class="textes-style-t20 corblack addes-width85 fl pt6">${worksOpt.optExt2!""}</span>
+							</div>
+						[/#if]
+						 <div class="button-wrap mt40 mb10" id="add-button">
+							<a href="${baseURL}/worksreview/worksCheck/${works.id}" class="on-button cir-angle mr10 pl40 pr40">重审</a>
+							<a href="${baseURL}/worksreview/staffworkslist/${works.eventId}" class="on-button cir-angle pl40 pr40 mr10">返回</a>
+						</div> 
+
+					<iframe id="matchbody" name="matchbody" width="100%" height="800px"
+							style="padding-top: 10px;" src="${baseURL}/contribute/c_view?wid=${works.id!}&limit=1" marginheight="0"
+							marginwidth="100%;" frameborder="0"
+							scrolling="yes"></iframe>
+
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+</script>
+</body>

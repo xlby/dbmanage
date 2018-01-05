@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="${staticURL}/collect/css/login.css" />
+    <script src="${staticURL}/collect/js/jQuery-v1.8.2.js"></script>
+    <script src="${staticURL}/collect/js/method.js"></script>
+    <title>欢迎登陆作品征集管理系统</title>
+</head>
+<body>
+<div id="login-head">
+    <div class="login-content clear pt5 pb5">
+        <h2 class="fl login-h2">教育部全国青少年普法网一作品征集管理系统</h2>
+        <div class="fr login-div">
+            <a href="" class="pl10 pr10 addonclickcor">关于我们</a>
+            <a href="" class="pl10 pr10">联系我们</a>
+            <a href="" class="pl10 pr10">网站地图</a>
+            <a href="" class="pl10 pr10">网站合作</a>
+        </div>
+    </div>
+</div>
+<div id="login-main">
+    <div class="login-m-wrap clear">
+        <div class="fl login-m-pic mt40">
+            <img src="${staticURL}/collect/img/login.png" alt="" class="pic"/>
+        </div>
+        <div class="fr cor-bor mt118 login-left-wrap p10">
+            <h2 class="login-title mt20 pb10">作品征集管理系统</h2>
+            <div class="clear mt40 pl40 pr40">
+                <div class="fl login-left clear">
+                    <div class="login-select fl cor-bor-fff clear pl10 pr10">
+                        <span class="elli">请选择身份</span>
+                        <a href="javascript:changeRole('')" class="login-img fr"></a>
+                    </div>
+                    <ul class="login-ul" style="display:none;">
+                        <li><a onclick="changeRole('admin')" class="pl10 pr10">我是管理员</a></li>
+                        <li><a onclick="changeRole('eventprincipal')" class="pl10 pr10">我是活动负责人</a></li>
+                        <li><a onclick="changeRole('checker')" class="pl10 pr10">我是审核人员</a></li>
+                        <li><a onclick="changeRole('ratingpeople')" class="pl10 pr10">我是评分专家</a></li>
+                    </ul>
+                </div>
+                <div class="fr">
+                    <a href="javascript:role2login()" class="on-button cir-angle ml10 pl20 pr20">进入</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer pt20 pb20 ">
+    <p class="contact_information">
+        <a class="pr5">北京外国语大学</a>
+        <a class="pr5">外语教学与研究出版社</a>
+        <a class="pr5">教育部全国青少年普法网运营中心</a>
+        <a class="pr5">京ICP备10216160号-14</a>
+    </p>
+    <p class="contact_information">
+        <a>京ICP备10216160号-14</a>
+    </p>
+</div>
+
+<script type="text/javascript">
+    var v_role_id = '';
+    var login_message = '${loginMessage}';
+    $(document).ready(function () {
+        if(login_message != ''){
+            alert(login_message);
+        }
+    });
+
+    function role2login(){
+        if(v_role_id != ''){
+            location.href = "${staticURL}/event/selectRole/" + v_role_id;
+        }
+    }
+
+    function changeRole(v_role) {
+        v_role_id = v_role;
+    }
+</script>
+</body>
+</html>

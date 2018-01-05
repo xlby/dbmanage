@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>系统管理</title>
+    [#include "collect/index/headLink.htm"]
+    <link rel="stylesheet" href="${staticURL}/collect/css/home-page.css" />
+</head>
+<body>
+<div id="content" class="clear">
+    <div class="content-head">
+        <span class="content-position pr10">您的位置：</span>
+        <span class="content-position">首页></span>
+        <span class="content-position">系统管理></span>
+    </div>
+    <div class="content-body mt20 pt20 pb20 cir-angles" >
+        <!--系统分析-->
+        <div id="sys-fx">
+             [#if loginRole == 'admin' || loginRole == 'eventprincipal']
+                <h2 class="homepage-title mt40 mb40">感谢您参与普法网的作品征集工作！</h2>
+            [#elseif loginRole == 'checker' || loginRole == 'ratingpeople']
+                <h2 class="homepage-title mt40 mb40">感谢您参与普法网的作品征集工作！</h2>
+                [#list indexWorksList as indexList]
+                <p class="hovepage-message pl40 pr40 mt20 clear">
+                    <a href="javascript:void(0)" class="messagetexts-a elli">
+                        ● ${indexList_index + 1}、当前<strong>【${indexList.event_name}】</strong> 中，有${indexList.unchecked}件作品需要[#if loginRole == 'checker']审核[#elseif loginRole == 'ratingpeople']评分[/#if]
+                    </a>
+                    <a href="javascript:fastEnter('${indexList.event_id}','${loginRole}')" class="message-button pt5 pb5 pl10 pr10 fr mt5">点击进入</a>
+                </p>
+                [/#list]
+            [/#if]
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function fastEnter(v_event_id, v_login_role) {
+        console.log(v_event_id, v_login_role);
+        if (v_login_role == 'checker') {
+            window.location.href = "${staticURL}/worksreview/eventlist";
+        } else if (v_login_role == 'ratingpeople') {
+            window.location.href = "${staticURL}/score/eventList";
+        }
+    }
+</script>
+</body>

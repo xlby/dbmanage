@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>评分管理</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div>
+        <div id="sys-active">
+            <div class="content-head">
+                <span class="content-position">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">活动管理></span>
+                <span class="content-position">评分管理></span>
+            </div>
+            <ul id="menu" class="mt40 pl10">
+                <li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}">活动设置</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}">人员管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/signup/list/${eventId}">报名管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}" class="add-on-style">评分管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+            </ul>
+            <div class="content-on mt20 clear mb10">
+                <span class="on-button cir-angle fr pl10 pr10" id="pf-button">评分状况分析</span>
+            </div>
+            <div class="active-bm-wrap clear mt20">
+                <form id="pageform" action="${baseURL}/scoreManage/list/${eventId}" method="post">
+                    <input type="hidden" value="${eventId}" name="eventId" id="eventId"/>
+                </form>
+            </div>
+            <div style="width: 852px; overflow-y: hidden;">
+                <table id="announce-active-table" style="width:200%;">
+                    <tr class="t-title">
+                        <th style="width:3%;"></th>
+                        <th style="width:3%;"></th>
+                        <th style="width:6%;"></th>
+                        <th colspan="2" style="width:5%;">未分配</th>
+                        <th colspan="2" style="width:5%;">部分分配</th>
+                        <th colspan="2" style="width:5%;">分配完</th>
+                        <th colspan="2" style="width:5%;">未评分</th>
+                        <th colspan="2" style="width:5%;">部分评分</th>
+                        <th colspan="2" style="width:5%;">已评完</th>
+                        <th style="width:3%;">可评状态</th>
+                        <th style="width:10%;">操作</th>
+                    </tr>
+                    <tr class="table-text " style="background:#888888;" id="fff">
+                        <td>序号</td>
+                        <td>评分分组</td>
+                        <td>评分作品总数量</td>
+                        <td>数量</td>
+                        <td>占比</td>
+                        <td>数量</td>
+                        <td>占比</td>
+                        <td>数量</td>
+                        <td>占比</td>
+                        <td>数量</td>
+                        <td>占比</td>
+                        <td>数量</td>
+                        <td>占比</td>
+                        <td>数量</td>
+                        <td>占比</td>
+                        <td>可评状态</td>
+                        <td>操作</td>
+                    </tr>
+                    [#list listData as scoreList]
+                    <tr class="table-text">
+                        <td>${scoreList_index+1}</td>
+                        <td>${scoreList.name}</td>
+                        <td>${scoreList.total_count}</td>
+                        <td>${scoreList.allocate_none_count}</td>
+                        <td>[#if scoreList.allocate_none_scale != '-']${scoreList.allocate_none_scale}%[#else]-[/#if]
+                        </td>
+                        <td>${scoreList.allocate_part_count}</td>
+                        <td>[#if scoreList.allocate_part_scale != '-']${scoreList.allocate_part_scale}%[#else]-[/#if]
+                        </td>
+                        <td>${scoreList.allocate_complete_count}</td>
+                        <td>[#if scoreList.allocate_complete_scale !=
+                            '-']${scoreList.allocate_complete_scale}%[#else]-[/#if]
+                        </td>
+                        <td>${scoreList.score_none_count}</td>
+                        <td>[#if scoreList.score_none_scale != '-']${scoreList.score_none_scale}%[#else]-[/#if]</td>
+                        <td>${scoreList.score_part_count}</td>
+                        <td>[#if scoreList.score_part_scale != '-']${scoreList.score_part_scale}%[#else]-[/#if]</td>
+                        <td>${scoreList.score_complete_count}</td>
+                        <td>[#if scoreList.score_complete_scale !=
+                            '-']${scoreList.score_complete_scale}%[#else]-[/#if]
+                        </td>
+                        <td>[#if scoreList.status == 0]禁用[#else]正常[/#if]</td>
+                        <td>
+                            [#if scoreList.status == 1]
+                            <a class="mange" onclick="manage('${scoreList.id}')">管理</a>
+                            <a class="fp-f" onclick="allocateTask('${scoreList.id}')">分配</a>
+                            <a class="lookfor-a" onclick="review('${scoreList.id}')">查看</a>
+                            [/#if]
+                            <a class="off-o" onclick="changeState('${scoreList.id}',this)">[#if scoreList.status == 0]开启[#else]关闭[/#if]</a>
+                        </td>
+                    </tr>
+                    [/#list]
+                </table>
+            </div>
+            [#include "collect/commonpage.htm"]
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var busy_dialog = dialog({title: "正在处理中..."});
+    var ok_dialog = dialog({content: "操作完成"});
+    var v_event_id = $("#eventId").val();
+
+    $("#pf-button").click(function () {
+        window.location.href = "${baseURL}/scoreManage/showCharts/${eventId}";
+    });
+
+    function changeState(v_scoreGroupId, v_someVar) {
+        var v_status;
+        var v_title = '';
+        if ($(v_someVar).text() == "关闭") {
+            v_status = 0;
+            v_title = "确定关闭本分组？"
+        } else if ($(v_someVar).text() == "开启") {
+            v_status = 1;
+            v_title = "确定开启本分组？"
+        }
+        dialog({
+            content:v_title,
+            ok: function () {
+
+                $.ajaxSettings.async = false;
+                $.getJSON("${baseURL}/scoreManage/changeStatus", {
+                    scoreGroupId: v_scoreGroupId,
+                    status: v_status
+                }, function (data) {
+                    if (data.result.status == 1) {
+                        alert(data.result.message);
+                    } else if (data.result.status == 0) {
+                        $("#pageform").submit();
+                    }
+                });
+            },
+            okValue:"确定",
+            cancel:function () {
+            },
+            cancelValue:"取消"
+        }).showModal();
+    }
+
+    function allocateTask(scoreGroupId) {
+        window.location.href = "${baseURL}/scoreManage/allocate/list?eventId=" + v_event_id + "&scoreGroupId=" + scoreGroupId;
+    }
+
+    function review(scoreGroupId) {
+        window.location.href = "${baseURL}/scoreManage/reviewList?eventId=" + v_event_id + "&scoreGroupId=" + scoreGroupId;
+    }
+
+    function manage(scoreGroupId) {
+        window.location.href = "${baseURL}/scoreManage/manageList?eventId=" + v_event_id + "&scoreGroupId=" + scoreGroupId;
+    }
+</script>
+</body>
+</html>

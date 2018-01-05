@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>评分状况分析</title>
+    [#include "collect/index/headLink.htm"]
+    <script type="text/javascript" src="${staticURL}/collect/js/echarts.min.js"></script>
+</head>
+<body>
+<div id="content" class="clear">
+    <div class="content-body ml10 fr pl20 pr10 pt40" style="width:820px;">
+        <!--系统分析-->
+        <div id="sys-fx">
+            <div class="content-head">
+                <span class="content-position pr10">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">系统管理></span>
+            </div>
+            <div class="input-wrap mt15 clear" id="">
+                <span class="input-title fl" style="width:12%;">选择评分组别：</span>
+                <select name="scoreGroup" id="scoreGroup" class="input-select fl">
+                    [#list detailList as scoreGroup]
+                    <option value="${scoreGroup.id}">${scoreGroup.name}</option>
+                    [/#list]
+                </select>
+                <span class="on-button cir-angle fl ml20 pl10 pr10" id="statisticsBtn">统计</span>
+                <span class="on-button cir-angle fr ml20" id="on-button" style="width:120px;" onclick="history.back()">返回评分管理</span>
+            </div>
+            <div class="clear mt20">
+                <div id="distributionChart" style="width: 100%;height:400px;float:left;margin:0 auto;"></div>
+                <div id="scoreChart" style="width: 100%;height:400px;float:left;"></div>
+                <div id="fractionChart" style="width: 100%;height:400px;float:left;"></div>
+            </div>
+            <div class="clear mt20">
+                <div id="quantityChart" style="width: 100%;height:400px;float:left;margin:0 auto;"></div>
+            </div>
+            <div class="clear mt20">
+                <div id="dailyContribute" style="width: 100%;height:500px;float:left;margin:0 auto;"></div>
+            </div>
+            <div class="button-wrap mt40 mb10" id="active-first-button">
+                <span class="on-button cir-angle back-on pl10 pr10" style="background: rgb(15, 230, 177);" onclick="history.back()">返回</span>
+            </div>
+        </div>
+        <input type="hidden" id="eventId" name="eventId" value="${eventId}"/>
+    </div>
+</div>
+<script type="text/javascript">
+    var v_eventId = $("#eventId").val();
+
+    $("#statisticsBtn").click(function () {
+
+        var v_scoreGroupValue = $("#scoreGroup").val();
+        methodGroup(v_eventId, v_scoreGroupValue);
+    });
+
+    $(document).ready(function () {
+        var v_scoreGroupValue = $("#scoreGroup").val();
+        methodGroup(v_eventId, v_scoreGroupValue);
+    });
+
+    function methodGroup(v_eventId, v_scoreGroupValue) {
+        quantityRanking(v_eventId, v_scoreGroupValue);
+        allocateSituation(v_eventId, v_scoreGroupValue);
+        scoreChart(v_eventId, v_scoreGroupValue);
+        fractionChart(v_eventId, v_scoreGroupValue);
+        dailyContribute(v_eventId, v_scoreGroupValue);
+    }
+
+    function quantityRanking(v_eventId, v_scoreGroup) {
+        var quantityChart = echarts.init(document.getElementById('quantityChart'));
+        quantityChart.clear();
+        quantityChart.showLoading({text: "加载中..."});
+        // 指定图表的配置项和数据
+        $.getJSON("${baseURL}/scoreManage/allocateQuantityRankingChart", {
+            eventId: v_eventId,
+            scoreGroupId: v_scoreGroup
+        }, function (data) {
+            if (data.chart.status == 0) {
+                quantityChart.setOption(data.chart.data, true);
+                quantityChart.hideLoading();
+            }else if(data.chart.status == 1){
+                quantityChart.hideLoading();
+                quantityChart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function allocateSituation(v_eventId, v_scoreGroup) {
+        var distributionChart = echarts.init(document.getElementById('distributionChart'));
+        distributionChart.clear();
+        distributionChart.showLoading({text: "加载中..."});
+        // 指定图表的配置项和数据
+        $.getJSON("${baseURL}/scoreManage/allocateSituationChart", {
+            eventId: v_eventId,
+            scoreGroupId: v_scoreGroup
+        }, function (data) {
+            if (data.chart.status == 0) {
+                distributionChart.setOption(data.chart.data, true);
+                distributionChart.hideLoading();
+            }else if(data.chart.status == 1){
+                distributionChart.hideLoading();
+                distributionChart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function scoreChart(v_eventId, v_scoreGroup) {
+        var distributionChart = echarts.init(document.getElementById('scoreChart'));
+        distributionChart.clear();
+        distributionChart.showLoading({text: "加载中..."});
+        // 指定图表的配置项和数据
+        $.getJSON("${baseURL}/scoreManage/scoreChart", {
+            eventId: v_eventId,
+            scoreGroupId: v_scoreGroup
+        }, function (data) {
+            if (data.chart.status == 0) {
+                distributionChart.setOption(data.chart.data, true);
+                distributionChart.hideLoading();
+            }else if(data.chart.status == 1){
+                distributionChart.hideLoading();
+                distributionChart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function fractionChart(v_eventId, v_scoreGroup) {
+        var distributionChart = echarts.init(document.getElementById('fractionChart'));
+        distributionChart.clear();
+        distributionChart.showLoading({text: "加载中..."});
+        // 指定图表的配置项和数据
+        $.getJSON("${baseURL}/scoreManage/fractionChart", {
+            eventId: v_eventId,
+            scoreGroupId: v_scoreGroup
+        }, function (data) {
+            if (data.chart.status == 0) {
+                distributionChart.setOption(data.chart.data, true);
+                distributionChart.hideLoading();
+            }else if(data.chart.status == 1){
+                distributionChart.hideLoading();
+                distributionChart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function dailyContribute(v_eventId, v_scoreGroup) {
+        var dailyContribute = echarts.init(document.getElementById('dailyContribute'));
+        dailyContribute.clear();
+        dailyContribute.showLoading({text: "加载中..."});
+        $.getJSON("${baseURL}/scoreManage/allocateQuantityChart", {
+            eventId: v_eventId,
+            scoreGroupId: v_scoreGroup
+        }, function (data) {
+            if (data.chart.status == 0) {
+                dailyContribute.setOption(data.chart.data, true);
+                dailyContribute.hideLoading();
+            }else if(data.chart.status == 1){
+                dailyContribute.hideLoading();
+                dailyContribute.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

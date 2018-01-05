@@ -1,0 +1,180 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<link rel="stylesheet" href="${staticURL}/collect/css/collectdoor-common.css" />
+	<link rel="stylesheet" href="${staticURL}/collect/css/common.css" />
+	<script src="${staticURL}/collect/js/jQuery-v1.8.2.js"></script>
+	
+	<title>作品展示</title>
+	
+<script type="text/javascript">
+
+var order = "${order!''}"; 
+var gid = "${gid!''}";
+var name  = "${name!''}";
+var author = "${author!''}";
+var pageNo = 1;
+function go(){
+
+	var url  = "${baseURL}/vote/index?eid=${eid}&name="+encodeURI(encodeURI(name))+"&gid="+gid+"&order="+order+"&author="+encodeURI(encodeURI(author))+"&pageNo="+pageNo;
+
+	window.location.href = url;
+}
+
+function search(){
+	name = $("#v_name").val();
+	author = $("#v_author").val();
+	go();
+}
+
+function goPage(i){
+	pageNo = i;
+	go();
+}
+
+function praise(wid){
+	$.ajax({
+			url:'${iscBaseURL}/login',
+			dataType: "jsonp",
+			jsonpCallback: "jsonpcallback",
+			data: {
+				touch: true
+			},
+		success:function (data) {
+			if(data.loginInfo=='valid'){
+				var param = {};
+				param.wid = wid;
+				$.ajax({
+					type : "POST",
+					url : "${baseURL}/vote/praise",
+					data : param,
+					success : function(data) {
+						if (data.status) {
+
+							$("#"+wid+"").html(Number($("#"+wid+"").html())+1);
+
+						}else{
+							alert("您已经投过票了或投票已结束！");
+						}
+					}
+				});
+			}else{
+				alert("请登录过后再投票");
+			}
+		}
+	});
+
+
+	
+}
+</script>
+</head>
+<body style="background:#f4f4f4;">
+	<div style="width: 1000px; margin: 0px auto;">
+		<div id="content-main" class="clear">
+			<div class="content-head mt20 mb20">
+				<span class="content-position pr10">您的位置：</span>
+				<span class="content-position">作品展示</span>
+			</div>
+			<h2 class="title-text mb20 h2-zpin-wrap">
+				<span>参赛作品</span>
+				<span class="select-spanwrap ml20">
+					<a href="javascript:void(0);" onclick = "order='0';go();" [#if order!="1"]class="corblack" [/#if]>随机</a>
+					<span> | </span>
+					<a href="javascript:void(0);" onclick = "order='1';go();" [#if order=="1"]class="corblack" [/#if]>人气</a>
+				</span>
+				<div class="fr clear">
+					<a class="fl ctext-style pl20 pr10 back-pic" >查看投票规则</a>
+				</div>
+			</h2>
+			<div class="input-wrap mt15 clear cor-bor">
+				[#if cntbGroupList?size>0]
+					<ul class="fl clear p10" id="menus-onclick">
+					[#list cntbGroupList as item]
+						<li class="fl"><a onclick = "gid = '${item.id}';go()" href="javascript:void(0);" class="c-text-style pl10 pr10  [#if item.id==gid]corblack[/#if]">${item.name!''}</a></li>
+	
+					[/#list]
+						<li class="fl"><a onclick = "gid = 'all';go()" href="javascript:void(0);" class="c-text-style pl10 pr10  [#if "all"==gid]corblack[/#if]">全部</a></li>
+					</ul>
+				[/#if]
+				<div class="fr clear p10">
+
+					<input placeholder="作品名" id="v_name" type="text" value="${name!''}" class="input-text p8 cir-angle fl ml10" style="width:200px;">
+					
+					<input placeholder="作者" id="v_author" type="text" value="${author!''}" class="input-text p8 cir-angle fl ml10 mr10" style="width:200px;">
+					<span class="lookfor fl">
+						<img onclick = "search();"  src="${staticURL}/collect/img/big.png" alt="" class="cir-angle">
+					</span>
+				</div>
+			</div>
+			<div style="width:100%;" class="mt20">
+				<ul class="zpin-show clear">
+				
+				[#list page.data as item]
+				
+					<li class="show-li fl mr10 mb20 cor-bor addwidth-li">
+						<div class="pic-wrap cir-angle">
+							<a href="${doorURL}zpinXQ.html?wid=${item.id}" class="pic-a">
+								<img src="[#if item.coverImg!='']${uploadURL}/${item.coverImg!''}[/#if]" alt="">
+							</a>
+						</div>
+						<div class="pl10 pr10 pb10">
+							<h5 class="title-names"><a href="${doorURL}zpinXQ.html?wid=${item.id}" title="作品名称" class="elli">${item.name!''}</a></h5>
+							<p class="contents-p elli" title="${item.comment!''}">${item.comment!''}</p>
+							<span class="contents-n">${item.author1!''}</span>
+						</div>
+						<p class="conwrap pt10 pb10 pr10 pl10 clear">
+							<span  class="ps fl">票数:</span>
+							<strong id="${item.id}" class="nums fl">${item.voteAll!'0'}</strong>
+							<span class="click-on fr" onclick="praise('${item.id}')">投票</span>
+						</p>
+					</li>
+				
+				[/#list]
+
+				</ul>
+				
+			</div>
+		<!-- 分页 -->
+			
+	<div id="active-bm-page" class="pt10 pb10 mt20 mb20">
+		<div class="page-ul">
+			<span class="all-num mr20">共<strong style="color:#0fe6b1;"> ${page.totalCount!''} </strong>条结果</span>
+
+				<a style="width: 52px;" href="javascript:void(0)" onclick="goPage('1')">&nbsp;&nbsp;&nbsp;首页&nbsp;&nbsp;&nbsp;</a>	 <a href="javascript:void(0)" onclick="goPage('${page.prePage}')">&lt;</a>[#t/]
+														
+				[#if page.pageNo lte 3]
+				
+					[#list 1..page.totalPage as i]
+						<a [#if i==page.pageNo] class="pagetab" [/#if] onclick="goPage('${i}')" href="#">${i}</a>
+					     [#if i gte 6]
+					     [#break]
+					     [/#if]
+					[/#list]
+				
+				[#else]
+				
+					[#assign num=0 /]
+					[#list (page.pageNo-3)..page.totalPage as i]
+						[#assign num=num+1 /]
+						<a [#if i==page.pageNo] class="pagetab" [/#if] onclick="goPage('${i}')" href="#">${i}</a>
+					     [#if num==6]
+					     [#break]
+					     [/#if]
+					[/#list]
+				
+				[/#if]
+										
+									
+				<a href="javascript:void(0)" onclick="goPage('${page.nextPage}')">&gt;</a>  <a style="width: 52px;"  href="javascript:void(0)" onclick="goPage('${page.totalPage}')">&nbsp;&nbsp;&nbsp;尾页&nbsp;&nbsp;&nbsp;</a>[#t/]
+
+		</div>
+	</div>
+	<!-- 分页 -->
+		</div>
+	</div>
+
+</body>
+</html>

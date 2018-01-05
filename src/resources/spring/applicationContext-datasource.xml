@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop.xsd 
+	http://www.springframework.org/schema/tx  
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd">
+	 
+	<!-- BoneCP configuration 主数据库 -->
+	<bean id="testCenterMasterDataSource" parent="parentDataSource">
+		<property name="jdbcUrl" value="${dss1.master.jdbc.jdbcUrl}" />
+		<property name="username" value="${dss1.master.jdbc.username}" />
+		<property name="password" value="${dss1.master.jdbc.password}" />
+	</bean>
+
+
+
+
+
+
+
+	<context:annotation-config />
+
+
+	<!-- 定义事务处理类，不同的数据访问方式，事务处理类不同 比如：Hibernate操作的HibernateTransactionManager，JDBC操作的使用DataSourceTransactionManager 
+		<bean id="testCenterTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"> 
+		<property name="dataSource" ref="testCenterMasterDataSource"></property> 
+		</bean> -->
+	<bean id="testCenterSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="testCenterMasterDataSource" />
+		<property name="configLocation"
+			value="classpath:resources/mybatis/mybatis-config.xml" />
+		<!-- mapper和resultmap配置路径 -->
+		<property name="mapperLocations">
+			<list>
+				<!-- 表示在特定目录下的以Mapper.xml结尾所有文件 -->
+				<value>classpath:resources/mapper/**/*Mapper.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 通过扫描的模式，扫描目录下所有的mapper， 根据对应的mapper.xml为其生成代理类 -->
+	<bean id="testCenterMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.fifedu.mybatis.mapper;com.fifedu.mybatis.mapper.base" />
+		<property name="sqlSessionFactoryBeanName" value="testCenterSqlSessionFactory" />
+	</bean>
+
+
+	<context:component-scan base-package="com.fifedu">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+</beans>

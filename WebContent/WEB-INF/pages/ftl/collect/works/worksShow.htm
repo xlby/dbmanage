@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>作品展示</title>
+	[#include "collect/index/headLink.htm"]
+	
+<script>
+	
+	var browserVersion = window.navigator.userAgent.toUpperCase();
+	var isOpera = false;
+	var isFireFox = false;
+	var isChrome = false;
+	var isSafari = false;
+	var isIE = false;
+	var iframeTime;
+	function reinitIframe(iframeId, minHeight) {
+	    try {
+	        var iframe = document.getElementById(iframeId);
+	        var bHeight = 0;
+	        if (isChrome == false && isSafari == false)
+	        	
+	            bHeight = iframe.contentWindow.document.body.clientHeight;
+
+	        var dHeight = 0;
+	        if (isFireFox == true)
+	            dHeight = iframe.contentWindow.document.documentElement.offsetHeight + 20;
+	        else if (isIE == false && isOpera == false)
+	            dHeight = iframe.contentWindow.document.documentElement.scrollHeight+18;
+	        else
+	            bHeight += 23;
+	        var height = Math.max(bHeight, dHeight);
+	        if (height < minHeight) height = minHeight;
+	        iframe.style.height = height + "px";
+	    } catch (ex) { 
+	    	
+	    	
+	    }
+	}
+	function setIframe(iframeId, height) {
+	    try {
+	        var iframe = document.getElementById(iframeId);
+	        iframe.style.height = height + "px";
+	    } catch (ex) { 
+	    }
+	}
+	function startInit(iframeId, minHeight) {
+	    isOpera = browserVersion.indexOf("OPERA") > -1 ? true : false;
+	    isFireFox = browserVersion.indexOf("FIREFOX") > -1 ? true : false;
+	    isChrome = browserVersion.indexOf("CHROME") > -1 ? true : false;
+	    isSafari = browserVersion.indexOf("SAFARI") > -1 ? true : false;
+	    if (!!window.ActiveXObject || "ActiveXObject" in window)
+	        isIE = true;
+	    reinitIframe(iframeId, minHeight);
+	    if (iframeTime != null)
+	        clearInterval(iframeTime)
+	    iframeTime = window.setInterval("reinitIframe('" + iframeId + "'," + minHeight + ")", 100);
+	} 
+	function iFrameHeight() {   
+		var ifm= document.getElementById("matchbody");   
+		var subWeb = document.frames ? document.frames["matchbody"].document : ifm.contentDocument;   
+		if(ifm != null && subWeb != null) {
+			 
+			if(subWeb.body.scrollHeight<495){
+				 ifm.height = 495;
+			}else if(subWeb.body.scrollHeight>495){
+				 ifm.height = subWeb.body.scrollHeight;	
+			}else{
+				 ifm.height =495;	
+			}
+		}   
+	}
+		
+</script>
+	
+</head>
+<body>
+
+<div style=" float: left; ">	
+
+	<div id="content" class="clear">
+
+		<div class="content-body fr pl10 pr10 pt40" >
+			<!--系统活动首页-->
+			<div id="active-manage">
+				<div class="content-head">
+					<span class="content-position">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">活动管理></span>
+					<span class="content-position">作品管理></span>
+					<span class="content-position">作品查看</span>
+				</div>
+				<ul id="menu-a" class="mt40">
+					<li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eid}">活动设置</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eid}">人员管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/signup/list/${eid}">报名管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/workslist/${eid}">审核管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eid}">评分管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eid}">投票管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eid}"  class="add-on-style">作品管理</a></li>
+				</ul>
+				<div class="active-bm-wrap clear mt20">
+					<span class="content-position pt10">作品操作记录</span>
+					<a href="${baseURL}/works/worksManage?eid=${eid}" style="color:#fff;" class="on-button cir-angle fr pl20 pr20 back-button">返回作品管理</a>
+				</div>
+				<div class="zpinlists-wrap">
+					<table id="zpinlists" class="mt20"  style="width: 100%;">
+					<tr class="t-title">
+						<th style="width:5%;">序号</th>
+						<th style="width:20%;">操作</th>
+						<th style="width:20%;">时间</th>
+						<th style="width:20%;">操作人</th>
+						<th style="width:20%;">操作结果</th>
+						<th style="width:15%;">备注</th>
+					</tr>
+					
+					[#list rwoList as item]
+					<tr class="table-text">
+					
+					
+						<td>${item_index+1}</td>
+						<td>
+							[#if item.opt??&&item.opt==1]
+								作品提交
+							[/#if]
+							[#if item.opt??&&item.opt==2]
+								后台编辑
+							[/#if]
+							[#if item.opt??&&item.opt==3]
+								审核通过
+							[/#if]
+							[#if item.opt??&&item.opt==4]
+								审核退回
+							[/#if]
+							[#if item.opt??&&item.opt==5]
+								销毁
+							[/#if]
+							[#if item.opt??&&item.opt==6]
+								恢复
+							[/#if]
+							[#if item.opt??&&item.opt==7]
+								归档
+							[/#if]
+							[#if item.opt??&&item.opt==8]
+								评分
+							[/#if]
+						</td>
+						<td>
+						${item.optTime?string("yyyy-MM-dd HH:mm:ss ")}
+						</td>
+						<td>${item.operator!''}</td>
+						<td></td>
+						<td></td>
+					</tr>
+					[/#list]
+
+					</table>
+				</div>
+					<div class="wrap-show mt20">
+
+						<iframe id="matchbody" name="matchbody" width="100%;" style="padding-top: 10px;" src="${baseURL}/contribute/c_view?wid=${wid!""}" marginheight="0" marginwidth="100%;" frameborder="0"
+							onLoad="reinitIframe('matchbody',700)" scrolling="no"></iframe>
+
+
+					</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+</body>

@@ -1,0 +1,213 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    
+ <link rel="stylesheet" href="css/main.css"/>
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="js/placeholder.js"></script>
+    
+    <!-- table 列表 -->
+    <script type="text/javascript" src="js/tableUI.js"></script>
+
+   <script type="text/javascript" src="js/paperCommon.js"></script>
+   
+   
+   
+    <!-- 分页js -->
+<!--     <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/homework/workManage.js"></script> -->
+    <title>数据展示</title>
+    <style>
+     .school_manage{margin:0 auto;width:1000px;margin-top:5%;}
+     .school_manage th,tr td{    border: 1px solid #ccc8cc;text-align:center;}
+     .header_info{width:1000px;margin-bottom:1%;}
+     .add_school{float:left;width:55px;}
+     .content_info{width:250px;margin-left:26%;}
+     .select_school{width:55px;margin-left:1%;}
+     .pageload{ position: fixed; z-index: 999999; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,.5) url(css/loading.gif) no-repeat center center; background-size: 7rem auto;}
+     
+    </style>
+</head>
+<body>
+<script type="text/javascript"> 
+
+//加载中
+function showLoad() {
+    $("body").append('<div class="pageload"></div>');
+   // document.onreadystatechange = subSomething;
+}
+
+function subSomething() {
+    if (document.readyState == "complete") { //当页面加载状态为完全结束时进入
+        $(".pageload").remove();
+    }
+}
+</script>
+
+	<div class="coverDiv openbg"></div>
+	<div class="school_manage">
+		<div class="school_top">
+			<div class="header_info">
+				<input type="text" class="content_info" id="searchName_uc" placeholder="请输入pinyin_name"/>
+				<input type="text" class="content_info" id="userName_uc" placeholder="请输入user_name"/>
+				<input type="button" class="select_db_idx"  id="selectDb_uc"  onclick="getDbListCount()"  value="搜索"/>
+			</div>
+		</div>
+		<div class="db_info">
+				
+					
+		</div>
+	</div>
+	
+	 <div class="scrollDiv">
+            <table border="0" cellspacing="0"  cellpadding="0" class="tableUI">
+                 <tbody id="students">
+                    
+                </tbody>
+            </table>
+     </div>
+     
+     
+<!--start 修改面板-->
+<div class="openDiv openDiv-pubtest openDiv-pubtest-paper openDiv-resize">
+    <div class="openTitle">
+        <div class="fl title">修改用户</div>
+        <div class="fr close" title="关闭" onclick="closeDiv($(this).parents('.openDiv'))"></div>
+    </div>
+    <div class="openCon">
+        ID    : &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;          <input type="text"  placeholder="用户Id,注意不要修改" class="pubtest_inputText pubtest_inputText-w400 fl"  readonly="true" id="id_uc" />
+        pingyinName:<input type="text"  placeholder="用户拼音" class="pubtest_inputText pubtest_inputText-w400 fl" id="pinyinName_uc" />
+         IdCardNo    :  &nbsp;&nbsp;&nbsp; <input type="text"  placeholder="身份证号" class="pubtest_inputText pubtest_inputText-w400 fl" id="idCardNo_uc" />
+         
+        <input type="button" class="inputbtn_h30" value="修改" onclick="updateUserInfo();closeDiv($(this).parents('.openDiv'))">
+         <input type="button" class="inputbtn_h30" value="取消" onclick="closeDiv($(this).parents('.openDiv'))">
+    </div>
+</div>
+<!--end 修改面板-->
+        
+        
+
+	<script type="text/javascript">
+		$(function(){
+			//getDbListCount();
+		});
+	
+		// 获取当前列表总数量
+		function getDbListCount(){
+			 //遮罩层
+			showLoad();
+			var  param = {};
+			var searchName = 	$("#searchName_uc").val();
+			var userName = 	$("#userName_uc").val();
+			
+			if((searchName == null || searchName=="" )&&(userName== null || userName=="" )){
+				alert("由于数据量过大，故必须存在一个搜索条件");
+				return ;
+			}
+			
+			 if(searchName != null && searchName!="" ){
+				 param.pinyinName = searchName;
+			 }
+			 
+			 if(userName != null && userName!="" ){
+				 param.userName = userName;
+			 }
+			 
+			  
+			$.ajax({
+				type : "POST",
+				url : "http://127.0.0.1:8180/DbManage/db/dbList",
+				async:false,
+				data : param,
+				success: function(msg){
+					$("#students").html(template('table_students', {data:msg}));
+					//遮罩层结束
+					 subSomething();
+				}
+			}); 
+		}	
+	
+		
+		//显示div
+		function showUpdateDiv(userId,pinyinName,idCardNo){
+			$("#id_uc").val(userId);
+			$("#pinyinName_uc").val(pinyinName);
+			$("#idCardNo_uc").val(idCardNo);
+			showDiv($('.openDiv-pubtest-paper'));
+		}
+		
+		//修改函数
+		function updateUserInfo(){
+			var userId = $("#id_uc").val();
+			var pinyinName = $("#pinyinName_uc").val();
+			var idCardNo = $("#idCardNo_uc").val();
+			
+			var  param = {};
+			param.id = userId;
+			param.pinyinName = pinyinName;
+			param.idCardNo = idCardNo;
+			
+			$.ajax({
+				type : "POST",
+				url : "http://127.0.0.1:8180/DbManage/db/updateUserInfo",
+				async:false,
+				data : param,
+				success: function(msg){
+					alert("修改成功！");
+					closeDiv($(this).parents('.openDiv'));
+					//重新加载
+					//getDbListCount("");
+				}
+			}); 
+
+		}
+	</script>
+	
+	<script id="table_students" type="text/html">
+ <tr>
+      <th width="50">序号</th>
+     <th width="200">id</th>
+      <th width="200">login_name</th>
+      <th width="200">email</th>
+      <th width="200">mobile</th>
+     <th width="200">user_name</th>
+      <th width="200">gender</th>
+      <th width="200">pinyin_name</th>
+      <th width="200">id_card_no</th>
+      <th width="200">role_name</th>
+      <th width="100px">操作</th>
+  </tr>
+{{each data.scList as value i}}
+  <tr>
+   	<td >{{i+1}}</td>
+    <td >{{value.id}}</td>
+	<td >{{value.loginName}}</td>
+ 	<td >{{value.email}}</td>
+	<td >{{value.mobile}}</td>
+ 	<td >{{value.userName}}</td>
+ 	<td >{{value.gender}}</td>
+	<td >{{value.pinyinName}}</td>
+ 	<td >{{value.idCardNo}}</td>
+    <td >{{value.roleName}}</td>
+    <td ><a href="#" onclick="showUpdateDiv('{{value.id}}','{{value.pinyinName}}','{{value.idCardNo}}');" class="config_school_cell">修改</a></td>
+ </tr>
+{{/each}}
+
+</script>
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+</body>
+</html>

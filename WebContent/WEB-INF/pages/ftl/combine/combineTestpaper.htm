@@ -1,0 +1,448 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="../ccbManage/css/common.css"/>
+	<link rel="stylesheet" href="../ccbManage/css/style.css"/>
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="../ccbManage/js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="../ccbManage/js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="../ccbManage/js/placeholder.js"></script>
+    <!-- 分页js -->
+<!--     <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/homework/workManage.js"></script> -->
+    <title>后台管理-生成试卷</title>
+    <style>
+    .paperManage{margin:0 auto;width:1000px;}
+	.searchRequire{}
+	.exam_type_title{width:85px}
+	.cet_title{width:65px}
+	.level_title{width:85px}
+	.search_paper_value{width:350px;}
+    .paperList{margin-top:10px}
+    .paperList table{border-collapse: collapse;}
+    .testpaper_name{width:724px;}
+	.paperList th{border:1px solid #ccc8cc;}
+    .paperList tr td{border:1px solid #ccc8cc;cell-padding:0;text-align:center;}
+	.page{margin:10px auto;}
+	.page a{padding:0 3px;}
+	.page a.active{background-color:#6eAFC5;}
+    </style>
+</head>
+<body>
+	<div class="paperManage">
+		<div class="searchRequire">
+			<table>
+				<tr>
+					<td><span class="cet_title">考试级别：</span></td>
+                    <td>
+                    	<select class="cet_value">
+                            <option  value="0" selected="selected">全部</option>
+                            <option value="4">四级</option>
+                            <option value="6">六级</option>
+                        </select>
+                    </td>
+					<td><span class="exam_type_title">考试类型：</span></td>
+                    <td>
+                    	<select class="exam_type_value">
+                            <option  value="5" selected="selected">全部</option>
+                            <option value="0">模考</option>
+                            <option value="1">专练</option>
+                        </select>
+                    </td>
+                    <td width="150px"></td>
+                    <td><input type="text" class="search_paper_value" placeholder="请输入试卷名称"/></td>
+                    <td><input type="button" value="搜索" class="search_button" onclick="searchBtn()"/></td>
+				</tr>
+				<tr><td colspan="6"></td></tr>
+				<tr><td colspan="6"><input type="button" value="添加" class="add_ccb_paper" onclick="addCcbPaper()"/></td></tr>
+			</table>
+		</div>
+		<div class="paperList" id="combineTestpaperList">
+<!-- 			<table> -->
+<!-- 				<tr> -->
+<!-- 					<th width="30px"></th> -->
+<!-- 					<th width="350px">试卷名称</th> -->
+<!-- 					<th width="80px">考试级别</th> -->
+<!--                     <th width="80px">考试类型</th> -->
+<!--                     <th width="80px">轮数</th> -->
+<!--                     <th width="150px">生成时间</th> -->
+<!--                     <th width="200px">操作</th> -->
+<!-- 				</tr> -->
+				
+<!-- 				[#list comList as combine] -->
+<!-- 				<tr> -->
+<!--                 	<td>${combine_index+1}<input type="hidden" class="hidden_combine_value" value="${combine.id}"/></td> -->
+<!-- 					<td><span class="testpaper_name_cell">${combine.paperName!}</span></td> -->
+<!--                     <td><span class="cet_cell">${((combine.cet)?length>0)?string((combine.cet),"--")}</span></td> -->
+<!--                     <td><span class="exam_type_cell">${combine.examType!}</span></td> -->
+<!--                     <td><span class="level_cell">${((combine.level)?length>0)?string((combine.level),"--")}</span></td> -->
+<!--                     <td><span class="create_time_cell">${combine.createTime!}</span></td> -->
+<!-- 					<td><a href="#" onclick="paperView(this)" class="preview_combine_cell">预览</a>&nbsp;<a href="#" class="edit_cell" onclick="configCcbPaper(this)">配置</a>&nbsp;<a href="#" class="sync_cell">同步</a>&nbsp;<a href="#" class="delete_cell" onclick="deleteCcbPaper(this)">删除</a></td> -->
+<!-- 				</tr> -->
+<!-- 				[/#list] -->
+			</table>
+		</div>
+	    <!-- 列表展示 -->
+	    <div id="records">
+	    	<div id="records_div">
+		    	<ul class="paperList" id="lists">
+<!-- 		    	<div class="workmanage" id="lists"></div> -->
+		    	</ul>
+		    </div>
+		    <div class="page" id="pages"></div>
+	        <div class="nodata mt10" id="record" style="display: none;">
+		        <h3>当前状态没有试卷数据</h3>
+		        <p>您可以添加一套试卷 <a href="javascript:void(0)" onclick="addCcbPaper()" class="blueline">去添加</a></p>
+			</div>
+	    </div>
+<!--         <div class="page"> -->
+<!--             <table style="text-align:right"> -->
+<!--             	<tr> -->
+<!--                     <td width="750"></td> -->
+<!--                     <td><a href="#" class="before_cell">上一页</a></td> -->
+<!--                     <td>&nbsp;1&nbsp;2&nbsp;3&nbsp;</td> -->
+<!--                     <td><a href="#" class="after_cell">下一页</a></td> -->
+<!--                 </tr> -->
+<!--             </table> -->
+<!--         </div> -->
+	</div>
+	<div id="dates_delay" style="display:none;"></div>
+	<script type="text/javascript">
+		$(function(){
+			/**第一次初始化加载**/
+			searchBtn();
+			
+			//getCcbPaperListCount("","","");
+		});
+		
+		
+		var ccbPaperCount;
+		// 获取当前试卷列表总数量
+		function getCcbPaperListCount(examLevel,examType,paperName){
+			var  param = {};
+			param.examType = examLevel;//考试级别
+			param.practiceType = examType;//考试类型
+			param.name = paperName;//试卷名称
+			
+			$.ajax({
+				type : "POST",
+				url : "${baseURL}/ccbPaperConfig/getCcbPaperPageCount",
+				async:false,
+				data : param,
+				success: function(msg){
+					if(msg.ccbPaperCount>10){
+		                $("#pages").css('display','block'); 
+					}else{
+						$("#pages").css('display','none'); 
+					}
+				}
+			}); 
+		}
+		
+		
+		var pageSize = 20; var pageNo = 1;
+		//examList("","","",1);
+		/**搜索试卷按钮-按试卷名称搜索试卷**/
+		function searchBtn(){
+			//1.获取搜索条件
+			//考试级别
+			var examLevel = $(".cet_value").val();
+			//考试类型
+			var examType = $(".exam_type_value").val();
+			//试卷名称
+			var paperName = $(".search_paper_value").val();
+			
+			getCcbPaperListCount(examLevel,examType,paperName);
+			
+			examList(examLevel,examType,paperName,1);
+		}
+
+		//教师端查询作业列表
+		function examList(examLevel,examType,paperName,pageNo){
+			var  param = {};
+			if(pageNo==""){
+				pageNo=1;
+			}
+			if(paperName == "-1") {
+				paperName = $(".search_paper_value").val();
+			}
+			param.pageSize = pageSize;//每页显示多少行
+			param.pageNo = pageNo;//当前第几页
+			param.examType = examLevel;//考试级别
+			param.practiceType = examType;//考试类型
+			param.name = paperName;//试卷名称
+			
+			$.ajax({
+				type : "POST",
+				url : "${baseURL}/ccbPaperConfig/selectCombineTestpaper",
+				data : param,
+				success: function(msg){
+						if(msg.page.data.length != 0){
+							//var pageObj = {data:msg.page.data};
+							//console.log("page:"+JSON.stringify(pageObj));
+							for(var i = 0; i<msg.page.data.length; i++){
+								var obj = msg.page.data[i];
+								console.log("Level"+obj.level+":"+examLevel+",name"+obj.level+":"+obj.name);
+							}
+							$("#combineTestpaperList").empty();
+							$("#lists").html(template('combine_paper_page_list', {data:msg.page.data}));
+								//console.log("examLevel3:"+examLevel+",examType3:"+examType+",paperName3:"+paperName);
+								getPages1(examLevel,examType,paperName,msg.page);
+								$("#pages"+pageNo).addClass("active");
+								$("#records").show();
+								$("#record").hide();
+							}else{
+								$("#record").show();
+								$("#records").hide();
+							}
+					}
+				}); 
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/**添加试卷按钮**/
+		function addCcbPaper(){
+			window.location.href  = encodeURI("${baseURL}/ccbPaperConfig/addCombineTestpaper");
+		}
+		
+		
+		
+		/**配置试卷**/
+		function configCcbPaper(obj){
+			var ccbPaperId = $(obj).parents().find("input[type='hidden']").val();
+			window.location.href  = "${baseURL}/ccbPaperConfig/configCcbPaper?ccbPaperId="+ccbPaperId;
+		}
+		
+		
+		/**删除试卷**/
+		function deleteCcbPaper(obj){
+			var  param = {};
+			if(pageNo==""){
+				pageNo=1;
+			}
+			param.pageSize = pageSize;//每页显示多少行
+			param.pageNo = pageNo;//当前第几页
+			
+			var ccbPaperId = $(obj).parents().find("input[type='hidden']").val();
+			console.log("ccbPaperId:"+ccbPaperId);
+			param.id = ccbPaperId;//试卷id
+			$.ajax({
+				type : "POST",
+				url : "${baseURL}/ccbPaperConfig/deleteCcbPaper",
+				data : param,
+				success :　function(msg){
+					if(msg.page.data.length != 0){
+						$("#combineTestpaperList").empty();
+						$("#lists").html(template('combine_paper_page_list', {data:msg.page.data}));
+						getPages1(0,5,'',msg.page);
+						$("#pages"+pageNo).addClass("active");
+						$("#records").show();
+						$("#record").hide();
+					}else{
+						$("#record").show();
+						$("#records").hide();
+					}
+				}
+			});
+			//window.location.href  = "${baseURL}/ccbPaperConfig/deleteCcbPaper?ccbPaperId="+ccbPaperId;
+		}
+		
+		
+		
+		
+		/**试卷预览**/
+		function paperView(obj){
+			var ccbPaperId = $(obj).parents().find("input[type='hidden']").val();
+			window.location.href  = "${baseURL}/ccbPaperConfig/testpaperView?ccbPaperId="+ccbPaperId;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/**分页html**/
+		function getPages1(examLevel,examType,paperName,page){
+			if(!!paperName){
+				paperName === '';
+			}
+			var div="";
+			if(page.prePage == page.pageNo){
+				div+= "<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+page.prePage+")\">上一页</a>";
+			} else {
+				div+= "<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+page.prePage+")\">上一页</a>";
+			}
+			//当总页数小于十条时
+			 if(page.totalPage<10){
+		 			for (var i=1; i<=page.totalPage; i++){
+		     				if(page.pageNo==(i+"")){
+					 			div+= "<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+i+")\" id='pages"+i+"'>"+i+"</a>"
+					 	}else{
+					 		    div+= "<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+i+")\" id='pages"+i+"'>"+i+"</a>";
+				 	}
+					}
+			} else {
+		     	 var startpage = page.pageNo - 4;
+		         var endpage = page.pageNo + 5;
+			         if(startpage<1){
+			             startpage = 1;
+			             endpage = 9;
+			         }
+			         if(endpage>page.totalPage){
+			             endpage = page.totalPage;
+			             startpage = page.totalPage - 9;
+			         }  
+			      	for(var i=startpage; i<=endpage; i++){
+				         	if(page.pageNo==(i+"")){
+							 		div+= "<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+i+")\" id='pages"+i+"'>"+i+"</a>"
+						 	}else{
+						 		    div+= "<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+i+")\" id='pages"+i+"'>"+i+"</a>";
+						 	}
+				    } 
+				     if (endpage < page.totalPage){
+			         	div+="<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+page.nextPage+")\" >...</a>";
+			         }
+		 		}
+				 if (page.nextPage == page.pageNo){
+			     	    div+="<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+page.nextPage+")\">下一页</a>";
+				} else {
+						div+="<a href='#' onclick=\"examList("+examLevel+","+examType+",'-1',"+page.nextPage+")\">下一页</a>";
+				}
+				 $("#pages").html(div);
+		}
+		
+		
+		/**格式化时间**/
+		template.helper('dateFormat', function (time) {
+			if(time==null){
+				return "";
+			}
+		    date = new Date(time);
+		    var map = {
+		        "M": date.getMonth() + 1, //月份 
+		        "d": date.getDate(), //日 
+		    };
+		    var format ='yyyy-MM-dd';
+		    format = format.replace(/([yMd])+/g, function(all, t){
+		        var v = map[t];
+		        if(v !== undefined){
+		            if(all.length > 1){
+		                v = '0' + v;
+		                v = v.substr(v.length-2);
+		            }
+		            return v;
+		        }
+		        else if(t === 'y'){
+		            return (date.getFullYear() + '').substr(4 - all.length);
+		        }
+		        return all;
+		    });
+		    return format;
+		});
+		
+	</script>
+	
+	<!-- 查询展示试卷信息 -->
+	<script id="combine_testpaper_list" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="350px">试卷名称</th>
+					<th width="80px">考试级别</th>
+                    <th width="80px">考试类型</th>
+                    <th width="80px">轮数</th>
+                    <th width="150px">生成时间</th>
+                    <th width="200px">操作</th>
+				</tr>
+				
+				{{each data.comList as combine i}}
+				<tr>
+                	<td>{{i+1}}<input type="hidden" class="hidden_combine_value" value="{{combine.id}}"/></td>
+					<td><span class="testpaper_name_cell">{{combine.paperName}}</span></td>
+                    <td><span class="cet_cell">{{combine.cet}}</span></td>
+                    <td><span class="exam_type_cell">{{combine.examType}}</span></td>
+                    <td><span class="level_cell">{{combine.level}}</span></td>
+                    <td><span class="create_time_cell">{{combine.createTime}}</span></td>
+					<td><a href="#" class="preview_combine_cell">预览</a>&nbsp;<a href="#" class="edit_cell" onclick="configCcbPaper(this)">配置</a>&nbsp;<a href="#" class="sync_cell">同步</a>&nbsp;<a href="#" class="delete_cell" onclick="deleteCcbPaper()">删除</a></td>
+				</tr>
+				{{/each}}
+			</table>
+	</script>
+	
+	
+	
+		<!-- 查询展示试卷信息 -->
+	<script id="combine_paper_page_list1" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="350px">试卷名称</th>
+					<th width="80px">考试级别</th>
+                    <th width="80px">考试类型</th>
+                    <th width="80px">轮数</th>
+                    <th width="150px">生成时间</th>
+                    <th width="200px">操作</th>
+				</tr>
+				
+				{{each data as value i}}
+				<tr>
+                	<td>{{i+1}}<input type="hidden" class="hidden_combine_value" value="{{value.id}}"/></td>
+					<td><span class="testpaper_name_cell">{{value.paperName}}</span></td>
+                    <td><span class="cet_cell">{{value.cet}}</span></td>
+                    <td><span class="exam_type_cell">{{value.examType}}</span></td>
+                    <td><span class="level_cell">{{if value.level != null}}{{value.level}}{{else}}--{{/if}}</span></td>
+                    <td><span class="create_time_cell">{{value.createTime}}</span></td>
+					<td><a href="${baseURL}/ccbPaperConfig/testpaperView?ccbPaperId={{value.id}}" target="_blank" class="preview_combine_cell">预览</a>&nbsp;<a href="#" class="edit_cell" onclick="configCcbPaper(this)">配置</a>&nbsp;<a href="#" class="sync_cell">同步</a>&nbsp;<a href="#" class="delete_cell" onclick="deleteCcbPaper(this)">删除</a></td>
+				</tr>
+				{{/each}}
+			</table>
+	</script>
+	
+	<script id="combine_paper_page_list" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="350px">试卷名称</th>
+					<th width="80px">考试级别</th>
+                    <th width="80px">考试类型</th>
+                    <th width="80px">轮数</th>
+                    <th width="150px">生成时间</th>
+                    <th width="200px">操作</th>
+				</tr>
+				
+				{{each data as value i}}
+				<tr>
+                	<td>{{i+1}}<input type="hidden" class="hidden_combine_value" value="{{value.id}}"/></td>
+					<td><span class="testpaper_name_cell">{{value.name}}</span></td>
+                    <td><span class="cet_cell">{{if value.examType == 4}}四级{{else if value.examType == 6}}六级{{else}}--{{/if}}</span></td>
+                    <td><span class="exam_type_cell">{{if value.practiceType==0}}模考{{else if value.practiceType==1}}专练{{else}}--{{/if}}</span></td>
+                    <td><span class="level_cell">{{if value.level == 1}}第一轮{{else if value.level == 2}}第二轮{{else if value.level == 3}}第三轮{{else if value.level == 4}}第四轮{{else if value.level == 5}}巅峰冲刺{{else}}--{{/if}}</span></td>
+                    <td><span class="create_time_cell">{{dateFormat value.createTime}}</span></td>
+					<td><a href="${baseURL}/ccbPaperConfig/testpaperView?ccbPaperId={{value.id}}" target="_blank" class="preview_combine_cell">预览</a>&nbsp;{{if value.practiceType==1}}<span style="color:gainsboro">配置</span>{{else}}<a href="#" class="edit_cell" onclick="configCcbPaper(this)">配置</a>{{/if}}&nbsp;<a href="#" class="sync_cell">同步</a>&nbsp;<a href="#" class="delete_cell" onclick="deleteCcbPaper(this)">删除</a></td>
+				</tr>
+				{{/each}}
+			</table>
+	</script>
+</body>
+</html>

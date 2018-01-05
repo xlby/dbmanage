@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title> 
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+	<div id="wap" style="width:990px;">
+		[#include "collect/index/header.htm"]
+		<div id="content" class="clear">
+		 <ul class="left-menu fl posi-fix" id="menuList">
+			<li class="left-menu-li" ><a href="javascript:void(0);" ><span class="lis active-on active-on-a">首页</span></a></li>
+			<li class="left-menu-li" ><a href="javascript:void(0);" ><span class="lix">系统管理</span></a></li>
+			<li class="left-menu-li" ><a href="javascript:void(0);" ><span class="lih">活动管理</span></a></li>
+			<li class="left-menu-li" ><a href="javascript:void(0);" ><span class="lish">作品审核</span></a></li>
+			<li class="left-menu-li" ><a href="javascript:void(0);" ><span class="lipf">作品评分</span></a></li>
+		</ul>
+			<div class="content-body ml10 fr pl10 pr10" style="width:852px;">
+				<!--系统活动首页-->
+				<iframe id="matchbody" name="matchbody" width="100%;" height="1000px;"
+							style="padding-top: 82px;" src="${baseURL}/index/welcome" marginheight="0"
+							marginwidth="100%;" frameborder="0" scrolling="yes"></iframe>
+
+			</div>
+		</div>
+	</div>
+	[#include "collect/index/footer.htm"]
+</body>
+<script>
+	$('#on-button').click(function() {
+
+		$('#sys-active').hide();
+		$('#announce-active').show();
+	});
+	
+	
+	var browserVersion = window.navigator.userAgent.toUpperCase();
+	var isOpera = false;
+	var isFireFox = false;
+	var isChrome = false;
+	var isSafari = false;
+	var isIE = false;
+	var iframeTime;
+	function reinitIframe(iframeId, minHeight) {
+	    try {
+	        var iframe = document.getElementById(iframeId);
+	        var bHeight = 0;
+	        if (isChrome == false && isSafari == false)
+	        	
+	            bHeight = iframe.contentWindow.document.body.clientHeight;
+
+	        var dHeight = 0;
+	        if (isFireFox == true)
+	            dHeight = iframe.contentWindow.document.documentElement.offsetHeight + 20;
+	        else if (isIE == false && isOpera == false)
+	            dHeight = iframe.contentWindow.document.documentElement.scrollHeight+18;
+	        else
+	            bHeight += 23;
+	        var height = Math.max(bHeight, dHeight);
+	        if (height < minHeight) height = minHeight;
+	        iframe.style.height = height + "px";
+	    } catch (ex) { 
+	    	
+	    	
+	    }
+	}
+	function setIframe(iframeId, height) {
+	    try {
+	        var iframe = document.getElementById(iframeId);
+	        iframe.style.height = height + "px";
+	    } catch (ex) { 
+	    }
+	}
+	function startInit(iframeId, minHeight) {
+	    isOpera = browserVersion.indexOf("OPERA") > -1 ? true : false;
+	    isFireFox = browserVersion.indexOf("FIREFOX") > -1 ? true : false;
+	    isChrome = browserVersion.indexOf("CHROME") > -1 ? true : false;
+	    isSafari = browserVersion.indexOf("SAFARI") > -1 ? true : false;
+	    if (!!window.ActiveXObject || "ActiveXObject" in window)
+	        isIE = true;
+	    reinitIframe(iframeId, minHeight);
+	    if (iframeTime != null)
+	        clearInterval(iframeTime)
+	    iframeTime = window.setInterval("reinitIframe('" + iframeId + "'," + minHeight + ")", 100);
+	} 
+	function iFrameHeight() {   
+		var ifm= document.getElementById("matchbody");   
+		var subWeb = document.frames ? document.frames["matchbody"].document : ifm.contentDocument;   
+		if(ifm != null && subWeb != null) {
+			 
+			if(subWeb.body.scrollHeight<495){
+				 ifm.height = 495;
+			}else if(subWeb.body.scrollHeight>495){
+				 ifm.height = subWeb.body.scrollHeight;	
+			}else{
+				 ifm.height =495;	
+			}
+		}   
+	}
+	$(function(){
+		 var menuList ='${menuList}';
+		console.log(menuList);
+		 var obj = eval(menuList);
+		 
+		 var menuUL =$("#menuList");
+		 menuUL.html("");
+		for ( var s1 in obj) {
+			var url = obj[s1].url;
+			var name = obj[s1].name;
+			var classStr = obj[s1].classSrc;
+			menuUL.append('<li class="left-menu-li" ><a href="${baseURL}'+url+'" target="matchbody"  ><span class="'+classStr+'">'+name+'</span></a></li>');
+			
+		}
+		
+		/*$('.left-menu-li:eq(0)').find('span').click(function(){
+			$(this).addClass('active-on active-on-a').parent().parent().siblings().find('span').removeClass('active-on-b active-on-c active-on-d active-on-e active-on');
+		})
+		$('.left-menu-li:eq(1)').find('span').click(function(){
+			$(this).addClass('active-on active-on-b').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-d active-on-e active-on');
+		})
+
+		$('.left-menu-li:eq(2)').find('span').click(function(){
+			$(this).addClass('active-on active-on-c').parent().parent().siblings().find('span').removeClass('active-on-a active-on-b active-on-d active-on-e active-on');
+		})
+		$('.left-menu-li:eq(3)').find('span').click(function(){
+			$(this).addClass('active-on active-on-d').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-b active-on-e active-on');
+		})
+		$('.left-menu-li:eq(4)').find('span').click(function(){
+			$(this).addClass('active-on active-on-b').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-d active-on-e active-on');
+		})*/
+
+		$('.left-menu-li').find('span').click(function(){
+			var textes = $.trim($(this).text());
+
+				if(textes=="首页"){
+					$(this).addClass('active-on active-on-a').parent().parent().siblings().find('span').removeClass('active-on-b active-on-c active-on-d active-on-e active-on');
+				}else if(textes=="系统管理"){
+					$(this).addClass('active-on active-on-b').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-d active-on-e active-on');
+				}else if(textes=="活动管理"){
+					$(this).addClass('active-on active-on-c').parent().parent().siblings().find('span').removeClass('active-on-a active-on-b active-on-d active-on-e active-on');
+				}else if(textes=="作品审核"){
+					$(this).addClass('active-on active-on-d').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-b active-on-e active-on');
+				}else if(textes=="作品评分"){
+					$(this).addClass('active-on active-on-e').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-d active-on-b active-on');
+				}
+			})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		/*$('.left-menu-li:eq(1)').find('span').click(function(){
+			if($(this).text("作品评分")||$(this).parent().index()==1){
+				$(this).addClass('active-on active-on-e').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-d active-on-b active-on');
+			}else{
+				$(this).addClass('active-on active-on-b').parent().parent().siblings().find('span').removeClass('active-on-a active-on-c active-on-d active-on-e active-on');
+			}
+		})*/
+	});
+		
+</script>
+</html>

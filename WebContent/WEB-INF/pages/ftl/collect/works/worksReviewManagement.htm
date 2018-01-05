@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>审核管理</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+
+<!--系统活动首页-->
+<div id="active-manage">
+    <div class="content-head">
+        <span class="content-position">您的位置：</span>
+        <span class="content-position">首页></span>
+        <span class="content-position">审核管理></span>
+        <span class="content-position">审核人员指派></span>
+    </div>
+    <ul id="menu" class="mt40 pl10">
+        <li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}">活动设置</a></li>
+        <li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}">人员管理</a></li>
+        <li class="menu-li fl"><a href="${baseURL}/signup/list/${eventId}">报名管理</a></li>
+        <li class="menu-li fl"><a class="add-on-style" href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+        <li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}">评分管理</a></li>
+        <li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+        <li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+    </ul>
+    <form id="pageform" action="${staticURL}/works/workslist/${eventId}">
+    <div class="active-sh-wrap clear mt20">
+        <select name="status" id="" class="input-select fl mr5">
+            <option [#if filters.status==""]selected="selected"[/#if] value="">审核状况</option>
+            <option [#if filters.status=="1"]selected="selected"[/#if] value="1">未审核</option>
+            <option [#if filters.status=="2"]selected="selected"[/#if] value="2">初审完</option>
+            <option [#if filters.status=="3"]selected="selected"[/#if] value="3">复审完</option>
+            <option [#if filters.status=="4"]selected="selected"[/#if] value="4">终审完</option>
+            <option [#if filters.status=="5"]selected="selected"[/#if] value="5">退回</option>
+        </select>
+        <select name="reviewer" id="" class="input-select fl mr5">
+            <option [#if filters.revewer==""]selected="selected"[/#if] value="">审核人</option>
+            [#if staffList??]
+                [#list staffList as staff ]
+                <option [#if staff.staff_id==filters.reviewer]selected="selected"[/#if] value="${staff.staff_id}">${staff.name}</option>
+                [/#list]
+            [#else]
+                 <option value="">没有任何审核人</option>
+            [/#if]
+        </select>
+        <select name="check" id="" class="input-select fl mr5">
+            <option value="">全部</option>
+            <option [#if filters.check=='1']selected="selected"[/#if] value="1">初审未指定</option>
+            <option [#if filters.check=='2']selected="selected"[/#if] value="2">初审已指定</option>
+            <option [#if filters.check=='3']selected="selected"[/#if] value="3">复审未指定</option>
+            <option [#if filters.check=='4']selected="selected"[/#if] value="4">复审已指定</option>
+            <option [#if filters.check=='5']selected="selected"[/#if] value="5">终审未指定</option>
+            <option [#if filters.check=='6']selected="selected"[/#if] value="6">终审已指定</option>
+            <option [#if filters.check=='7']selected="selected"[/#if] value="7">全部未指定</option>
+            <option [#if filters.check=='8']selected="selected"[/#if] value="8">全部已指定</option>
+        </select>
+        <select name="page" id="" class="input-select fl mr5">
+            <option value="100">每页显示</option>
+            <option [#if pageSize==100] selected="selected" [/#if] value="100">100</option>
+            <option [#if pageSize==1000] selected="selected" [/#if] value="1000">1000</option>
+            <option [#if pageSize==1000] selected="selected" [/#if] value="10000">10000</option>
+        </select>
+        <span class="jian fl">件</span>
+					<span class="lookfor cir-angle fl ml10 fl mr5">
+						<img src="${staticURL}/collect/img/big.png" alt="" onclick="javascript:$('#pageform').submit()">
+					</span>
+    </div>
+    </form>
+
+    <div class="button-wrap mt20 mb10 clear" id="ac-button">
+        [#if eventStatus=="1"||eventStatus=="2"]
+        <span class="cir-angle mr10 fl pl10 pr10 ac-color" id="batch-assign">批量指定</span>
+        [/#if]
+        <span class="on-button cir-angle fr pl10 pr10"><a href="${staticURL}/works/analysis/${eventId}" style="color:#fff;">审核分析</a></span>
+        [#if eventStatus=="1"||eventStatus=="2"]
+        <span class="on-button cir-angle fr mr10 pl10 pr10" id="assignAll">一键指定</span>
+        [/#if]
+    </div>
+    <table id="active-sh-table" class="worksTable">
+        <tr class="t-title">
+            <th style="width:5%;" class="clear">
+							<span class="mr5 allcheck fl ml10 mt10" style="width:14px;height:14px;">
+								<input type="checkbox" value="全选" class="mr5 checkbox-on">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>全选
+            </th>
+            <th style="width:5%;">序号</th>
+            <th style="width:10%;">作品名称</th>
+            <th style="width:10%;">投稿人</th>
+            <th style="width:10%;">审核状况</th>
+            [#if eventCheckLevel!="1"]
+            <th style="width:8%;">初审人</th>
+            [/#if]
+            [#if eventCheckLevel=="3"]
+            <th style="width:10%;">复审人</th>
+            [/#if]
+            <th style="width:10%;">终审人</th>
+            <th style="width:10%;">操作</th>
+        </tr>
+
+        [#list worksList as works]
+        <tr class="table-text">
+            <td class="pl20 pr20">
+							<span class="allcheck" style="width:14px;height:14px;">
+								<input type="checkbox" name="worksIds[]" value="${works.id}" class="mr5 checkbox-on radio-check">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>
+                <input type="hidden" value="${works.id}"/>
+            </td>
+            <td>${works_index+1}</td>
+            <td><a href="${baseURL}/contribute/c_view?wid=${works.id}" title="${works.name}" class="addw110 elli cor333">${works.name}</a></td>
+            <td>${works.author}</td>
+            <td>
+                [#switch works.check_status]
+                [#case "1"]
+                未审核
+                [#break]
+                [#case "2"]
+                初审完
+                [#break]
+                [#case "3"]
+                复审完
+                [#break]
+                [#case "4"]
+                终审完
+                [#break]
+                [#case "5"]
+                退回
+                [#break]
+                [#default]
+                默认
+                [/#switch]
+                <input type="hidden" value="${works.check_status}"/>
+            </td>
+
+            [#if eventCheckLevel!="1"]
+                <td class="first">[#if (works.first)=="null"]
+                    -
+                    [#else]
+                    ${works.first}
+                    [/#if]
+                </td>
+            [/#if]
+            [#if eventCheckLevel=="3"]
+                <td class="second">[#if (works.second)=="null"]
+                    -
+                    [#else]
+                        ${works.second}
+                    [/#if]
+                </td>
+            [/#if]
+            <td class="third">[#if (works.third)=="null"]
+                -
+                [#else]
+                ${works.third}
+                [/#if]
+            </td>
+
+                <td>
+                    [#if eventStatus=="1"||eventStatus=="2"]
+                    <span class="mange">指定</span>
+                    [/#if]
+                </td>
+
+        </tr>
+        [/#list]
+
+    </table>
+    [#include "collect/commonpage.htm"]
+</div>
+</div>
+</div>
+<div class="window-wrap-a clear" id="jg-select" style="display: none">
+    [#if eventCheckLevel!="1"]
+        <div class="window-text-wrap mt40">
+            <span class="window-span">初审人员</span>
+            <select name="first_Check" id="first" class="input-select addwidth" style="width:49%;">
+                <span>hello</span>
+            </select>
+        </div>
+    [/#if]
+    [#if eventCheckLevel=="3"]
+        <div class="window-text-wrap mt20">
+            <span class="window-span">复审人员</span>
+            <select name="review_Check" id="review" class="input-select addwidth" style="width:49%;">
+            </select>
+        </div>
+    [/#if]
+    <div class="window-text-wrap mt20">
+        <span class="window-span">终审人员</span>
+        <select name="last_Check" id="last" class="input-select addwidth" style="width:49%;">
+        </select>
+    </div>
+</div>
+</div>
+<script>
+    var eventCheckLevel=${eventCheckLevel};
+    //异步加载人员到弹出框
+    //模块化控制
+    var app = function () {
+    };
+    app.prototype.addStaffOptionData=function(id,data,selected)
+    {      $(id).html("");
+
+            data.forEach(function (item) {
+
+                if (item.name==$.trim(selected)){
+                    var optionContent = '<option selected="selected" value="' + item.staff_id + '">' + item.name + '</option>';
+                }else{
+                    var optionContent = '<option value="' + item.staff_id + '">' + item.name + '</option>';
+                }
+            $(id).append(optionContent);
+        });
+    };
+    app.prototype.disableData=function(id,text){
+        $(id).html("");
+       var optionContent="<option value=''>" + text + "</option>";
+        $(id).append(optionContent);
+
+   };
+    app.prototype.prepareForContentData = function (selected) {
+
+        $.getJSON("${baseURL}/works/getStaff/${eventId}", function (data) {
+            if(eventCheckLevel!=1){
+                var firstCheck = data['firstCheck'];
+                web.addStaffOptionData('#first',firstCheck,selected.first);
+            }
+            if(eventCheckLevel==3){
+                var reviewCheck = data['reviewCheck'];
+                web.addStaffOptionData('#review',reviewCheck,selected.review);
+            }
+            var lastCheck = data['lastCheck'];
+            web.addStaffOptionData('#last',lastCheck,selected.last);
+        });
+    };
+    app.prototype.singleAppoint=function(Status,selectedStaff){
+        $.getJSON("${baseURL}/works/getStaff/${eventId}", function (data) {
+            switch(Status){
+                case '1':
+                    web.prepareForContentData(selectedStaff);
+                    break;
+                case '2':
+                        if(eventCheckLevel!=1){
+                            web.disableData('#first',"初审已完成，不能重新指派人员");
+                            var reviewCheck = data['reviewCheck'];
+                        }
+                        if(eventCheckLevel==3){
+                            web.addStaffOptionData('#review',reviewCheck,selectedStaff.review);
+                        }
+                        if(eventCheckLevel==1){
+                            web.disableData('#last',"终审审已完成，不能重新指派人员");
+                        }else
+                        {
+                            var lastCheck = data['lastCheck'];
+                            web.addStaffOptionData('#last',lastCheck,selectedStaff.last);
+                        }
+                    break;
+                case '3':
+                        if(eventCheckLevel!=1){
+                            web.disableData("#first","初审审已完成，不能重新指派人员");
+                        }
+                        if(eventCheckLevel==3){
+                        web.disableData("#review","复审已完成，不能重新指派人员");
+                        }
+                        var lastCheck = data['lastCheck'];
+                        web.addStaffOptionData("#last",lastCheck,selectedStaff.last);
+                    break;
+                case '4':
+                    if(eventCheckLevel!=1){
+                        web.disableData("#first","终审已完成，不能重新指派人员");
+                    }
+                    if(eventCheckLevel==3){
+                        web.disableData("#review","终审已完成，不能重新指派人员");
+                    }
+                    web.disableData("#last","终审已完成，不能重新指派人员");
+                    break;
+                default:
+                    if(eventCheckLevel!=1){
+                        web.disableData("#first","该作品不能指派人员");
+                    }
+                    if(eventCheckLevel==3){
+                        web.disableData("#review","该作品不能指派人员");
+                    }
+                    web.disableData("#last","该作品不能指派人员");
+            }
+        });
+    };
+
+    app.prototype.ajaxResultHandling=function(data) {
+        if (data.result.error == "0") {
+            var result_Modal = dialog({
+                title: "提示",
+                okValue: '确定',
+                content: data.result.message,
+                ok: function () {
+                    window.location.reload();
+                }
+            });
+            result_Modal.showModal();
+        }
+        else {
+            var result_Modal = dialog({
+                title: "提示",
+                okValue: '确定',
+                content: data.result.message
+            });
+            result_Modal.showModal();
+        }
+    };
+    app.prototype.updateStaff = function (worksId, firstCheck, reviewCheck, lastCheck) {
+
+        var data = {
+            works_id: worksId,
+            first_check: firstCheck,
+            review_check: reviewCheck,
+            last_check: lastCheck
+        };
+        var dataStr = JSON.stringify(data);
+        $.ajax({
+                    url: '${staticURL}/works/reviewassigment',
+                    type: 'GET',
+                    data: 'staff=' + dataStr
+                })
+                .done(function (data) {
+                    web.ajaxResultHandling(data);
+                })
+                .fail(function () {
+                    console.log("对不起，网络错误");
+                });
+    };
+
+    app.prototype.batchStaffUpdate=function (worksIds,first_check,review_check,last_check) {
+        var checkList={
+            first_check:first_check,
+            review_check:review_check,
+            last_check:last_check
+        };
+        $.ajax({
+            url:"${staticURL}/works/reviewbatchassign",
+               type:"GET",
+               data:{
+                   worksIds:worksIds,
+                   eventId:'${eventId}',
+                   reviewers:JSON.stringify(checkList)
+               }
+           }).done(function(data){
+            web.ajaxResultHandling(data);
+           }).fail(function(){
+            console.log("对不起，网络错误")
+           });
+
+    };
+    app.prototype.assignAll=function(){
+            $.ajax({
+                url:"${staticURL}/works/assignall",
+                type:'GET',
+                data:{sign:"all",eventId:'${eventId}'}
+            }).done(function(data){
+                console.log(data);
+                web.ajaxResultHandling(data);
+            }).fail(function () {
+                console.log("对不起，网络错误")
+            })
+    };
+    var web = new app();
+
+    $(function () {
+        $('.mange').click(function () {
+            //获取本行的作品ID
+           // web.prepareForContentData();
+            var first=$(this).parent().parent().find('.first').text();
+            var review=$(this).parent().parent().find('.second').text();
+            var last=$(this).parent().parent().find('.third').text();
+            var selectedStaff={first:first,review:review,last:last};
+            var works_id = $(this).parent().parent().find('td:eq(0)').find("input[type='hidden']").val();
+            var worksStatus=$(this).parent().parent().find('td:eq(4)').find("input[type='hidden']").val();
+
+            web.singleAppoint(worksStatus,selectedStaff);
+
+            var assign_modal = dialog({
+                title: "请指定审核人员",
+                background: '#000',
+                okValue: '确定',
+                opacity: 0.6,
+                content: document.getElementById("jg-select"),
+                ok: function () {
+                    //获取各个等级审核人员的ID值
+                    var first_check = $("#first").find("option:selected").val();
+                    var review_check = $("#review").find("option:selected").val();
+                    var last_check = $("#last").find("option:selected").val();
+                    web.updateStaff(works_id, first_check, review_check, last_check);
+                }
+            });
+            assign_modal.showModal();
+        });
+
+        //批量指定人员
+        $('#batch-assign').click(function () {
+                var first=$(this).parent().parent().find('.first').text();
+                var review=$(this).parent().parent().find('.second').text();
+                var last=$(this).parent().parent().find('.third').text();
+                var selectedStaff={first:first,review:review,last:last};
+                web.prepareForContentData(selectedStaff);
+                var worksIds = getListIds("worksTable");
+                if(worksIds==null||worksIds==""){
+                    dialog({
+                        content:"请选择批量作品的人员指派",
+                        okValue:"确定",
+                        ok:function () {
+
+                        }
+                    }).showModal();
+                    return;
+                }
+                dialog({
+                    title:'提示',
+                    content:document.getElementById("jg-select"),
+                    okValue:'确定',
+                    ok:function () {
+                        var first_check = $("#first").find("option:selected").val();
+                        var review_check = $("#review").find("option:selected").val();
+                        var last_check = $("#last").find("option:selected").val();
+                        web.batchStaffUpdate(worksIds,first_check,review_check,last_check);
+                    }
+                }).showModal();
+        });
+
+        //人员一键指派
+        $('#assignAll').click(function(){
+            web.assignAll();
+        });
+
+    });
+
+</script>
+
+</body>

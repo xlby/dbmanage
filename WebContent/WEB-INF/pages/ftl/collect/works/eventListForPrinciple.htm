@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>报名管理</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div>
+        <!--系统活动首页-->
+        <div id="sys-active">
+            <div class="content-head">
+                <span class="content-position">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">作品审核></span>
+                <span class="content-position">选择活动></span>
+            </div>
+            <div class="active-bm-wrap clear mt20">
+                <form id="pageform" action="${baseURL}/works/events" method="post">
+
+                </form>
+            </div>
+            <table id="active-bm-table" class="contributorTable">
+                <tr class="t-title">
+                    <th style="width:5%;">序号</th>
+                    <th style="width:30%;">活动名称</th>
+                    <th style="width:15%;">负责人</th>
+                    <th style="width:10%;">类型</th>
+                    <th style="width:15%;">状态</th>
+                    <th style="width:10%;">操作</th>
+                </tr>
+                [#list events as event]
+                <tr class="table-text">
+                    <td>${event_index+1}</td>
+                    <td>${event.name}</td>
+                    <td>${event.uc_name}</td>
+                    <td>
+                        [#if event.type == 1]独立征集[#elseif event.type == 2]赛事征集[/#if]
+                    </td>
+                    <td>
+                        [#if event.status == 1]未开始[#elseif event.status == 2]进行中[#elseif event.status == 3]已关闭[#elseif event.status == 4]已存档[/#if]
+                    </td>
+                    <td>
+                        <span class="mange" onclick="enterWorksList('${event.id}','${event.status}')">管理</span>
+                    </td>
+                </tr>
+                [/#list]
+            </table>
+            [#include "collect/commonpage.htm"]
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function enterWorksList(eventId,eventStatus) {
+        if(eventStatus==4||eventStatus==5){
+            dialog({
+                title:"提示",
+                content:"已经归档或者关闭的活动只能查看不能编辑",
+                okValue:"确定",
+                ok:function(){
+                    window.location.href = "${baseURL}/works/workslist/" + eventId;
+                }
+            }).showModal();
+        }else{
+            window.location.href = "${baseURL}/works/workslist/" + eventId;
+        }
+    }
+</script>
+</body>
+</html>

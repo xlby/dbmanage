@@ -1,0 +1,14 @@
+<div id="head-top" class="clear posi-f addf">
+		<h2 class="head-title fl pl10">
+			<img src="${staticURL}/collect/img/logo.png" alt="" class="mr10"/>教育部全国青少年普法网—作品征集管理系统</h2>
+		<div class="head-r fr">
+			<span class="head-t inde"> 欢迎你, </span>
+			<span class="head-t">${username!}</span>
+			<span class="head-t exit pr10" onclick="logout()">退出</span>
+		</div>
+	</div>
+<script type="text/javascript">
+	function logout() {
+		window.location.href = '${iscBaseURL}/logout?service=${staticURL}/index';
+	}
+</script>

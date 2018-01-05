@@ -1,0 +1,404 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>系统管理</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div class="content-body">
+        <!--发布活动-->
+        <div id="announce-active">
+            <div class="content-head">
+                <span class="content-position">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">系统管理></span>
+                <span class="content-position">发布活动></span>
+            </div>
+            <div class="announce-content mt30">
+                <form action="${staticURL}/sysManage/add" id="eventForm" method="post" id="announce-active-list">
+                    <div class="input-wrap">
+                        <span class="input-title">名称：</span>
+                        <input type="text" value="" name="name" id="name" maxlength="40" class="input-text P5"
+                               data-validation="required length" data-validation-length="min5" data-validation-help="请输入一个活动名称&nbsp;"/>
+                    </div>
+                    <div class="input-wrap mt15">
+                        <span class="input-title">类型：</span>
+                        <select id="type" name="type" class="input-select" style="width: 240px;">
+                            <option value="1" selected="selected">独立征集</option>
+                            <!--<option value="2">赛事征集</option>-->
+                        </select>
+                    </div>
+                    <div class="input-wrap mt15">
+                        <span class="input-title">所属赛事：</span>
+                        <select name="contestId" class="input-select" style="width: 240px;">
+                            <option value="">请选择</option>
+                        </select>
+                        <input type="hidden" id="contestName" name="contestName" value=""/>
+                    </div>
+                    <div class="input-wrap mt15">
+                        <span class="input-title">组织范围：</span>
+                        <select name="scope" id="scope" class="input-select" style="width: 240px;">
+                            <option value="1">全站</option>
+                            <option value="2">地方</option>
+                        </select>
+                    </div>
+                    <div class="input-wrap mt15" id="jg-selects">
+                        <span class="input-title">组织机构：</span>
+                        <span class="input-t" id="eduOrgNameShow" style="width:150px;"></span>
+                        <input type="hidden" id="eduOrgId" name="eduOrgId"/>
+                        <input type="hidden" id="eduOrgName" name="eduOrgName"/>
+                        <input type="button" value="机构选择" id="selectOrg" class="button-sec cir-angle"/>
+                    </div>
+                    <div class="input-wrap mt15" id="people-button">
+                        <span class="input-title">负责人：</span>
+                        <span class="input-t" id="fzrShow" style="width:150px;"></span>
+                        <input type="button" id="selectPerson" value="人员选择" class="button-sec cir-angle"/>
+                    </div>
+                    <div class="selec-more mt15 clear" id="">
+                        <span class="selec-object fl">征集对象：</span>
+                        <div class="clear fl addw78">
+                            [#list roleList as roles]
+                            <div class="checkes-div p5 mt20">
+                                <div class="checkeswrap"><a href="javascript:void(0)" class="title-checkes elli pl20 pr20">${roles.app_name!''}</a></div>
+                                <div class="checkes-wrap mt20 over-x pb20 pl20">
+                                    [#list roles.childArray as children]
+                                    <span class="checkboxes-span mt10 pl10 pr10 pt5 pb5 mr10">
+                                        <input type="checkbox" value="${children.id}" class="mr5 checkboxes-on collect-zjdx" onchange="zjdxCheck()" />
+                                        <span class="choose-img mr5 noselects">
+                                    </span>
+                                        <a href="javascript:void(0)" class="elli addw80">${children.name}</a>
+                                    </span>
+                                    [/#list]
+                                    </div>
+                            </div>
+                            [/#list]
+                        </div>
+                    </div>
+                    <div class="input-wrap mt15">
+                        <span class="input-title">资源类型：</span>
+                        <select name="resType" class="input-select" style="width: 240px;">
+                            <option value="1" selected>文章</option>
+                            <option value="2">文档</option>
+                            <option value="3">视频</option>
+                            <option value="4">图片</option>
+                            <option value="5">音频</option>
+                            <option value="6">综合</option>
+                        </select>
+                    </div>
+
+                    <div class="mt15 radio-wrap" id="bm">
+                        <span class="input-title-radio">报名环节：</span>
+							<span class="radio-yes-wrap mr20">
+								<input type="radio" id="yes-a" name="regStep" class="radio-yes" value="1"/>
+								<span class="noradios"></span>
+								<label for="yes-a">有</label>
+							</span>
+							<span class="radio-no-wrap mr20">
+								<input type="radio" id="no-a" name="regStep" class="radio-no" checked="checked" value="0"/>
+								<span class="noradios"></span>
+								<label for="no-a">无</label>
+							</span>
+                    </div>
+                    <div class="mt15 radio-wrap-b" id="pf">
+                        <span class="input-title-radio">评分环节：</span>
+							<span class="radio-yes-wrap mr20">
+								<input type="radio" id="yes-b" name="scoreStep" class="radio-yes" value="1"/>
+								<span class="noradios"></span>
+								<label for="yes-b">有</label>
+							</span>
+							<span class="radio-no-wrap mr20">
+								<input type="radio" id="no-b" name="scoreStep" class="radio-no" checked="checked" value="0"/>
+								<span class="noradios"></span>
+								<label for="no-b">无</label>
+							</span>
+                    </div>
+                    <div class="mt15 radio-wrap-c" id="tp">
+                        <span class="input-title-radio">投票环节：</span>
+							<span class="radio-yes-wrap mr20">
+								<input type="radio" id="yes-c" name="voteStep" class="radio-yes" value="1"/>
+								<span class="noradios"></span>
+								<label for="yes-c">有</label>
+							</span>
+							<span class="radio-no-wrap mr20">
+								<input type="radio" id="no-c" name="voteStep" class="radio-no" checked="checked"  value="0"/>
+								<span class="noradios"></span>
+								<label for="no-c">无</label>
+							</span>
+                    </div>
+                    <input type="hidden" id="reserve3" name="reserve3"/>
+                    <input type="hidden" id="reserve2" name="reserve2"/>
+                    <div class="button-wrap mt20 mb10" id="fb-button">
+                        <!--<input class="on-button cir-angle mr10 pl10 pr10" value="发布" type="submit" style="border: 0px;"/>-->
+                        <!--<span class="on-button cir-angle mr10 pl10 pr10"><input type="" value="发布"></span>-->
+                        <input class="on-button cir-angle mr10 pl10 pr10" value="发布" type="button" onclick="submitForm()" style="border: 0px;"/>
+                        <span class="on-button cir-angle back-on pl10 pr10" onclick="backtoList()">返回</span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--机构选择-->
+    <div class="window-wrap clear" id="areaselect" style="display:none;width:100%;">
+        <div class="window-text-wrap clear">
+            <span class="window-span fl">地区：</span>
+            <select name="" id="province" onclick="getArea('3',$(this).val(),'citySelDiv','citySel_data')" onchange="getOrgSelection()" class="input-select addwidth fl">
+                <option value="">请选择</option>
+                [#list areaJson as areaData]
+                <option value="${areaData.id}">${areaData.areaName}</option>
+                [/#list]
+            </select>
+            <div id="citySelDiv" class="fl"></div>
+            <script id="citySel_data" type="text/html" >
+                <select id="city" onclick="getArea('4',$(this).val(),'areaSelDiv','areaSel_data')" onchange="getOrgSelection()" class="input-select addwidth ml10" style="width:100px;">
+                    <option value="">请选择</option>
+                    {{each data as value i}}
+                    <option value="{{value.id}}">{{value.areaName}}</option>
+                    {{/each}}
+                </select>
+            </script>
+            <div id="areaSelDiv" class="fl"></div>
+            <script id="areaSel_data" type="text/html" >
+                <select id="area" onchange="getOrgSelection()" class="input-select addwidth ml10" style="width:100px;">
+                    <option value="">请选择</option>
+                    {{each data as value i}}
+                    <option value="{{value.id}}">{{value.areaName}}</option>
+                    {{/each}}
+                </select>
+            </script>
+        </div>
+        <div class="window-content-wrap clear mt20">
+            <span class="window-span fl">组织机构：</span>
+            <div id="orgSelDiv" class="fl"></div>
+            <script id="orgSel_data" type="text/html" >
+                <select id="orgSelSection" onchange="selectOrg(this)" class="input-select addwidth" style="width:200px;">
+                    <option value="">请选择</option>
+                    {{each data as value i}}
+                    <option value="{{value.id}}">{{value.eduorgName}}</option>
+                    {{/each}}
+                </select>
+            </script>
+            <input type="hidden" id="VEduOrgId" name="VEduOrgId"/>
+            <input type="hidden" id="VEduOrgName" name="VEduOrgName"/>
+        </div>
+    </div>
+    <!--人员查询-->
+    <div class="window-wrap" id="lookfor" style="display:none;">
+        <div class="window-text-wrap clear">
+            <span class="window-span fl">姓名：</span>
+            <input type="text" id="queryUserName" class="p5 fl addw59"/>
+            <span class="lookfor cir-angle fl" onclick="getUcUsersJson()">
+                <img src="${staticURL}/collect/img/big.png" alt=""/>
+            </span>
+        </div>
+        <div class="window-content-wrap clear mt10">
+            <span class="window-span fl">匹配人员：</span>
+            <div class="fl window-more p5">
+                <select size="5" id="selPerson" style="width: 100%;" class="addwidth" onclick="showLoginName(this)">
+
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var busy_dialog = dialog({title: "正在处理中..."});
+    /*$.validate({
+        form: '#eventForm',
+        onSuccess: function ($form) {
+            //组织结构
+            /!*var v_org = $("#eduOrgId").val();
+            if(v_org == ''){
+                alert("请选择组织结构");
+                return false;
+            }*!/
+            //负责人
+            var v_fzr = $("#reserve2").val();
+            if(v_fzr == '' || $("#fzrShow").html() == ''){
+                alert("请选择负责人");
+                return false;
+            }
+            //征集对象
+            var v_zjdx = $("#reserve3").val();
+            if(v_zjdx == ''){
+                alert("请选择征集对象");
+                return false;
+            }
+            busy_dialog.showModal();
+            $form.submit();
+        }
+    });*/
+
+    function submitForm() {
+        var v_name = $("#name").val();
+        if(null == v_name || v_name ==''){
+            alert("请填活动名称");
+            return false;
+        }
+        if(v_name.length < 5){
+            alert("活动名称过短,最少输入5个字符");
+            return false;
+        }
+        var v_fzr = $("#reserve2").val();
+        if(v_fzr == '' || $("#fzrShow").html() == ''){
+            alert("请选择负责人");
+            return false;
+        }
+        //征集对象
+        var v_zjdx = $("#reserve3").val();
+        if(v_zjdx == ''){
+            alert("请选择征集对象");
+            return false;
+        }
+        busy_dialog.showModal();
+        $("#eventForm").submit();
+    }
+
+    $('.checkboxes-span').hover(function(){
+        $(this).css('background','#e5e5e5');
+    },function(){
+        $(this).css('background','#f4f4f4');
+    })
+    var v_empty_option = '<option value="">请选择</option>';
+    $("#selectOrg").click(function () {
+        dialog({
+            title: '选择组织结构',
+            content: $("#areaselect"),
+            cancel: function () {
+                restOptions('province');
+            },
+            cancelValue: "取消",
+            ok: function () {
+                $("#eduOrgNameShow").html($("#VEduOrgName").val());
+                $("#eduOrgName").val($("#VEduOrgName").val());
+                $("#eduOrgId").val($("#VEduOrgId").val());
+                restOptions('province');
+            },
+            okValue: "确定"
+        }).width(500).height(100).showModal();
+    });
+
+    $("#selectPerson").click(function () {
+        dialog({
+            title: '选择负责人',
+            content: $("#lookfor"),
+            cancel: function () {
+
+            },
+            cancelValue: "取消",
+            ok: function () {
+                var v_person_text = $("#selPerson").find("option:selected").text();
+                v_person_text = v_person_text.substr(0, v_person_text.indexOf(' ') + 1);
+                var v_person_id = $("#selPerson").find("option:selected").val();
+
+                //fzrShow
+                $("#fzrShow").html(v_person_text);
+                var selPerson = new Object();
+                selPerson.person_id = v_person_id;
+                selPerson.person_name = v_person_text;
+                $("#reserve2").val(JSON.stringify(selPerson));
+            },
+            okValue: "确定"
+        }).width(420).height(150).showModal();
+    });
+
+    function zjdxCheck() {
+        var zjdxArray = new Array();
+        $(".collect-zjdx:checked").each(function (index) {
+            zjdxArray[index] = $(this).val();
+        });
+        console.log(zjdxArray);
+        $("#reserve3").val(JSON.stringify(zjdxArray));
+    }
+
+    function getArea(v_type, v_parentId, v_div_id, v_data_id) {
+
+        //选择省,制空第三级
+        if (v_type == '3') {
+            $("#area").find("option").remove();
+            $("#area").append(v_empty_option);
+
+        }
+
+        $.getJSON("${staticURL}/sysManage/getAreaJsonAjax",
+                {
+                    type: v_type,
+                    parentId: v_parentId
+                }, function (json) {
+                    $(("#" + v_div_id)).html(template(v_data_id, {data: json.areaJson}));
+                });
+    }
+    
+    function getOrgSelection() {
+        var v_province_id = $("#province").val();
+        var v_city_id = $("#city").val();
+        var v_area_id = $("#area").val() == null ? "" : $("#area").val();
+        $.getJSON("${staticURL}/sysManage/getOrgOptionJsonAjax", {
+            province_id: v_province_id,
+            city_id: v_city_id,
+            area_id: v_area_id
+        }, function (json) {
+            if(null == json.orgJson){
+                $("#orgSelDiv").html(template('orgSel_data', {data: null}));
+            }else if (json.orgJson.error == null) {
+                $("#orgSelDiv").html(template('orgSel_data', {data: json.orgJson}));
+            }
+        });
+    }
+
+    function selectOrg(v_opt) {
+        var v_org_text = $(v_opt).find("option:selected").text();
+        var v_org_id = $(v_opt).find("option:selected").val();
+        $("#VEduOrgName").val(v_org_text);
+        $("#VEduOrgId").val(v_org_id);
+
+    }
+
+    function showLoginName(v_select) {
+        $.getJSON("${staticURL}/sysManage/getUcUser",
+                {userid:$(v_select).val()},
+                function (json) {
+                    var v_login_name = json.user.loginName;
+                    if (json.user.error != '0002') {
+                        dialog({
+                            content: "登陆用户名:"+v_login_name,
+                            align:'right',
+                            quickClose: true// 点击空白处快速关闭
+                        }).show(document.getElementById('selPerson'));
+                    }
+                }
+        );
+
+    }
+
+    //
+    function getUcUsersJson() {
+        var v_scope = $('#scope').val();
+        var v_org_id = $("#eduOrgId").val();
+        var v_user_name = $("#queryUserName").val();
+        $.getJSON("${staticURL}/sysManage/getUcUsersAjax", {
+            scope: v_scope,
+            orgId: v_org_id,
+            userName: encodeURI(v_user_name)
+        },function (json) {
+            if(null != json.users && null != json.users.error){
+                alert(json.users.msg);
+            }else{
+                var userJson = json.users;
+                $("#selPerson").find("option").remove();
+                for(var i = 0;i<userJson.length;i++){
+                    $("#selPerson").append('<option value="'+ userJson[i].id +'">' + userJson[i].pinyin_name + ' ' + userJson[i].role_pinyin_name + ' ' + userJson[i].com_name + '</option>');
+                }
+            }
+        });
+    }
+
+    function backtoList() {
+        window.location.href = "${staticURL}/sysManage/list";
+    }
+</script>
+</body>
+</html>

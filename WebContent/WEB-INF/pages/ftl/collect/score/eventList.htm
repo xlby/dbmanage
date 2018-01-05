@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+	<div id="content" class="clear">
+			<!--系统活动首页-->
+		<div class="content-head mb20">
+			<span class="content-position pr10">您的位置：</span>
+			<span class="content-position">首页></span>
+			<span class="content-position">作品评分></span>
+			<span class="content-position">选择活动</span>
+		</div>
+			<div>
+
+				  <form id="pageform" action="${baseURL}/score/eventList" method="post">
+
+                </form>
+				<table id="zpinmanage">
+					<tr class="t-title">
+						<th style="width:5%;">序号</th>
+						<th style="width:30%;">活动名称</th>
+						<th style="width:10%;">分配总数</th>
+						<th style="width:10%;">未评分</th>
+						<th style="width:15%;">已评分</th>
+						<th style="width:30%;">操作</th>
+					</tr>
+					
+				 [#list page.data as event]
+                <tr class="table-text">
+                    <td>${event_index+1}</td>
+                    <td><p class="elli addw256" title="${event.name}">${event.name}</p></td>
+                    <td>${event.count_score}</td>
+                    <td>${event.no_score}</td>
+                    <td>${event.ok_score}</td>
+                    <td>
+                        <span class="mange" onclick="manageEvent('${event.event_id}')">进入</span>
+                    </td>
+                </tr>
+                [/#list]
+				</table>
+				 [#include "collect/commonpage.htm"]
+			</div>
+		</div>
+</body>
+<script type="text/javascript">
+    function manageEvent(eventId) {
+        window.location.href = "${baseURL}/score/workList/" + eventId;
+    }
+</script>
+</html>

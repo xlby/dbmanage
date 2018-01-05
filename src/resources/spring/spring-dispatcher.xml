@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"  
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd 
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop.xsd 
+	http://www.springframework.org/schema/tx  
+	http://www.springframework.org/schema/tx/spring-tx.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd"
+>
+	<!-- 注解探测器 -->
+	<context:component-scan base-package="com.fifedu" >
+	 <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+	 </context:component-scan>
+	<!-- 支持上传文件配置 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		 <property name="defaultEncoding" value="utf-8"></property>   
+		<!-- 以字节为单位的最大上传文件的大小 -->
+		<property name="maxUploadSize" value="100000000" />
+		
+		<property name="maxInMemorySize">  
+            <value>4096</value>  
+        </property>  
+	</bean>
+	
+		<!-- 国际化操作 拦截器 必需配置，可以和其它国际化方式通用 -->
+	<bean id="localeChangeInterceptor"
+		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" />
+	<!-- 基于Session的国际化配置 -->
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.SessionLocaleResolver"></bean>
+		
+		
+	<!-- 分页拦截器 -->
+	<bean id="paginationInterceptor"
+		class="com.fifedu.base.web.interceptor.PaginationInterceptor" />
+	<!-- 配置拦截器 -->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="paginationInterceptor" />
+			</list>
+		</property>
+	</bean>
+	<!-- 跨域设置 
+	<mvc:cors>
+	        <mvc:mapping path="/**/*"/>
+	        <bean class="com.pf.common.filter.CrossFilter" />
+	</mvc:cors>	
+	-->
+
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>  
+	<bean id="freemarkerConfig"
+		class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+		<property name="templateLoaderPath" value="/WEB-INF/pages/ftl" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="freemarkerSettings">
+			<props>
+				<prop key="tag_syntax">square_bracket</prop>
+				<prop key="template_update_delay">1</prop>
+				<prop key="defaultEncoding">UTF-8</prop>
+				<prop key="url_escaping_charset">UTF-8</prop>
+				<prop key="locale">zh_CN</prop>
+				<prop key="boolean_format">true,false</prop>
+				<prop key="datetime_format">yyyy-MM-dd HH:mm:ss</prop>
+				<prop key="date_format">yyyy-MM-dd</prop>
+				<prop key="time_format">HH:mm:ss</prop>
+				<prop key="number_format">0.######</prop>
+				<prop key="whitespace_stripping">true</prop>
+				<prop key="classic_compatible">true</prop> 
+				 <prop key="auto_import">/function/index.ftl as p,/function/spring.ftl as spring</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- 多视图解析器配置 -->
+	<!-- map 中的key 为视图解析器的名称，如：jsp, tiles; defaultViewResolverName 的值必须为map中的一个存在的key值 -->
+	<bean id="viewResolver" class="com.fifedu.base.web.resolver.MultipleViewResolver">
+		<property name="defaultViewResolverName" value="jsp" />
+		<property name="resolvers">
+			<map>
+				<entry key="jsp">
+					<bean
+						class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+						<property name="viewClass"
+							value="org.springframework.web.servlet.view.JstlView" />
+						<property name="prefix">
+							<value>/WEB-INF/pages/jsp/</value>
+						</property>
+						<property name="suffix">
+							<value>.jsp</value>
+						</property>
+					</bean>
+				</entry>
+				<!-- 输出为JSON数据 -->
+				<entry key="json">
+					<bean class="com.fifedu.base.web.resolver.JsonViewResolver">
+						<property name="jsonView">
+							<bean class="com.fifedu.base.web.view.MyMappingJacksonJsonView" />
+						</property>
+					</bean>
+				</entry>
+				<!-- 输出为xml数据 -->
+				<entry key="xml">
+					<bean class="com.fifedu.base.web.resolver.XmlViewResolver">
+						<property name="xmlView">
+							<bean id="marshallingView" class="com.fifedu.base.web.view.MyMarshallingView">
+								<property name="marshaller">
+									<bean id="xStreamMarshaller" class="org.springframework.oxm.xstream.XStreamMarshaller">
+										<property name="autodetectAnnotations" value="true" />
+									</bean>
+								</property>
+								<property name="contentType" value="application/xml" />
+							</bean>
+						</property>
+					</bean>
+
+				</entry>
+				<entry key="ftl">
+					<bean
+						class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+						<property name="viewClass"
+							value="org.springframework.web.servlet.view.freemarker.FreeMarkerView" />
+						<property name="suffix" value=".htm" />
+						<property name="contentType" value="text/html;charset=utf-8" />
+						<property name="exposeRequestAttributes" value="false" />
+						<property name="exposeSessionAttributes" value="false" />
+						<property name="exposeSpringMacroHelpers" value="true" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+
+    
+</beans>

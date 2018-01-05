@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+	<div id="content" class="clear">
+		<div  >
+			<!--系统活动首页-->
+			<div id="sys-active">
+				<div class="content-head">
+					<span class="content-position pr10">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">系统管理></span>
+				</div>
+				<div class="content-on mt20 clear mb10">
+					<span class="on-button cir-angle pl10 pr10 fl" id="onAdd">发布活动</span>
+					<span class="on-button cir-angle pl10 pr10 fr" id="sys-fx-on">全站统计</span>
+					   <form id="pageform" action="${baseURL}/sysManage/list" method="post">
+					   </form>
+				</div>
+				<table id="announce-active-table">
+					<tr class="t-title">
+						<th style="width:5%;">序号</th>
+						<th style="width:30%;">活动名称</th>
+						<th style="width:10%;">负责人</th>
+						<th style="width:10%;">类别</th>
+						<th style="width:15%;">状态</th>
+						<th style="width:15%;">操作</th>
+					</tr>
+					[#list list as data]
+					<tr class="table-text">
+						<td>${data_index + 1}</td>
+						<td><p class="addw256 elli">${data.name}</p></td>
+						<td>${data.staff_name}</td>
+						<td>[#if data.type == 1]独立征集[#elseif data.type == 2]赛事征集[/#if]</td>
+						<td>[#if data.status == 1]未开始[#elseif data.status == 2]进行中[#elseif data.status == 3]已关闭[#elseif data.status == 4]已存档[/#if]</td>
+						<td class="pl10">
+							[#if data.status != 3 && data.status != 4]
+							<span class="mange fl" onclick="manageEvent('${data.id}')">管理</span>
+							[/#if]
+							[#if data.status == 1]
+							<span class="dele fl" onclick="doDelete('${data.id}','${data.name}')">删除</span>
+							[/#if]
+							[#if data.status == 3]<span class="save fl" onclick="doArchive('${data.id}','${data.name}')">存档</span>[/#if]
+						</td>
+					</tr>
+					[/#list]
+				</table>
+				[#include "collect/commonpage.htm"]
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+    var busy_dialog = dialog({title: "正在处理中..."});
+
+	$("#onAdd").click(function () {
+		window.location.href = "${staticURL}/sysManage/add";
+	});
+
+	//图表分析
+	$("#sys-fx-on").click(function () {
+		window.location.href = "${staticURL}/sysManage/showCharts";
+	});
+
+	function manageEvent(eventId) {
+		window.location.href = "${staticURL}/event/eventManage/" + eventId;
+	}
+
+    function doDelete(eventId, eventName) {
+        dialog({
+            title: "",
+            content: "是否要删除活动(" + eventName + ")？",
+            ok: function () {
+                busy_dialog.showModal();
+                $.getJSON("${staticURL}/sysManage/delete/" + eventId,
+                        function (json) {
+                            if(json.result.status == 0){
+                                window.location.href = "${staticURL}/sysManage/list";
+                            }
+                        })
+            },
+            okValue: "确认",
+            cancel: function () {
+
+            },
+            cancelValue: "取消"
+        }).showModal();
+    }
+
+	function doArchive(eventId, eventName) {
+        dialog({
+            title: "",
+            content: "是否要存档活动(" + eventName + ")？",
+            ok: function () {
+                busy_dialog.showModal();
+                $.getJSON("${staticURL}/sysManage/archive/" + eventId,
+                        function (json) {
+                            if(json.result.status == 0){
+                                window.location.href = "${staticURL}/sysManage/list";
+                            }
+                        })
+            },
+            okValue: "确认",
+            cancel: function () {
+
+            },
+            cancelValue: "取消"
+        }).showModal();
+	}
+</script>
+</body>
+</html>

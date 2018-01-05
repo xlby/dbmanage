@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+ 
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="E:\workspaces\DbManage\WebContent/ccbManage/js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="E:\workspaces\DbManage\WebContent/ccbManage/js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="E:\workspaces\DbManage\WebContent/ccbManage/js/placeholder.js"></script>
+    
+    <!-- table 列表 -->
+    <script type="text/javascript" src="E:\workspaces\DbManage\WebContent/ccbManage/js/tableUI.js"></script>
+
+    
+    <!-- 分页js -->
+<!--     <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/homework/workManage.js"></script> -->
+    <title>数据展示</title>
+    <style>
+     .school_manage{margin:0 auto;width:1000px;margin-top:5%;}
+     .school_manage th,tr td{    border: 1px solid #ccc8cc;text-align:center;}
+     .header_info{width:1000px;margin-bottom:1%;}
+     .add_school{float:left;width:55px;}
+     .content_info{width:250px;margin-left:26%;}
+     .select_school{width:55px;margin-left:1%;}
+    </style>
+</head>
+<body>
+	<div class="coverDiv openbg"></div>
+	<div class="school_manage">
+		<div class="school_top">
+			<div class="header_info">
+				<input type="text" class="content_info" id="contentInfo" placeholder="请输入名称"/>
+				<input type="button" class="select_db_idx" id="selectDb"  value="搜索"/>
+			</div>
+		</div>
+		<div class="db_info">
+				<table>
+					<tr>
+						<th width="30px">序号</th>
+						<th width="200px">学校编号</th>
+	                    <th width="200px">学校名称</th>
+	                    <th width="100px">缓存序号</th>
+	                    <th width="100px">操作</th>
+					</tr>
+					
+					[#list scList as sc]
+					<tr>
+	                	<td>${sc_index+1}<input type="hidden" class="hidden_school_value" value="${sc.intoNum}"/></td>
+	                    <td><span class="school_id_cell">${sc.packageId!}</span></td>
+	                    <td><span class="school_name_cell">${sc.examType!}</span></td>
+	                    <td><span class="radis_num_cell">${sc.schoolId}</span></td>
+						<td>
+							[#if sc.intoNum?exists]
+								<span style="color:gainsboro">配置</span>
+							[#else]
+								<a href="#" onclick="configSchool(this)" class="config_school_cell">配置</a>
+							[/#if]
+						</td>
+					</tr>
+					[/#list]
+		</div>
+	</div>
+	
+	 <div class="scrollDiv">
+            <table border="0" cellspacing="0"  cellpadding="0" class="tableUI">
+                 <tbody id="students">
+                    
+                </tbody>
+            </table>
+        </div>
+        
+        
+        
+
+	<script type="text/javascript">
+		$(function(){
+			getDbListCount("");
+		});
+		
+		// 获取当前列表总数量
+		function getDbListCount(examName){
+			var  param = {};
+		
+			$.ajax({
+				type : "POST",
+				url : "http://127.0.0.1:8180/DbManage/db/dbList",
+				async:false,
+				data : param,
+				success: function(msg){
+					$("#students").html(template('table_students', {data:msg}));
+			}); 
+		}	
+	}
+	</script>
+	
+
+	<script id="table_students" type="text/html">
+ <tr>
+      <th width="50">序号</th>
+      <th>学号</th>
+      <th>姓名</th>
+      <th width="50">完成度</th>
+  </tr>
+{{each data.scList as value i}}
+  <tr>
+   	<td >{{i+1}}</td>
+	<td >{{value.packageId}}</td>
+ 	<td >{{value.schoolId}}</td>
+ 	<td >100%</td>
+ </tr>
+{{/each}}
+
+</script>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- 查询展示试卷信息 -->
+	<script id="combine_paper_page_list1" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="350px">试卷名称</th>
+					<th width="80px">考试级别</th>
+                    <th width="80px">考试类型</th>
+                    <th width="80px">轮数</th>
+                    <th width="150px">生成时间</th>
+                    <th width="200px">操作</th>
+				</tr>
+				
+				{{each data as value i}}
+				<tr>
+                	<td>{{i+1}}<input type="hidden" class="hidden_combine_value" value="{{value.id}}"/></td>
+					<td><span class="testpaper_name_cell">{{value.paperName}}</span></td>
+                    <td><span class="cet_cell">{{value.cet}}</span></td>
+                    <td><span class="exam_type_cell">{{value.examType}}</span></td>
+                    <td><span class="level_cell">{{if value.level != null}}{{value.level}}{{else}}--{{/if}}</span></td>
+                    <td><span class="create_time_cell">{{value.createTime}}</span></td>
+					<td><a href="${baseURL}/ccbPaperConfig/testpaperView?ccbPaperId={{value.id}}" target="_blank" class="preview_combine_cell">预览</a>&nbsp;<a href="#" class="edit_cell" onclick="configCcbPaper(this)">配置</a>&nbsp;<a href="#" class="sync_cell">同步</a>&nbsp;<a href="#" class="delete_cell" onclick="deleteCcbPaper(this)">删除</a></td>
+				</tr>
+				{{/each}}
+			</table>
+	</script>
+	
+	<script id="feedback_data_list" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="30px">用户名</th>
+					<th width="80px">学校编号</th>
+                    <th width="80px">学校名称</th>
+                    <th width="80px">角色</th>
+                    <th width="80px">创建时间</th>
+                    <th width="150px">意见反馈内容</th>
+                    <th width="200px">操作</th>
+				</tr>
+				
+				{{each data as value i}}
+				<tr>
+                	<td>{{i+1}}<input type="hidden" class="hidden_combine_value" value="{{value.id}}"/></td>
+					<td><span class="user_name_cell">{{value.userName}}</span></td>
+					<td><span class="school_id_cell">{{value.schoolId}}</span></td>
+					<td><span class="school_name_cell">{{value.schoolName}}</span></td>
+					<td><span class="role_name_cell">{{value.roleName}}</span></td>
+                    <td><span class="create_time_cell">{{value.createDate}}</span></td>
+                    <!--<td><span class="create_time_cell">{{dateFormat value.createTime}}</span></td>-->
+                    <td><span class="feedback_cell">{{value.content}}</span></td>
+					<td><a href="#" target="_blank" class="preview_combine_cell">查看</a></td>
+				</tr>
+				{{/each}}
+			</table>
+	</script>
+</body>
+</html>

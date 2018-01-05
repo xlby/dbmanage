@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>人员管理</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+<div id="wap-a">
+
+			<div id="active-manage">
+				<div class="content-head">
+					<span class="content-position">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">人员管理></span>
+				</div>
+				<ul id="menu" class="mt40">
+					<li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}">活动设置</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}" class="add-on-style">人员管理</a></li>
+					<li class="menu-li fl"><a
+							href="${baseURL}/signup/list/${eventId}">报名管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}">评分管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+				</ul>
+				<form id="pageform" action="${baseURL}/staffManage/list/${eventId}" method="post">
+					<div class="active-text-wrap clear mt20">
+						<span class="name fl pl5">姓名</span>
+						<input type="text" name="name" value="${name}" class="input-text P5 fl mr10" style="width:10%;border-left:none;">
+						<select name="type" id="" class="input-select addwidth fl mr10">
+							<option value="" style="height: 30px;">人员类别</option>
+							<option [#if type=="3"]selected="selected"[/#if]  value="3">审核人员</option>
+							<option [#if type=="4"]selected="selected"[/#if] value="4">评分人员</option>
+						</select>
+						<select name="status" id="" class="input-select addwidth fl mr10">
+							<option value="" style="height: 30px;">状态</option>
+							<option [#if status=="1"]selected="selected"[/#if] value="1">正常</option>
+							<option [#if status=="0"]selected="selected"[/#if] value="0">禁用</option>
+						</select>
+						<span class="lookfor cir-angle fl ml10">
+							<img src="${staticURL}/collect/img/big.png" alt="" onclick="$('#pageform').submit()">
+						</span>
+					</div>
+				</form>
+				<div class="button-wrap mt20 mb10 clear" id="ac-button">
+					<span id="batch-delete" class="cir-angle mr10 fl ac-color pl10 pr10">批量删除</span>
+					<span id="batch-disable" class="cir-angle mr10 fl ac-color pl10 pr10">批量禁用</span>
+					<span id="batch-enable" class="cir-angle mr10 fl ac-color pl10 pr10">批量恢复</span>
+					<!--<span class="on-button cir-angle mr10 fr pl10 pr10"><a href="" style="color:#fff;">导入</a></span>-->
+					<span class="on-button cir-angle back-on fr mr10 pl10 pr10" onclick="javascript:addStaff()">添加人员</span>
+				</div>
+				<table id="active-manage-table" class="staff-table">
+					<tr class="t-title">
+						<th style="width:8%;" class="clear">
+							<span class="mr5 allcheck fl ml10 mt10" style="width:14px;height:14px;">
+								<input type="checkbox" value="全选" class="mr5 checkbox-on">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>全选
+						</th>
+						<th style="width:5%;">序号</th>
+						<th style="width:10%;">姓名</th>
+						<th style="width:10%;">身份</th>
+						<th style="width:20%;">工作单位</th>
+						<th style="width:10%;">类别</th>
+						<th style="width:10%;">状态</th>
+						<th style="width:30%;">操作</th>
+					</tr>
+					[#list staffList as staff]
+					<tr class="table-text">
+						<td class="pl20 pr20">
+							<span class="allcheck" style="width:14px;height:14px;">
+								<input type="checkbox" value="" class="mr5 checkbox-on radio-check">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>
+							<input type="hidden" value="${staff.id}"/>
+						</td>
+						<td>${staff_index+1}</td>
+						<td>${staff.name}</td>
+						<td>${staff.identity}</td>
+						<td><p title="${staff.unit}" class="elli add170">${staff.unit}</p></td>
+						<td>[#switch staff.type]
+							[#case "3"]
+								审核人员
+							[#break]
+							[#case "4"]
+								评分人员
+							[#break]
+							[#default]
+								-
+							[/#switch]
+						</td>
+						<td>[#if staff.status=="1"]
+							  正常
+							[#else]
+							   禁用
+							[/#if]
+						</td>
+						<td>
+							<span class="mange" onclick="editStaff('${staff.id}')">编辑</span>
+							<span class="dele">删除</span>
+							<span class="on-off-wrap">
+								<span class="fl mt10 on-two clear mr5 cir-angle [#if staff.status == 1]forbid-c[#else]noforbid-c[/#if]">
+                                <span class="off cir-angle fl" onclick="changeStatus('${staff.id}',1)" [#if staff.status== 1]style="display:none;" [#else]style="display:block;" [/#if]></span>
+                                <span class="onn cir-angle fl" onclick="changeStatus('${staff.id}',0)" [#if staff.status== 1]style="display:block;" [#else]style="display:none;" [/#if]></span>
+							</span>
+							<span>[#if staff.status == 1]禁用[#else]恢复[/#if]</span>
+							</span>
+						</td>
+					</tr>
+
+					[/#list]
+				</table>
+				[#include "collect/commonpage.htm"]
+			</div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+	//批量删除
+	$('#batch-delete').click(function () {
+		var idList = getListIds('staff-table');
+		if (idList != null) {
+			dialog({
+				content: '你确定要批量删除这些人员吗?',
+				okValue: "确定",
+				ok: function () {
+					batchOpt("delete", idList);
+				}
+			}).showModal();
+		} else {
+			dialog({
+				content: "你没有选择任何人员",
+				okValue: "确定",
+				ok: function () {
+
+				}
+			}).showModal();
+		}
+	});
+
+	//批量禁用
+	$('#batch-disable').click(function () {
+		var idList = getListIds('staff-table');
+		if (idList != null) {
+			dialog({
+				content: '你确定要批量禁用这些人员吗?',
+				okValue: "确定",
+				ok: function () {
+					batchOpt("disable", idList);
+				}
+			}).showModal();
+		}
+		else {
+			dialog({
+				content: "你没有选择任何人员",
+				okValue: "确定",
+				ok: function () {
+
+				}
+			}).showModal();
+		}
+	});
+
+	//批量恢复
+	$('#batch-enable').click(function () {
+		var idList = getListIds('staff-table');
+		if (idList != null) {
+			dialog({
+				content: '你确定要批量恢复这些人员吗?',
+				okValue: "确定",
+				ok: function () {
+					batchOpt("enable", idList);
+				}
+			}).showModal();
+
+		} else {
+			dialog({
+				content: "你没有选择任何人员",
+				okValue: "确定",
+				ok: function () {
+
+				}
+			}).showModal();
+		}
+	});
+
+	$('.dele').click(function(){
+		var id=$(this).parent().parent().find("td:eq(0)").find("input[type='hidden']").val();
+		var modal=dialog({
+			content:'你确定要删除该人员吗?',
+			okValue:"确定",
+			cancelValue:"取消",
+            cancel:function () {
+
+            },
+			ok:function(){
+				$.ajax({
+					url:'${baseURL}/staffManage/delete/event/${eventId}/staff/'+id,
+					type:'post'
+				}).done(function(data){
+					if(data.result.status=="0"){
+						dialog({
+							content:"删除成功",
+							okValue:" 确定",
+							ok:function () {
+								window.location.href="${baseURL}/staffManage/list/${eventId}";
+							}
+
+						}).showModal();
+					}
+					else{
+						dialog({
+							content:"删除失败,当前人员有任务分配",
+							okValue:" 确定",
+							ok:function () {
+								window.location.href="${baseURL}/staffManage/list/${eventId}";
+							}
+
+						}).showModal();
+					}
+				});
+			}
+		}).showModal();
+
+	});
+	function batchOpt(opt,idList){
+		$.ajax({
+			url:"${baseURL}/staffManage/batch-operate",
+			type:"get",
+			data:{
+					opt:opt,
+					ids:idList,
+                    eventId:'${eventId}'
+			     }
+		}).done(function (data) {
+			if(data.result.status=="0"){
+				dialog({
+						content:data.result.message,
+						okValue:" 确定",
+						ok:function () {
+							window.location.href="${baseURL}/staffManage/list/${eventId}";
+						}
+
+				}).showModal();
+			}
+			else{
+				dialog({
+					content:"批量操作失败",
+					okValue:" 确定",
+					ok:function () {
+						window.location.href="${baseURL}/staffManage/list/${eventId}";
+					}
+
+				}).showModal();
+			}
+		})
+	}
+	function changeStatus(staffId,status){
+		$.ajax({
+			url:"${baseURL}/staffManage/changeStatus/"+staffId,
+			data:{
+				   status:status,
+				   eventId:'${eventId}'
+				},
+			type:'post'
+		}).done(function(data){
+			if(data.result.status=="0"){
+				dialog({
+					content:data.result.message,
+					okValue:" 确定",
+					ok:function () {
+						window.location.href="${baseURL}/staffManage/list/${eventId}";
+					}
+
+				}).showModal();
+			}
+			else if(data.result.status=="1"){
+				dialog({
+					content:data.result.message,
+					okValue:" 确定",
+					ok:function () {
+						window.location.href="${baseURL}/staffManage/list/${eventId}";
+					}
+				}).showModal();
+			}
+		});
+	}
+	function addStaff() {
+		window.location.href ="${staticURL}/staffManage/addStaff?eventId=${eventId}";
+	}
+
+	function editStaff(v_staff_id) {
+		window.location.href = "${staticURL}/staffManage/editStaff/" + v_staff_id;
+	}
+</script>
+</body>

@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fifedu.mybatis.mapper.UcUserMapper">
+	<resultMap id="UcUser_ResultMap" type="com.fifedu.mybatis.model.base.UcUser">
+		<id column="id" property="id" />
+		<result column="del_flag" property="delFlag" />
+		<result column="login_name" property="loginName" />
+		<result column="email" property="email" />
+		<result column="mobile" property="mobile" />
+		<result column="user_password" property="userPassword" />
+		<result column="user_code" property="userCode" />
+		<result column="user_name" property="userName" />
+		<result column="gender" property="gender" />
+		<result column="phone" property="phone" />
+		<result column="pinyin_name" property="pinyinName" />
+		<result column="birth_date" property="birthDate" />
+		<result column="im" property="im" />
+		<result column="home_address" property="homeAddress" />
+		<result column="id_card_no" property="idCardNo" />
+		<result column="remark" property="remark" />
+		<result column="app_name" property="appName" />
+		<result column="creator" property="creator" />
+		<result column="create_time" property="createTime" />
+		<result column="modificator" property="modificator" />
+		<result column="update_time" property="updateTime" />
+		<result column="reserved1" property="reserved1" />
+		<result column="reserved2" property="reserved2" />
+		<result column="forbidden" property="forbidden" />
+		<result column="role_name" property="roleName" />
+		<result column="org_id" property="orgId" />
+		<result column="class_id" property="classId" />
+		<result column="school_id" property="schoolId" />
+		<result column="reserved3" property="reserved3" />
+		<result column="reserved4" property="reserved4" />
+		<result column="reserved5" property="reserved5" />
+		<result column="reserved6" property="reserved6" />
+		<result column="reserved7" property="reserved7" />
+		<result column="reserved8" property="reserved8" />
+		<result column="reserved9" property="reserved9" />
+		<result column="reserved10" property="reserved10" />
+		<result column="faceno" property="faceno" />
+		<result column="voiceno" property="voiceno" />
+		<result column="reserved11" property="reserved11" />
+		<result column="qq" property="qq" />
+		<result column="blood_type" property="bloodType" />
+		<result column="mail_address" property="mailAddress" />
+	</resultMap>
+
+	<sql id="UcUser_Column_List">
+		id,
+		del_flag,
+		login_name,
+		email,
+		mobile,
+		user_password,
+		user_code,
+		user_name,
+		gender,
+		phone,
+		pinyin_name,
+		birth_date,
+		im,
+		home_address,
+		id_card_no,
+		remark,
+		app_name,
+		creator,
+		create_time,
+		modificator,
+		update_time,
+		reserved1,
+		reserved2,
+		forbidden,
+		role_name,
+		org_id,
+		class_id,
+		school_id,
+		reserved3,
+		reserved4,
+		reserved5,
+		reserved6,
+		reserved7,
+		reserved8,
+		reserved9,
+		reserved10,
+		faceno,
+		voiceno,
+		reserved11,
+		qq,
+		blood_type,
+		mail_address
+	</sql>
+
+	<insert id="insert" parameterType="com.fifedu.mybatis.model.base.UcUser" useGeneratedKeys="true" keyProperty="id">
+		insert into uc_user (
+			id,
+			del_flag,
+			login_name,
+			email,
+			mobile,
+			user_password,
+			user_code,
+			user_name,
+			gender,
+			phone,
+			pinyin_name,
+			birth_date,
+			im,
+			home_address,
+			id_card_no,
+			remark,
+			app_name,
+			creator,
+			create_time,
+			modificator,
+			update_time,
+			reserved1,
+			reserved2,
+			forbidden,
+			role_name,
+			org_id,
+			class_id,
+			school_id,
+			reserved3,
+			reserved4,
+			reserved5,
+			reserved6,
+			reserved7,
+			reserved8,
+			reserved9,
+			reserved10,
+			faceno,
+			voiceno,
+			reserved11,
+			qq,
+			blood_type,
+			mail_address
+		)
+		values (
+			REPLACE(UUID(),'-',''),
+			#{delFlag},
+			#{loginName},
+			#{email},
+			#{mobile},
+			#{userPassword},
+			#{userCode},
+			#{userName},
+			#{gender},
+			#{phone},
+			#{pinyinName},
+			#{birthDate},
+			#{im},
+			#{homeAddress},
+			#{idCardNo},
+			#{remark},
+			#{appName},
+			#{creator},
+			 now(),
+			#{modificator},
+			#{updateTime},
+			#{reserved1},
+			#{reserved2},
+			#{forbidden},
+			#{roleName},
+			#{orgId},
+			#{classId},
+			#{schoolId},
+			#{reserved3},
+			#{reserved4},
+			#{reserved5},
+			#{reserved6},
+			#{reserved7},
+			#{reserved8},
+			#{reserved9},
+			#{reserved10},
+			#{faceno},
+			#{voiceno},
+			#{reserved11},
+			#{qq},
+			#{bloodType},
+			#{mailAddress}
+		)
+	</insert>
+
+	<delete id="deleteById" parameterType="java.lang.String">
+		delete from uc_user where id = #{id}
+	</delete>
+	<delete id="deleteByProperty"  >
+		delete from uc_user where 
+			<choose>
+					<when test="property=='delFlag'">
+						del_flag = #{value}
+					</when>
+					<when test="property=='loginName'">
+						login_name = #{value}
+					</when>
+					<when test="property=='email'">
+						email = #{value}
+					</when>
+					<when test="property=='mobile'">
+						mobile = #{value}
+					</when>
+					<when test="property=='userPassword'">
+						user_password = #{value}
+					</when>
+					<when test="property=='userCode'">
+						user_code = #{value}
+					</when>
+					<when test="property=='userName'">
+						user_name = #{value}
+					</when>
+					<when test="property=='gender'">
+						gender = #{value}
+					</when>
+					<when test="property=='phone'">
+						phone = #{value}
+					</when>
+					<when test="property=='pinyinName'">
+						pinyin_name = #{value}
+					</when>
+					<when test="property=='birthDate'">
+						birth_date = #{value}
+					</when>
+					<when test="property=='im'">
+						im = #{value}
+					</when>
+					<when test="property=='homeAddress'">
+						home_address = #{value}
+					</when>
+					<when test="property=='idCardNo'">
+						id_card_no = #{value}
+					</when>
+					<when test="property=='remark'">
+						remark = #{value}
+					</when>
+					<when test="property=='appName'">
+						app_name = #{value}
+					</when>
+					<when test="property=='creator'">
+						creator = #{value}
+					</when>
+					<when test="property=='createTime'">
+						create_time = #{value}
+					</when>
+					<when test="property=='modificator'">
+						modificator = #{value}
+					</when>
+					<when test="property=='updateTime'">
+						update_time = #{value}
+					</when>
+					<when test="property=='reserved1'">
+						reserved1 = #{value}
+					</when>
+					<when test="property=='reserved2'">
+						reserved2 = #{value}
+					</when>
+					<when test="property=='forbidden'">
+						forbidden = #{value}
+					</when>
+					<when test="property=='roleName'">
+						role_name = #{value}
+					</when>
+					<when test="property=='orgId'">
+						org_id = #{value}
+					</when>
+					<when test="property=='classId'">
+						class_id = #{value}
+					</when>
+					<when test="property=='schoolId'">
+						school_id = #{value}
+					</when>
+					<when test="property=='reserved3'">
+						reserved3 = #{value}
+					</when>
+					<when test="property=='reserved4'">
+						reserved4 = #{value}
+					</when>
+					<when test="property=='reserved5'">
+						reserved5 = #{value}
+					</when>
+					<when test="property=='reserved6'">
+						reserved6 = #{value}
+					</when>
+					<when test="property=='reserved7'">
+						reserved7 = #{value}
+					</when>
+					<when test="property=='reserved8'">
+						reserved8 = #{value}
+					</when>
+					<when test="property=='reserved9'">
+						reserved9 = #{value}
+					</when>
+					<when test="property=='reserved10'">
+						reserved10 = #{value}
+					</when>
+					<when test="property=='faceno'">
+						faceno = #{value}
+					</when>
+					<when test="property=='voiceno'">
+						voiceno = #{value}
+					</when>
+					<when test="property=='reserved11'">
+						reserved11 = #{value}
+					</when>
+					<when test="property=='qq'">
+						qq = #{value}
+					</when>
+					<when test="property=='bloodType'">
+						blood_type = #{value}
+					</when>
+					<when test="property=='mailAddress'">
+						mail_address = #{value}
+					</when>
+			 </choose>
+	</delete>
+	
+	<delete id="delete" >
+		delete from uc_user where id in
+		<foreach collection="ids" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+         </foreach>
+	</delete>
+
+	<update id="update" parameterType="com.fifedu.mybatis.model.base.UcUser">
+		update uc_user
+			<set>
+				<if test="delFlag != null">
+					del_flag = #{delFlag},
+				</if>
+				<if test="loginName != null">
+					login_name = #{loginName},
+				</if>
+				<if test="email != null">
+					email = #{email},
+				</if>
+				<if test="mobile != null">
+					mobile = #{mobile},
+				</if>
+				<if test="userPassword != null">
+					user_password = #{userPassword},
+				</if>
+				<if test="userCode != null">
+					user_code = #{userCode},
+				</if>
+				<if test="userName != null">
+					user_name = #{userName},
+				</if>
+				<if test="gender != null">
+					gender = #{gender},
+				</if>
+				<if test="phone != null">
+					phone = #{phone},
+				</if>
+				<if test="pinyinName != null">
+					pinyin_name = #{pinyinName},
+				</if>
+				<if test="birthDate != null">
+					birth_date = #{birthDate},
+				</if>
+				<if test="im != null">
+					im = #{im},
+				</if>
+				<if test="homeAddress != null">
+					home_address = #{homeAddress},
+				</if>
+				<if test="idCardNo != null">
+					id_card_no = #{idCardNo},
+				</if>
+				<if test="remark != null">
+					remark = #{remark},
+				</if>
+				<if test="appName != null">
+					app_name = #{appName},
+				</if>
+				<if test="creator != null">
+					creator = #{creator},
+				</if>
+				<if test="modificator != null">
+					modificator = #{modificator},
+				</if>
+				<if test="updateTime != null">
+					update_time = #{updateTime},
+				</if>
+				<if test="reserved1 != null">
+					reserved1 = #{reserved1},
+				</if>
+				<if test="reserved2 != null">
+					reserved2 = #{reserved2},
+				</if>
+				<if test="forbidden != null">
+					forbidden = #{forbidden},
+				</if>
+				<if test="roleName != null">
+					role_name = #{roleName},
+				</if>
+				<if test="orgId != null">
+					org_id = #{orgId},
+				</if>
+				<if test="classId != null">
+					class_id = #{classId},
+				</if>
+				<if test="schoolId != null">
+					school_id = #{schoolId},
+				</if>
+				<if test="reserved3 != null">
+					reserved3 = #{reserved3},
+				</if>
+				<if test="reserved4 != null">
+					reserved4 = #{reserved4},
+				</if>
+				<if test="reserved5 != null">
+					reserved5 = #{reserved5},
+				</if>
+				<if test="reserved6 != null">
+					reserved6 = #{reserved6},
+				</if>
+				<if test="reserved7 != null">
+					reserved7 = #{reserved7},
+				</if>
+				<if test="reserved8 != null">
+					reserved8 = #{reserved8},
+				</if>
+				<if test="reserved9 != null">
+					reserved9 = #{reserved9},
+				</if>
+				<if test="reserved10 != null">
+					reserved10 = #{reserved10},
+				</if>
+				<if test="faceno != null">
+					faceno = #{faceno},
+				</if>
+				<if test="voiceno != null">
+					voiceno = #{voiceno},
+				</if>
+				<if test="reserved11 != null">
+					reserved11 = #{reserved11},
+				</if>
+				<if test="qq != null">
+					qq = #{qq},
+				</if>
+				<if test="bloodType != null">
+					blood_type = #{bloodType},
+				</if>
+				<if test="mailAddress != null">
+					mail_address = #{mailAddress}
+				</if>
+			</set>
+		where id = #{id}
+	</update>
+	
+	<update id="updateByProperty" >
+		update uc_user
+			set 
+		<choose>
+			<when test="property=='delFlag'">
+				del_flag = #{value}
+			</when>
+			<when test="property=='loginName'">
+				login_name = #{value}
+			</when>
+			<when test="property=='email'">
+				email = #{value}
+			</when>
+			<when test="property=='mobile'">
+				mobile = #{value}
+			</when>
+			<when test="property=='userPassword'">
+				user_password = #{value}
+			</when>
+			<when test="property=='userCode'">
+				user_code = #{value}
+			</when>
+			<when test="property=='userName'">
+				user_name = #{value}
+			</when>
+			<when test="property=='gender'">
+				gender = #{value}
+			</when>
+			<when test="property=='phone'">
+				phone = #{value}
+			</when>
+			<when test="property=='pinyinName'">
+				pinyin_name = #{value}
+			</when>
+			<when test="property=='birthDate'">
+				birth_date = #{value}
+			</when>
+			<when test="property=='im'">
+				im = #{value}
+			</when>
+			<when test="property=='homeAddress'">
+				home_address = #{value}
+			</when>
+			<when test="property=='idCardNo'">
+				id_card_no = #{value}
+			</when>
+			<when test="property=='remark'">
+				remark = #{value}
+			</when>
+			<when test="property=='appName'">
+				app_name = #{value}
+			</when>
+			<when test="property=='creator'">
+				creator = #{value}
+			</when>
+			<when test="property=='createTime'">
+				create_time = #{value}
+			</when>
+			<when test="property=='modificator'">
+				modificator = #{value}
+			</when>
+			<when test="property=='updateTime'">
+				update_time = #{value}
+			</when>
+			<when test="property=='reserved1'">
+				reserved1 = #{value}
+			</when>
+			<when test="property=='reserved2'">
+				reserved2 = #{value}
+			</when>
+			<when test="property=='forbidden'">
+				forbidden = #{value}
+			</when>
+			<when test="property=='roleName'">
+				role_name = #{value}
+			</when>
+			<when test="property=='orgId'">
+				org_id = #{value}
+			</when>
+			<when test="property=='classId'">
+				class_id = #{value}
+			</when>
+			<when test="property=='schoolId'">
+				school_id = #{value}
+			</when>
+			<when test="property=='reserved3'">
+				reserved3 = #{value}
+			</when>
+			<when test="property=='reserved4'">
+				reserved4 = #{value}
+			</when>
+			<when test="property=='reserved5'">
+				reserved5 = #{value}
+			</when>
+			<when test="property=='reserved6'">
+				reserved6 = #{value}
+			</when>
+			<when test="property=='reserved7'">
+				reserved7 = #{value}
+			</when>
+			<when test="property=='reserved8'">
+				reserved8 = #{value}
+			</when>
+			<when test="property=='reserved9'">
+				reserved9 = #{value}
+			</when>
+			<when test="property=='reserved10'">
+				reserved10 = #{value}
+			</when>
+			<when test="property=='faceno'">
+				faceno = #{value}
+			</when>
+			<when test="property=='voiceno'">
+				voiceno = #{value}
+			</when>
+			<when test="property=='reserved11'">
+				reserved11 = #{value}
+			</when>
+			<when test="property=='qq'">
+				qq = #{value}
+			</when>
+			<when test="property=='bloodType'">
+				blood_type = #{value}
+			</when>
+			<when test="property=='mailAddress'">
+				mail_address = #{value}
+			</when>
+		 </choose>
+		where id = #{id}
+	</update>
+	
+	<select id="getById"  parameterType="java.lang.String" resultMap="UcUser_ResultMap">
+		select
+			<include refid="UcUser_Column_List" />
+			from uc_user
+		where id = #{id}
+	</select>
+	
+	<select id="getByProperty" resultMap="UcUser_ResultMap" >
+		select
+			<include refid="UcUser_Column_List" />
+			from uc_user
+		where
+		<choose>
+			<when test="property=='delFlag'">
+				del_flag = #{value}
+			</when>
+			<when test="property=='loginName'">
+				login_name = #{value}
+			</when>
+			<when test="property=='email'">
+				email = #{value}
+			</when>
+			<when test="property=='mobile'">
+				mobile = #{value}
+			</when>
+			<when test="property=='userPassword'">
+				user_password = #{value}
+			</when>
+			<when test="property=='userCode'">
+				user_code = #{value}
+			</when>
+			<when test="property=='userName'">
+				user_name = #{value}
+			</when>
+			<when test="property=='gender'">
+				gender = #{value}
+			</when>
+			<when test="property=='phone'">
+				phone = #{value}
+			</when>
+			<when test="property=='pinyinName'">
+				pinyin_name = #{value}
+			</when>
+			<when test="property=='birthDate'">
+				birth_date = #{value}
+			</when>
+			<when test="property=='im'">
+				im = #{value}
+			</when>
+			<when test="property=='homeAddress'">
+				home_address = #{value}
+			</when>
+			<when test="property=='idCardNo'">
+				id_card_no = #{value}
+			</when>
+			<when test="property=='remark'">
+				remark = #{value}
+			</when>
+			<when test="property=='appName'">
+				app_name = #{value}
+			</when>
+			<when test="property=='creator'">
+				creator = #{value}
+			</when>
+			<when test="property=='createTime'">
+				create_time = #{value}
+			</when>
+			<when test="property=='modificator'">
+				modificator = #{value}
+			</when>
+			<when test="property=='updateTime'">
+				update_time = #{value}
+			</when>
+			<when test="property=='reserved1'">
+				reserved1 = #{value}
+			</when>
+			<when test="property=='reserved2'">
+				reserved2 = #{value}
+			</when>
+			<when test="property=='forbidden'">
+				forbidden = #{value}
+			</when>
+			<when test="property=='roleName'">
+				role_name = #{value}
+			</when>
+			<when test="property=='orgId'">
+				org_id = #{value}
+			</when>
+			<when test="property=='classId'">
+				class_id = #{value}
+			</when>
+			<when test="property=='schoolId'">
+				school_id = #{value}
+			</when>
+			<when test="property=='reserved3'">
+				reserved3 = #{value}
+			</when>
+			<when test="property=='reserved4'">
+				reserved4 = #{value}
+			</when>
+			<when test="property=='reserved5'">
+				reserved5 = #{value}
+			</when>
+			<when test="property=='reserved6'">
+				reserved6 = #{value}
+			</when>
+			<when test="property=='reserved7'">
+				reserved7 = #{value}
+			</when>
+			<when test="property=='reserved8'">
+				reserved8 = #{value}
+			</when>
+			<when test="property=='reserved9'">
+				reserved9 = #{value}
+			</when>
+			<when test="property=='reserved10'">
+				reserved10 = #{value}
+			</when>
+			<when test="property=='faceno'">
+				faceno = #{value}
+			</when>
+			<when test="property=='voiceno'">
+				voiceno = #{value}
+			</when>
+			<when test="property=='reserved11'">
+				reserved11 = #{value}
+			</when>
+			<when test="property=='qq'">
+				qq = #{value}
+			</when>
+			<when test="property=='bloodType'">
+				blood_type = #{value}
+			</when>
+			<when test="property=='mailAddress'">
+				mail_address = #{value}
+			</when>
+		</choose>
+	</select>
+
+	<select id="getByExample" parameterType="com.fifedu.mybatis.model.base.UcUser" resultMap="UcUser_ResultMap" >
+		select
+			<include refid="UcUser_Column_List" />
+			from uc_user
+		  <where>
+			
+			<if test="loginName != null">
+				and login_name = #{loginName}
+			</if>
+			
+			<if test="userName != null">
+				and user_name =#{userName}
+			</if>
+			<if test="pinyinName != null">
+				and pinyin_name  =#{pinyinName}
+			</if>
+			<if test="idCardNo != null">
+				and id_card_no = #{idCardNo}
+			</if>
+		 </where>
+			 
+	</select>
+
+	<select id="findAllByPage" resultMap="UcUser_ResultMap" >
+		select
+			<include refid="UcUser_Column_List" />
+		from uc_user
+	</select>
+	
+	<select id="findAllCount" resultMap="UcUser_ResultMap" >
+		select
+			count(id)
+		from uc_user
+	</select>
+	
+	
+	<!-- 私有函数开始 -->
+	
+	  <resultMap id="getPayCodeInfo_res" type="com.fifedu.oper.DbParam">
+		<result column="pay_code" property="payCode" />
+		<result column="user_real_name" property="userRealName" />
+		<result column="phone" property="phone" />
+		<result column="certif_no" property="certifNo" />
+		<result column="mailing_address" property="mailingAddress" />
+		<result column="org_name" property="orgName" />
+		<result column="pay_type" property="payType" />
+		<result column="pay_status" property="payStatus" />
+	</resultMap>
+
+	
+
+<!-- 获取专练包的通关报告 -->
+	<select id="getDbCodeInfo" parameterType="java.util.Map"  resultMap="getPayCodeInfo_res" >
+	
+	SELECT d.`pay_code`,a.`user_real_name` ,e.`phone`,a.`certif_no`,
+CONCAT(f.`area_name`,g.`area_name`,h.`area_name`,e.`street`) AS mailing_address,a.`org_name`,
+(
+	CASE d.`pay_type`
+	WHEN '1'
+	THEN '支付宝'
+	WHEN '2'
+	THEN '微信'
+	END 
+)AS pay_type,
+(
+	CASE 
+	WHEN d.`pay_status` IN('-1','2','4')
+	THEN '支付失败'
+	WHEN d.`pay_status` =1
+	THEN '正在支付'
+	WHEN d.`pay_status` =0
+	THEN '未支付'
+	WHEN d.`pay_status` =3
+	THEN '支付成功'
+	WHEN d.`pay_status` =5
+	THEN '已退款'
+	END
+) AS pay_status
+FROM cs_order b LEFT JOIN cs_user a ON b.`cs_user_id`=a.`id`
+LEFT JOIN cs_order_detail c ON b.`order_detail_id`=c.`id`
+LEFT JOIN cs_pay d ON c.`order_code`=d.`order_code`
+LEFT JOIN cs_post_address e ON c.`post_address_id`=e.`id`
+LEFT JOIN sys_area f ON e.`province_id`=f.`id`
+LEFT JOIN sys_area g ON e.`city_id`=g.`id`
+LEFT JOIN sys_area h ON e.`country_id`=h.`id`
+  <where>
+              a.`attend_time`=2 AND a.`attend_level`=2
+			  	<if test=" userRealName!= null">
+					and a.`user_real_name`=#{userRealName}
+				</if>
+				<if test="phone != null">
+					and e.`phone`=#{phone}
+				</if>
+				<if test="payCode != null">
+					and d.`pay_code`=#{payCode}
+				</if>
+          </where>    
+	</select>
+
+</mapper>

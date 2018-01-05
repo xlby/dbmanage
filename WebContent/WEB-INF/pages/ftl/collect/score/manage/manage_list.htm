@@ -1,0 +1,451 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>评分任务分配</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div class="content-body" style="width:820px;">
+        <div id="active-manage">
+            <div class="content-head">
+                <span class="content-position">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">评分管理></span>
+                <span class="content-position">分组评分作品管理></span>
+            </div>
+            <ul id="menu" class="mt40 pl10">
+                <li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}">活动设置</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}">人员管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/signup/list/${eventId}">报名管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}" class="add-on-style">评分管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+            </ul>
+            <h2 class="ac-title-h2 mt20">分组评分作品管理<strong>（${scoreGroupDetail.name!''}）</strong></h2>
+
+            <div class="clear">
+                <a class="fhpf cir-angle mr10 fr ac-color pl10 pr10 mt10" onclick="backToList()">返回评分管理</a>
+            </div>
+
+            <form id="pageform" action="${baseURL}/scoreManage/manageList" method="post">
+                <input type="hidden" value="${paramMap.eventId}" name="eventId"/>
+                <input type="hidden" value="${paramMap.scoreGroupId}" name="scoreGroupId"/>
+
+                <div class="mt15 radio-wrap" id="bm">
+                    <span class="input-title-radio addw18">是否已加入本组评分：</span>
+						<span class="radio-yes-wrap mr20">
+							<input type="radio" id="inGroup" name="inOutGroup" class="radio-yes" value="1">
+							<span class="noradios"></span>
+							<label for="inGroup">是</label>
+						</span>
+						<span class="radio-no-wrap mr20">
+							<input type="radio" id="outGroup" name="inOutGroup" class="radio-no" value="0">
+							<span class="noradios"></span>
+							<label for="outGroup">否</label>
+						</span>
+                </div>
+                <div class="active-bm-wrap clear mt10">
+                    <span class="input-title fl add-width-9">作品分组：</span>
+                    <select name="worksGroup" id="worksGroup" class="input-select fl mr5 addw20">
+                        <option value="">请选择</option>
+                        [#list cntbGroupList as cntbGroup]
+                        <option value="${cntbGroup.id}" [#if cntbGroup.id== paramMap.worksGroup]selected[/#if] >${cntbGroup.name}</option>
+                        [/#list]
+                    </select>
+                    <span class="input-title fl add-width-9">知识点：</span>
+                    <select name="knowledgePointId" id="knowledgePointId" class="input-select fl mr5 addw20">
+                        <option value="">请选择</option>
+                        [#list knowledgeList as knowledgeGroup]
+                        <option value="${knowledgeGroup.id}" [#if knowledgeGroup.id== paramMap.knowledgePointId]selected[/#if] >${knowledgeGroup.name}</option>
+                        [/#list]
+                    </select>
+                    <span class="input-title fl add-width-9">作品名：</span>
+                    <input type="text" id="worksName" name="worksName" value="${paramMap.worksName}" class="input-text P5 fl mr10 addw20" style="border-left:none;" placeholder="作品名">
+                </div>
+                <div class="active-bm-wrap clear mt10">
+                    <span class="input-title fl add-width-9">分配状况：</span>
+                    <select name="allocateStatus" id="allocateStatus" class="input-select fl mr5 addw20">
+                        <option value="">请选择</option>
+                        <option value="1" [#if paramMap.allocateStatus== 1]selected[/#if] >分配完</option>
+                        <option value="2" [#if paramMap.allocateStatus== 2]selected[/#if] >未分配</option>
+                        <option value="3" [#if paramMap.allocateStatus== 3]selected[/#if] >部分分配</option>
+                    </select>
+                    <span class="input-title fl add-width-9">评分状况：</span>
+                    <select name="scoreStatus" id="scoreStatus" class="input-select fl mr5 addw20">
+                        <option value="">请选择</option>
+                        <option value="1" [#if paramMap.scoreStatus== 1]selected[/#if] >已评完</option>
+                        <option value="2" [#if paramMap.scoreStatus== 2]selected[/#if] >未评</option>
+                        <option value="3" [#if paramMap.scoreStatus== 3]selected[/#if] >部分已评</option>
+                    </select>
+                </div>
+                [#if otherScoreGroups??]
+
+                <div class="clear mt10">
+                    <span class="input-title fl add-width-9" style="width:16%;">其它分组评分参考：</span>
+                    <div id="othersPfz" class="fl" style="width:50%;">
+                        [#list otherScoreGroups as otherGroup]
+                        <p class="select-p">
+							<span class="radio-r">
+								<input type="checkbox" name="pfen" value="${otherGroup.id}" onclick="setCheckboxJsonStr()" class="pfen-a pos"/>
+								<span class="choose-img mr5 noselects"></span>
+								<a href="javascript:void(0)" class="addcor">${otherGroup.name}</a>
+							</span>
+                            <span class="input-title addw17 ml40">分数占比：</span>
+                            <input type="text" value="" class="input-text P5 addw5" onchange="setCheckboxJsonStr()" style="border-left:none;">
+                            <span class="input-title addw3">%</span>
+                        </p>
+                        [/#list]
+                    </div>
+                </div>
+                [/#if]
+                <div class="clear mt10">
+                    <span class="input-title fl" style="width:9%;">排序：</span>
+                    <select name="orderStatus" id="orderStatus" class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        <option value="1" [#if paramMap.orderStatus== 1]selected[/#if] >平均分正排</option>
+                        <option value="-1"[#if paramMap.orderStatus== -1]selected[/#if] >平均分倒排</option>
+                    </select>
+                    <span class="input-title fl" style="width:9%;">每页显示：</span>
+                    <select name="pageSizeStr" id="pageSizeStr" class="input-select fl mr5" style="width:10%;">
+                        <option value="20" [#if paramMap.pageSizeStr== 20]selected[/#if] >20</option>
+                        <option value="50" [#if paramMap.pageSizeStr== 50]selected[/#if] >50</option>
+                        <option value="200" [#if paramMap.pageSizeStr== 200]selected[/#if] >200</option>
+                    </select>
+                    <span class="input-title fl" style="width:2%;">件</span>
+
+                    <a href="javascript:$('#pageform').submit()" class="cir-angle mr10 fl ac-color pl10 pr10 backs sx ml10">筛选</a>
+                </div>
+                <input type="hidden" name="otherGroup" id="otherGroup">
+            </form>
+
+            <div class="button-wrap mt40 mb10 clear" id="ac-button">
+                <div class="fl clear">
+                    [#if paramMap.inOutGroup??]
+                        [#if paramMap.inOutGroup == 1]
+                    <span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:batchAllInOut('batchOut')" style="color:#fff;">批量移出</a></span>
+                    <span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:allInOut('-')" style="color:#fff;">全部移出</a></span>
+                        [/#if]
+                        [#if paramMap.inOutGroup == 0]
+                    <span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:batchAllInOut('batchIn')" style="color:#fff;">批量加入</a></span>
+                    <span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:allInOut('+')" style="color:#fff;">全部加入</a></span>
+                        [/#if]
+                    [/#if]
+
+                </div>
+            </div>
+
+            <table id="active-bm-table" class="worksTable mt10">
+                <tr class="t-title">
+                    <th style="width:7%;" class="clear">
+							<span class="mr5 allcheck fl ml10 mt10" style="width:14px;height:14px;">
+								<input type="checkbox" value="全选" class="mr5 checkbox-on">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>全选
+                    </th>
+                    <th>序号</th>
+                    <th width="15%">作品名</th>
+                    <th width="15%">分组</th>
+                    <th width="15%">知识点</th>
+                    <th>分配状况</th>
+                    <th>评分状况</th>
+                    ${thsb}
+                    <th>总分</th>
+                    <th width="70px;">是否已加入本组</th>
+                    <th>操作</th>
+                </tr>
+                [#list dataList as data]
+                <tr class="table-text">
+                    <td class="pl20 pr20">
+                        <span class="allcheck" style="width:14px;height:14px;">
+                            <input type="checkbox" class="mr5 checkbox-on radio-check">
+                            <span class="choose-img mr5 nochoose-imgs"></span>
+                        </span>
+                        <input type="hidden" value="${data.id}"/>
+                    </td>
+                    <td>${data_index + 1}</td>
+                    <td><p title="${data.name}" class="elli addw120 pl10">${data.name}</p></td>
+                    <td><p title="${data.cg_name}" class="elli addw120 pl10">${data.cg_name}</p></td>
+                    <td><p title="${data.ck_name}" class="elli addw110 pl10">${data.ck_name}</p></td>
+                    <td>[#if data.assign_cnt != null && data.num != null]${data.assign_cnt}/${data.num}[/#if] </td>
+                    <td>[#if data.score_cnt != null && data.num != null]${data.score_cnt}/${data.num}[/#if] </td>
+                    ${data.tdStr}
+                    <td><strong style="color: red">[#if data.score_sum_avg != null]${data.score_sum_avg?string("0.##")}[/#if]</strong></td>
+                    <td>
+                        [#if data.counts == 1]是[#elseif data.counts == 0]否[/#if]
+                    </td>
+                    <td>[#if data.counts == 1]
+                        <a href="javascript:inOutWorkGroups('${eventId}','${scoreGroupDetail.id}','${data.id}','-')" class="corgreen ychu">移出</a>
+                        [#elseif data.counts == 0]
+                        <a href="javascript:inOutWorkGroups('${eventId}','${scoreGroupDetail.id}','${data.id}','+')" class="corgreen jiar">加入</a>
+                        [/#if]
+                    </td>
+                </tr>
+                [/#list]
+            </table>
+            [#include "collect/commonpage.htm"]
+        </div>
+    </div>
+</div>
+<div id="score_staffs" style="display: none;width:420px;height:200px;overflow-y:auto;">
+    <table id="windows-table" class="" style="width:400px;" >
+    </table>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var v_other_group = '${paramMap.otherGroup}';
+        if (v_other_group != '') {
+            var v_other_group_check = eval(v_other_group);
+            $("#othersPfz input:checkbox").each(function (index, value) {
+                var v_checkbox = $(this);
+                for (var i = 0; i < v_other_group_check.length; i++) {
+                    if (v_other_group_check[i].groupId == $(v_checkbox).val()) {
+                        $(v_checkbox).prop("checked", true);
+                        $(v_checkbox).parent().next().next().val(v_other_group_check[i].percentage);
+                    }
+                }
+            });
+        }
+        setCheckboxJsonStr();
+
+        //默认选中加入组
+        var v_in_out_group = '${paramMap.inOutGroup}';
+        if(v_in_out_group == 1){
+            $("#inGroup").prop("checked", true);
+        }else if(v_in_out_group == 0){
+            $("#outGroup").prop("checked", true);
+        }
+
+    });
+
+    var busy_dialog = dialog({title: "正在处理中..."});
+    var ok_dialog = dialog({content: "操作完成"});
+    var v_event_id = '${eventId}';
+    var v_group_id = '${scoreGroupDetail.id}';
+
+    //*******************************************************************************
+    function backToList() {
+        window.location.href = "${baseURL}/scoreManage/list/${eventId}";
+    }
+    
+    function viewWork(v_work_id) {
+
+    }
+
+    function inOutWorkGroups(v_event_id, v_group_id, v_works_id, v_sign) {
+
+        var v_msg = '';
+        if(v_sign == '+'){
+            v_msg = "确定要将所选作品加到本组评分？";
+        }else if(v_sign == '-'){
+            v_msg = "确定要将该作品移出本组评分？";
+        }
+
+        dialog({
+            title: v_msg,
+            content:'',
+            ok: function () {
+                busy_dialog.showModal();
+                $.getJSON("${baseURL}/scoreManage/inOutWorkGroups",
+                        {
+                            eventId: v_event_id,
+                            scoreGroupId: v_group_id,
+                            worksId: v_works_id,
+                            sign: v_sign
+                        }, function (data) {
+                            if (data.result.status == 1) {
+                                alert(data.result.message);
+                                busy_dialog.close();
+                            } else {
+                                $("#pageform").submit();
+                            }
+                        });
+            },
+            okValue:"确定",
+            cancel:function () {
+
+            },
+            cancelValue:"取消"
+        }).showModal();
+
+    }
+    
+    function batchAllInOut(v_sign) {
+
+        var v_ids = getListIds('worksTable');
+        var v_alert = '';
+        if(v_sign == 'batchIn'){
+            v_alert = '确定要将所选作品加到本组评分？';
+        }else if(v_sign == 'batchOut'){
+            v_alert = '确定要将所选作品移出本组评分？';
+        }
+        if(v_ids != null){
+            dialog({
+                content:v_alert,
+                ok: function () {
+                    busy_dialog.showModal();
+                    $.getJSON("${baseURL}/scoreManage/batchInOutWorkGroups",
+                            {
+                                eventId: v_event_id,
+                                scoreGroupId: v_group_id,
+                                workIds: v_ids,
+                                sign: v_sign
+                            }, function (data) {
+                                if (data.result.status == 1) {
+                                    alert(data.result.message);
+                                    busy_dialog.close();
+                                } else {
+                                    $("#pageform").submit();
+                                }
+                            });
+                },
+                okValue:"确定",
+                cancel:function () {
+
+                },
+                cancelValue:"取消"
+            }).showModal();
+        }else{
+            alert('请先选择作品');
+        }
+
+    }
+
+    function allInOut(v_sign) {
+        var v_alert = '';
+        if(v_sign == '+'){
+            v_alert = '确定要将所有作品加到本组评分？';
+        }else if(v_sign == '-'){
+            v_alert = '确定要将所有作品移出本组评分？';
+        }
+        dialog({
+            title: '',
+            content: v_alert,
+            ok: function () {
+                busy_dialog.showModal();
+                $.getJSON("${baseURL}/scoreManage/allInOut",
+                        {
+                            eventId: v_event_id,
+                            scoreGroupId: v_group_id,
+                            sign: v_sign
+                        }, function (data) {
+                            if (data.result.status == 1) {
+                                alert(data.result.message);
+                                busy_dialog.close();
+                            } else {
+                                $("#pageform").submit();
+                            }
+                        });
+            },
+            okValue:"确定",
+            cancel:function () {},
+            cancelValue:"取消"
+        }).showModal();
+    }
+
+    function setCheckboxJsonStr() {
+        var v_other_group_array = new Array();
+        $("#othersPfz input:checkbox[checked]").each(function (index, value) {
+            var other_group_obj = new Object();
+            other_group_obj.groupId = $(this).val();
+            var v_next_percentage = $(this).parent().next().next().val();
+            if (isNaN(v_next_percentage)) {
+                $(this).parent().next().next().val(0);
+                alert('请输入数字');
+            }else{
+                if(v_next_percentage < 0){
+                    $(this).parent().next().next().val(0);
+                    alert('请输入正数');
+                }
+                if(v_next_percentage > 100){
+                    $(this).parent().next().next().val(0);
+                    alert('请输入100以内的数字');
+                }
+            }
+            other_group_obj.percentage = v_next_percentage;
+
+            v_other_group_array[index] = other_group_obj;
+        });
+        $("#otherGroup").val(JSON.stringify(v_other_group_array));
+//        console.log(JSON.stringify(v_other_group_array));
+    }
+//全选
+      function sysallselect(){  //全选
+
+        var num = 0;
+        var all = $('.check-wrap').find('span:eq(0)').find('input');
+        var alone = $('.check-wrap').find('span').find('input');
+        var Input = $('.check-wrap').find('span:eq(0)').siblings().find('input');
+
+        all.click(function(){ //控制全选
+
+            if($(this).attr('checked')){
+
+                num=Input.size();
+
+                $(this).next().addClass('moreselects').removeClass('noselects');
+
+                $(this).parent().siblings().find('input').each(function(){
+
+                    $(this).next().addClass('moreselects').removeClass('noselects');
+
+                    this.checked = true;
+
+                });
+
+            }else{
+                num=0;
+
+                $(this).next().addClass('noselects').removeClass('moreselects');
+
+                $(this).parent().siblings().find('input').each(function(){
+
+                    $(this).next().addClass('noselects').removeClass('moreselects');
+
+                    this.checked = false;
+                });
+            }
+        });
+
+        Input.each(function(){ //逐一点选
+
+            $(this).click(function(){  //10个input打钩后，全选打钩
+
+                if($(this).attr('checked')){ //选中状态
+
+                    $(this).next().addClass('moreselects').removeClass('noselects');
+                    num++;
+                    if(num==Input.size()){
+
+                        all.attr('checked',true);
+
+                        all.next().addClass('moreselects').removeClass('noselects');
+
+                    }
+
+                }else{ //非选中状态
+
+                    num--;
+                    $(this).next().addClass('noselects').removeClass('moreselects');
+
+                    if(num<Input.size()){
+
+                        all.attr('checked',false);
+
+                        all.next().addClass('noselects').removeClass('moreselects');
+
+                    }
+
+                }
+            });
+        });
+
+    };
+    sysallselect();
+</script>
+</body>
+</html>

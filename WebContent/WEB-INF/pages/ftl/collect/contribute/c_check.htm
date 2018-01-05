@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>投稿信息核对</title>
+	<link rel="stylesheet" href="${staticURL}/collect/css/common.css" />
+	<link rel="stylesheet" href="${staticURL}/collect/css/put-contribute.css" />
+	<link rel="stylesheet" href="${staticURL}/collect/css/activeManage.css" />
+	<script src="${staticURL}/collect/js/jQuery-v1.8.2.js"></script>
+	<script src="${staticURL}/collect/js/event.js"></script>
+	<script src="${staticURL}/collect/js/c.js"></script>
+</head>
+
+<body>
+
+<!-- 核对作者信息 -->
+<div class="window-wrap clear pr20 pt20 pl20 messagees" style="display:none;" id="editUserInfo">
+	<div class="cha-div clear">
+		
+	</div>
+	<div class="input-wrap">
+		<span class="input-title-text">真实姓名：<font color="red">*</font></span>
+		<input readonly="readonly" type="text" value="${contributor.name!""}" class="input-text p5 add-widthes" placeholder="真实姓名" id="">
+	</div>
+	<p class="name-hint mt5" style="display:none;">请输入中文姓名</p>
+	<div class="input-wrap mt20">
+		<span class="input-title-text" title="如作品获奖，此身份证号码将显示于获奖证书上，不填则此项内容不显示">身份证号：</span>
+		<input title="如作品获奖，此身份证号码将显示于获奖证书上，不填则此项内容不显示" readonly="readonly" type="text" value="${contributor.IDNumber!""}" class="input-text P5 add-widthes" placeholder="身份证号" id="" />
+	</div>
+	<p class="iden-card-hint mt5" style="display:none;">请输入正确身份证号</p>
+	<div class="input-wrap mt20">
+		<span class="input-title-text">手机号码：<font color="red">*</font></span>
+		<input readonly="readonly" type="text" value="${contributor.phone!""}" class="input-text P5 add-widthes" placeholder="电话" id="" />
+	</div>
+	<p class="phone-hint mt5" style="display:none;">请输入手机号码</p>
+	<div class="input-wrap mt20">
+		<span class="input-title-text">邮箱：</span>
+		<input readonly="readonly" type="text" value="${contributor.email!""}" class="input-text P5 add-widthes" placeholder="邮箱" id="" />
+	</div>
+	<p class="mail-hint mt5" style="display:none;">请输入正确邮箱</p>
+	<div class="input-wrap mt20">
+		<span class="input-title-text">单位：</span>
+		<input readonly="readonly" type="text" value="${contributor.unit!""}" class="input-text P5 add-widthes" placeholder="单位" id="" />
+	</div>
+	<div class="input-wrap mt20">
+		<span class="input-title-text">通讯地址：</span>
+		<input readonly="readonly" type="text" value="${contributor.address!""}" class="input-text P5 add-widthes" placeholder="通讯地址" id=""  />
+	</div>
+	<p class="addred mt10">*请认真核对本页信息:</p>
+	<p class="addred" style="text-indent: 8px;">如作品获奖，身份证号码将显示于获奖证书上，不填则不显示</p>
+	<p class="addred" style="text-indent: 8px;">如有误，点【修改】按钮改正；如无误，点【确定】</p>
+	<div class="button-wrap mt20 mb10" >
+		<a class="on-button cir-angle mr10 pl20 pr20" href="javascript:void(0)"  onclick="addUserInfo()" >确定</a>
+		<a class="on-button cir-angle mr10 pl20 pr20" href="http://user.qspfw.com/page/login/pfIndex.do"  >修改</a>
+	</div>
+</div>
+<!-- 核对作者信息 -->
+
+<div id="shade_" style="display:none;width: 100%; height: 100%; background: #272822; position: fixed; left: 0px; top: 0px; opacity: 0.5; filter: alpha(opacity=50); z-index: 999998;"></div>
+
+<script type="text/javascript">
+	var eid_ = '${eid!''}';
+	var baseURL_  = '${baseURL}';
+	showBox($("#editUserInfo"));
+</script>
+</body>
+</html>

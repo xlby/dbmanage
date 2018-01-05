@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title></title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+<div id="wap-a">
+
+	<div id="content" class="clear">
+		<div class="content-body" >
+			<!--系统活动首页-->
+			<div id="active-manage">
+				<div class="content-head">
+					<span class="content-position">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">作品审核></span>
+					<span class="content-position">审核></span>
+				</div>
+				<iframe id="matchbody" name="matchbody" width="100%" height="800px"
+						style="padding-top: 10px;" src="${baseURL}/contribute/c_view?wid=${works.id!}&limit=1" marginheight="0"
+						marginwidth="100%;" frameborder="0"
+						scrolling="yes"></iframe>
+				
+			</div>
+		</div>
+	</div>
+</div>
+<div class="button-wrap mt20 mb10 clear" id="ac-button">
+	<span class="on-button cir-angle fr ml10 pl10 pr10" id="approve">通过</span>
+	<span class="on-button cir-angle fr mr10 pl10 pr10" id="return">退回</span>
+	<span class="on-button cir-angle fr mr10 pl10 pr10" id="disable">销毁</span>
+	<span class="on-button cir-angle fr mr10 pl10 pr10" id="to-edit">去编辑</span>
+</div>
+<div class="window-wrap-a clear" id="return-select" style="display:none">
+	<div class="window-text-wrap mt40">
+		<span class="window-span">退回类型</span>
+		<select name="returnType" id="returnType" class="input-select addwidth" style="width:49%;">
+			[#list returnTypes as returnType]
+			<option value="${returnType.id}">${returnType.name}</option>
+			[/#list]
+		</select>
+	</div>
+	<div class="pfen-wrap mt20 clear" >
+		<span class="window-span fl">原因说明：</span>
+		<textarea name="returnReason" id="return-reason" cols="30" rows="10" class="tarea fl p10 cor-bor" maxlength="200"></textarea>
+	</div>
+</div>
+<script>
+	$('#approve').click(function () {
+		$.ajax({
+			url:'${baseURL}/worksreview/worksApprove/${works.id}',
+			data:{cStatus:"pass"},
+			post:'post'
+		}).done(function (data) {
+			if(data.result.status=="0"){
+				dialog({
+						title:"提示",
+						content:data.result.message,
+						cancel:false,
+						okValue:"确定",
+						ok:function () {
+							window.location.href='${baseURL}/worksreview/staffworkslist/${works.eventId}'
+						}
+				}).showModal();
+			}
+			else{
+				dialog({
+					title:"提示",
+					content:data.result.message,
+					cancel:false,
+					okValue:"确定",
+					ok:function () {
+
+					}
+				}).showModal();
+			}
+		})
+	});
+	$('#return').click(function () {
+			dialog({
+				title:"退回",
+				content:document.getElementById("return-select"),
+				cancel:function () {},
+				cancelValue:"取消",
+				okValue:"确定",
+				ok:function(){
+					var returnType=$('#returnType').val();
+					var returnReason=$('#return-reason').val();
+					if(returnReason==null||returnReason==""){
+						dialog({content:"退回原因不能为空",ok:function(){},okValue:"确定"}).showModal();
+						return false;
+					}
+					else{
+						worksReturn(returnType,returnReason);
+					}
+				}
+			}).showModal();
+	});
+	function worksReturn(returnType,returnReason){
+
+		$.ajax({
+			url:'${baseURL}/worksreview/worksApprove/${works.id}',
+			data:{
+				cStatus:"fail",
+				returnType:returnType,
+				returnReason:returnReason
+			},
+			type:'post'
+		}).done(function(data){
+			console.log(data);
+			if(data.result.status=="0"){
+				dialog({
+					title:"提示",
+					content:data.result.message,
+					cancel:false,
+					okValue:"确定",
+					ok:function () {
+						window.location.href='${baseURL}/worksreview/staffworkslist/${works.eventId}'
+					}
+				}).showModal();
+			}
+			else{
+				dialog({
+					title:"提示",
+					content:data.result.message,
+					cancel:false,
+					okValue:"确定",
+					ok:function () {
+						$.ajax({
+							url:"${baseURL}/worksreview/worksDestroy/${works.id}",
+							type:'post'
+						}).done(function(data){
+							if(data.result.status=="0"){
+								dialog({title:'提示',
+									content:data.result.message,
+									okValue:"确定",
+									ok:function () {
+										window.location.href='${baseURL}/worksreview/staffworkslist/${works.eventId}'
+									}
+								}).showModal();
+							}
+							else{
+								dialog({
+									title:"提示",
+									content:data.result.message,
+									okValue:"确定",
+									ok:function () {
+
+									}
+								}).showModal();
+							}
+
+						});
+					}
+				}).showModal();
+			}
+		});
+	}
+	$('#disable').click(function () {
+		dialog({
+				title:'提示',
+				content:'如果该作品被销毁，则无法再进行审核操作',
+				okValue:"确定",
+				cancelValue:"取消",
+				cancel:function () {
+
+				},
+				ok:function () {
+					$.ajax({
+						url:"${baseURL}/worksreview/worksDestroy/${works.id}",
+						type:'post'
+					}).done(function(data){
+						if(data.result.status=="0"){
+							dialog({title:'提示',
+								content:data.result.message,
+								okValue:"确定",
+								ok:function () {
+									window.location.href='${baseURL}/worksreview/staffworkslist/${works.eventId}'
+								}
+							}).showModal();
+						}
+						else{
+							dialog({
+								title:"提示",
+								content:data.result.message,
+								okValue:"确定",
+								ok:function () {
+
+								}
+							}).showModal();
+						}
+
+					});
+				}
+		}
+
+
+		).showModal();
+
+	});
+	$('#to-edit').click(function () {
+		window.location.href='${baseURL}/worksreview/edit/${works.id}';
+	});
+</script>
+</body>

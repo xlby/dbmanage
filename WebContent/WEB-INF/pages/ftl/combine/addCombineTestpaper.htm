@@ -1,0 +1,721 @@
+<!doctype html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="../ccbManage/css/main.css"/>
+    <link rel="stylesheet" href="../ccbManage/css/common.css"/>
+	<link rel="stylesheet" href="../ccbManage/css/style.css"/>
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="../ccbManage/js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="../ccbManage/js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="../ccbManage/js/placeholder.js"></script>
+    <!-- 样式 -->
+<!--     <link rel="stylesheet" href="http://192.168.71.26:808/static/izuoye/ued/css/main.css"/> -->
+<!--     <link rel="stylesheet" href="http://192.168.71.26:808/static/izuoye/ued/css/common.css"/> -->
+    
+<!--     <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/ued/js/web/workPub.js"></script> -->
+    
+    <title>后台管理-生成试卷-添加</title>
+    <style>
+    .paperManage{margin:0 auto;width:800px;}
+	.addTestpaper{margin:10px auto; }
+	.exam_type_title{width:85px}
+	.cet_title{width:65px}
+	.level_title{width:85px}
+	.search_paper{width:550px;}
+    .paperList{margin-top:10px}
+    .paperList table,.combineTestpaperList table,.selectTestpaperList table{border-collapse: collapse;}
+	.paperList th,.combineTestpaperList th,.selectTestpaperList th{border:1px solid #ccc8cc;}
+    .paperList tr td,.combineTestpaperList tr td,.selectTestpaperList tr td{border:1px solid #ccc8cc;cell-padding:0;text-align:center;}
+    .selectTestpaperList{margin: 10px 0 10px 10px;} 
+	.paper_save{margin:10px auto; width:800px;text-align:center;}
+	.paper_value{width:600px;}
+	.search_testpaper_input{width:400px;float:right;margin: 15px 0 15px 0;}
+	.coverDiv{
+		position: fixed;
+		background:#000;
+		z-index:99998;
+		width:100%;
+		height:100%;
+		left:0;
+		top:0;
+		opacity:0.3;
+	}
+	.closeDiv{margin: -25px 10px 0 0; width: 14px; height: 14px; background: url(../ccbManage/images/close.png) no-repeat; cursor: pointer;float: right;display: inline;}
+	.closeDiv1{margin: -25px 10px 0 0; width: 14px; height: 14px; background: url(../ccbManage/images/close.png) no-repeat; cursor: pointer;float: right;display: inline;}
+	.selectTestpaperDiv{
+		background:#fff;
+		position: absolute;
+		z-index: 99999;
+		margin-left: -300px;
+		width: 600px;
+	    top: 20%;
+    	left: 50%;
+	}
+	.openbg{display:none;}
+	a:link{ text-decoration:none;}
+	
+	.btn_back_div{
+		line-height:24px;
+		width:50px;
+		height:25px;
+		text-align:center;
+		background:url(../ccbManage/images/edit-cancel.png) no-repeat;
+	}
+	.btn_back{color:#5f5c5c;text-align:center;}
+    </style>
+</head>
+<body>
+<!-- 遮罩层 -->
+<div class="coverDiv openbg"></div>
+<!-- 试卷属性设置 -->
+	<div class="paperManage">
+		<div class="btn_back_div"><a href="javascript:void(0)" onclick="goBackTestpaper()" class="btn_back">返回</a></div>
+		<div class="addTestpaper">
+			<table>
+				<tr>
+					<td><span class="paper_title">试卷名称:</span></td>
+					<td><input type="text" class="paper_value" onkeyup="changBtnCss()" placeholder="请输入试卷名称"/></td>
+				</tr>
+				<tr>
+					<td><span class="cet_title">考试级别：</span></td>
+                    <td>
+                    	<input type="radio" value="4" name="examLevel" checked="checked"/><span>四级</span>
+                    	<input type="radio" value="6" name="examLevel"/><span>六级</span>
+                    </td>
+				</tr>
+				<tr>
+					<td><span class="exam_type_title">考试类型：</span></td>
+                    <td>
+                    	<input type="radio" value="0" name="examType" checked="checked"/><span>模考</span>
+                    	<input type="radio" value="1" name="examType"/><span>专练</span>
+                    </td>
+				</tr>
+<!-- 				<tr> -->
+<!-- 					<td><span class="level_title">轮数：</span></td> -->
+<!--                     <td> -->
+<!--                         <select class="level"> -->
+<!--                             <option value="0" selected="selected">-请选择-</option> -->
+<!--                             <option value="1">第一轮</option> -->
+<!--                             <option value="2">第二轮</option> -->
+<!--                             <option value="3">第三轮</option> -->
+<!--                             <option value="4">第四轮</option> -->
+<!--                             <option value="5">巅峰冲刺</option> -->
+<!--                         </select> -->
+<!--                 	</td> -->
+<!-- 				</tr> -->
+				<tr>
+					<td><span class="containTestpaper">包含试卷：</span></td>
+					<td><input type="button" value="选择试卷" class="selectPaper" onclick="selectTesetpaper()"/></td>
+				</tr>
+			</table>
+		</div>
+		<!-- 显示所选试卷 -->
+		<div class="combineTestpaperList"></div>
+		<!-- 确认导入按钮 -->
+        <div class="paper_save">
+            <table style="text-align:center">
+            	<tr>
+                    <td><input type="button" value="确认导入" class="add_ccb_paper" onclick="combineTestpaper()"/></td>
+                </tr>
+            </table>
+        </div>
+	</div>
+	<!-- 选择试卷弹窗 -->
+	<div id="select_testpaper_div" class="selectTestpaperDiv openbg">
+		<div class="openTitle">
+			<div class="search_testpaper_title" style="height: 30px;background:#EEF3F7;"><span style="line-height: 30px;text-align: left;padding-left: 15px">选择试卷</span></div>
+			<div class="closeDiv" title="关闭" onclick="cancelCheck()"></div>
+		</div>	
+		<div class="middle_content">
+			<div class="divP clearfix borderBottom">
+				<p class="f1">当前选择：</p>
+				<div class="pubtest-select"><ul class="select_paper_cells"></ul></div>
+			</div>
+			<div class="testpaper_search_div">
+	            <table>
+	            	<tr>
+						<td width="450px"><input type="text" class="search_testpaper_input" placeholder="请输入试卷名称"/></td>
+						<td widht="150px"><input type="button" value="搜索" onclick="searchBtn()" /></td>
+					</tr>
+	            </table>
+	        </div>
+	        <div class="selectTestpaperList"></div>
+	        <div style="margin: 10px 0 20px 0;width: 600px;text-align: center;"><input type="button" class="inputbtn_h30 mt15" value="确定选择" onclick="selectChecked()"></div>
+		</div>
+	</div>
+	
+	
+	<!-- 提示弹窗 -->
+	<div class="messageBox"  style="width:400px;heigth:200px;margin:0 auto;display:none;z-index: 99999;background:#fff;position:relative;">
+		<div class="resultMessage" style="display:none;z-index: 99999;">
+			<table style="width:100%;height:100%;">
+				<tr><td style="text-align:center;height:30px;" colspan="2"><span class="resultValue"></span></td></tr>
+				<tr>
+					<td style="text-align:center;height:30px;"><input type="button" value="继续添加" onclick="goOnAddTestpaper()"/></td>
+					<td style="text-align:center;height:30px;"><input type="button" value="返回首页" onclick="goBackTestpaper()"/></td>
+				</tr>
+				<tr><td style="text-align:center;height:30px;" colspan="2"></td></tr>
+			</table>
+		</div>
+<!-- 		<div class="goOnAddTestpaper" style="display:none;z-index: 99999;"><input type="button" value="继续添加" onclick="goOnAddTestpaper()"/></div> -->
+<!-- 		<div class="goBackTestpaper" style="display:none;z-index: 99999;"><input type="button" value="返回首页" onclick="goBackTestpaper()"/></div> -->
+		<div class="repeatTestpaper" style="display:none;z-index: 99999;">
+			<table style="width:100%;height:100%;">
+				<tr><td style="text-align:center;height:30px;"></td></tr>
+				<tr><td style="text-align:center;height:30px;"><span class="hitMessage"></span></td></tr>
+				<tr><td style="text-align:center;height:30px;"></td></tr>
+				<tr><td style="text-align:center;height:30px;"><input type="button" value="确定" onclick="repeatTestpaper()"/></td></tr>
+				<tr><td style="text-align:center;height:30px;"></td></tr>
+			</table>
+		</div>
+	</div>
+	
+	
+	<script type="text/javascript">
+		$(function(){
+			/**1.判断确认导入按钮是否显示**/
+			changBtnCss();
+			
+			/**2.点击选择试卷按钮**/
+		});
+		
+		//将值前移，互换位置
+		function changeToBefore(obj){
+			//获取父节点的父节点，并查找名字为testpaper_name_cell的span节点的文本值
+			var beforeValue = $(obj).parent().parent().find("span[class='paper_name_cell']").text();
+			//获取父节点的父节点下的隐藏文本域的值
+			var beforeHidden = $(obj).parent().parent().find("input[type=hidden]").val();
+			//获取父节点的父节点的上一个兄弟节点，并查找名字为testpaper_name_cell的span节点的文本值
+			var afterValue = $(obj).parent().parent().prev().find("span[class='paper_name_cell']").text();
+			//获取父节点的父节点的上一个兄弟节点下的隐藏文本域的值
+			var afterHidden = $(obj).parent().parent().prev().find("input[type=hidden]").val();
+			//互换文本值
+			$(obj).parent().parent().prev().find("span[class='paper_name_cell']").text(beforeValue);
+			$(obj).parent().parent().find("span[class='paper_name_cell']").text(afterValue);
+			//隐藏域互换value值
+			$(obj).parent().parent().find("input[type=hidden]").val(afterHidden);
+			$(obj).parent().parent().prev().find("input[type=hidden]").val(beforeHidden);
+		}
+		//将值后移，互换位置
+		function changeToAfter(obj){
+			//获取当前移动对象的文本值（获取父节点的父节点，并查找名字为testpaper_name_cell的span节点的文本值）
+			var beforeValue = $(obj).parent().parent().find("span[class='paper_name_cell']").text();
+			//获取父节点的父节点下的隐藏文本域的值
+			var beforeHidden = $(obj).parent().parent().find("input[type=hidden]").val();
+			//获取当前对象下一个的文本值（获取父节点的父节点的上一个兄弟节点，并查找名字为testpaper_name_cell的span节点的文本值）
+			var afterValue = $(obj).parent().parent().next().find("span[class='paper_name_cell']").text();
+			//获取父节点的父节点的下一个兄弟节点下的隐藏文本域的值
+			var afterHidden = $(obj).parent().parent().next().find("input[type=hidden]").val();
+			//互换文本值
+			$(obj).parent().parent().next().find("span[class='paper_name_cell']").text(beforeValue);
+			$(obj).parent().parent().find("span[class='paper_name_cell']").text(afterValue);
+			//隐藏域互换value值
+			$(obj).parent().parent().find("input[type=hidden]").val(afterHidden);
+			$(obj).parent().parent().next().find("input[type=hidden]").val(beforeHidden);
+		}
+		
+		//选择轮数时检查试卷名称、轮数、所选试卷是否为空
+		//$(".level").change(function(){
+			//changBtnCss();
+		//});
+		//选择试卷时检查试卷名称、轮数、所选试卷是否为空
+		$(".selectPaper").blur(function(){
+			changBtnCss();
+		});
+		
+		//判断确认导入按钮是否可点击
+		function changBtnCss(){
+			var flag = false;//标记
+			//试卷名称
+			var paperValue = $(".paper_value").val();
+			//轮数
+			//var level = $(".level").val();
+			//获取所选择的试卷列表
+			var testpaperList = $(".combineTestpaperList").find("table");
+			//考试类型
+			var examType = $(".addTestpaper").find("input[name='examType']:checked").val();
+			//var testpaperList = $(".paperList").html;
+			if(paperValue !== "" && testpaperList.length){
+				flag = true;
+			}
+			//满足情况：1.模考类型：试卷名称不为空，所选试卷列表不为空，轮数不为空时。2.专练类型：试卷名称不为空，所选试卷列表不为空
+			//if(paperValue !== "" && testpaperList.length){
+				//if((examType == 0 && level !== "0")||(examType == 1)){
+					//flag = true;
+				//}
+			//}
+			
+			//都不为空时
+			if(flag){
+				//确认导入的显示属性
+				$(".add_ccb_paper").removeAttr("disabled");
+			}else{
+				//确认导入的不显示属性
+				$(".add_ccb_paper").attr("disabled","true");
+			}
+		}
+		
+		
+		
+		//选择试卷函数
+		function selectTesetpaper(){
+			
+			//显示试卷列表
+			searchBtn(function(){
+				//弹窗
+				showDiv();
+				//将选中试卷回显到试卷列表中
+				checkedCheckBox();
+			});
+			//弹窗
+		}
+		/**
+		*判断checkbox的选中状态与否
+		*/
+		function checkedCheckBox(){
+			//将所展示试卷列表试卷回显到查询试卷列表中
+			var ids = $(".combineTestpaperList").find("input[type='hidden']");
+			var names = $(".combineTestpaperList").find("input[type='hidden']");
+			if(ids.length > 0){
+				for(var i=0;i<ids.length;i++){
+					//页面试卷展示列表id
+					var showId = $(ids[i]).prop("value");
+					//获取复选框个数个
+					var selectCheckeds = $(".selectTestpaperList").find("input[type='checkbox']");
+					for(var m=0;m<selectCheckeds.length;m++){
+						//查询试卷列表id
+						var selId = $(selectCheckeds[m]).next().prop("value");
+						if(showId == selId){
+ 							$(selectCheckeds[m]).prop("checked",true);
+						}
+					}
+				}
+				
+			}
+		}
+		//打开遮罩层
+		function showDiv(){
+		    $(".selectTestpaperDiv").show();
+		    $(".coverDiv").show();
+		}
+		
+		//关闭当前弹窗和遮罩层
+		function closeDiv(){
+			$(".selectTestpaperDiv").hide();
+		    $(".coverDiv").hide();
+		}
+		
+		//关闭弹窗显示添加试卷页面
+		function cancelCheck(){
+			//关闭弹窗
+			closeDiv();
+		}
+		
+		
+		//搜索试卷
+		function searchBtn(searchBtnBakFun){
+			//获取输入试卷名称
+			var testpaperName = $(".search_testpaper_input").val();
+			var param = {};
+			param.name = testpaperName;//试卷名称
+			//根据名称模糊查询
+			$.ajax({
+					type:"POST",
+					url:"${baseURL}/ccbPaperConfig/selectTestpaper",
+					data:param,
+					//url:"${baseURL}/ccbPaperConfig/selectTestpaper?testpaperName="+testpaperName,
+					success:function(msg){
+						//获取到查询结果集
+						var paperList = msg.testpaperList;
+						
+						//当查询试卷返回的结果不为空时才给div赋值
+						if(paperList !== null){
+							//获取到结果集的长度
+							var paperSize = msg.testpaperList.length;
+							//获取试卷列表的宽度
+							var div_height = $(".selectTestpaperList").height();
+							//前10列的高度
+							var list_height = 0;
+							//获取tr数量
+							var list_tr_length = $(".selectTestpaperList tr").length;
+							if(paperSize > 10){//结果集的长度大于时10时
+								//循环动态获取前10列的高度
+// 								for(var i = 0 ;i <　11; i++){
+// 									list_height += $("#selectTestpaperList tr:eq("+i+")").height();
+// 								}
+								//如果试卷列表总宽度超过了前10列的宽度，则内部设置滚动条显示列表
+// 								if(div_height > list_height){
+									$(".selectTestpaperList").height("250");
+									$(".selectTestpaperList").css('overflow','auto');
+// 								}
+							}else{//结果集的长度小于时10时
+								
+							}
+							//先清空div中html值
+							$(".selectTestpaperList").empty();
+							//然后将查询结果赋值给div
+							$(".selectTestpaperList").html(template('select_testpaper_list',{data:msg}));
+							
+							/**每次重新查询默认选中【当前选择】中的试卷**/
+							var cells = $(".select_paper_cells").find("li");
+							for(var i=0; i<cells.length; i++){
+								var id = $(cells[i]).attr("id");
+								if($("#tr_"+id)){
+									$("#tr_"+id).removeClass("active").addClass("visited");
+									$("#tr_"+id).find("input[type='checkbox'").prop("checked",true);
+								}
+							}
+							
+						}
+						if(searchBtnBakFun){
+							searchBtnBakFun();
+						}
+					}
+				});
+			
+			
+			
+		}
+		
+		
+		//确定选择
+		function selectChecked(){
+			/**1.将所选复选框数据展示到试卷添加页面**/
+			//查找选中复选框个数个
+			//var selectCheckeds = $(".selectTestpaperList").find("input[type='checkbox']:checked");
+			var selectCheckeds = $(".select_paper_cells").find("li");
+			//定义试卷id集合
+			var ids = [];
+			//定义试卷名称集合
+			var names = [];
+			//定义map集合
+			var map = {};
+			//定义table标签
+			var tableHtml="";
+			//当选中复选框时
+			if(selectCheckeds.length > 0 ){
+				//表格头部标题
+				tableHtml = "<table><tr><th width='20px'></th><th width='594px'>试卷名称</th><th width='86px'>组合顺序</th></tr>"
+				for(var i = 0; i <　selectCheckeds.length; i++){
+					//获取试卷id
+					//var id = $(selectCheckeds[i]).next().prop("value");
+					//获取试卷名称
+					//var name = $(selectCheckeds[i]).next().prop("name");
+					var id = $(selectCheckeds[i]).attr("id");
+					var name = $(selectCheckeds[i]).attr("name");
+					
+					//试卷id集合中添加值
+					ids.push(id);
+					//试卷名称集合中添加值
+					names.push(name)
+					//map集合中添加值
+					map[id] = name;
+					//定义tr标签
+					var trHtml = "";
+					//当选中复选框的个数大于1时
+					if(selectCheckeds.length > 1){
+						if(i===0){//第一个tr展示方式
+							trHtml = "<tr><td>"+(i+1)+"</td><td class='paperName'><span class='paper_name_cell'>"+name+"</span><input type='hidden' value='"+id+"' name='"+name+"'/></td><td><span style='color:gainsboro'>上移</span>&nbsp;<a href='javascript:;' onclick='changeToAfter(this)'>下移</a></td></tr>";
+						}else if(i===(selectCheckeds.length-1)){//最后一个tr的展示方式
+							trHtml = "<tr><td>"+(i+1)+"</td><td class='paperName'><span class='paper_name_cell'>"+name+"</span><input type='hidden' value='"+id+"' name='"+name+"'/></td><td><a href='javascript:;' onclick='changeToBefore(this)'>上移</a>&nbsp;<span style='color:gainsboro'>下移</span></td></tr>";
+						}else{//第一个和最后一个之间的tr展示方式
+							trHtml = "<tr><td>"+(i+1)+"</td><td class='paperName'><span class='paper_name_cell'>"+name+"</span><input type='hidden' value='"+id+"' name='"+name+"'/></td><td><a href='javascript:;' onclick='changeToBefore(this)'>上移</a>&nbsp;<a href='javascript:;' onclick='changeToAfter(this)'>下移</a></td></tr>"
+						}
+					}else{//当选中复选框的个数大于0小于1时
+						trHtml = "<tr><td>"+(i+1)+"</td><td class='paperName'><span class='paper_name_cell'>"+name+"</span><input type='hidden' value='"+id+"' name='"+name+"'/></td><td><span style='color:gainsboro'>上移</span>&nbsp;<span style='color:gainsboro'>下移</span></td></tr>";
+					}
+					//向table标签中拼接添加tr标签
+					tableHtml += trHtml;
+				}
+				//拼接table结束标签
+				tableHtml = tableHtml+"</table>";
+				//循环map集合
+				for(var prop in map){
+					if(map.hasOwnProperty(prop)){
+						//console.log('key is ' + prop +' and value is' + map[prop]);
+					}
+				}
+			}
+			
+			//获取div
+			var divHtml = $(".combineTestpaperList");
+			//清空div内容
+			divHtml.empty();
+			//div内添加内容
+			divHtml.html(tableHtml);
+			/**2.修改按选择试卷钮显示方式**/
+			//如果不为空的话则将选择试卷按钮改为修改试卷按钮
+			if(divHtml.html() !== null && divHtml.html() !== ""){
+				$(".selectPaper").prop("value","修改试卷");
+			}else{
+				$(".selectPaper").prop("value","选择试卷");
+			}
+			//关闭弹窗
+			closeDiv();
+			//检查是否有值
+			changBtnCss();
+		}
+		
+		
+		//判断复选框个数，当超过四个时给出提示
+		function selectChange(obj){
+			//统计【当前选择】中试卷个数
+			//var boxLength = $(obj).parents('.selectTestpaperList').find("input[type='checkbox']:checked").length;
+			//统计【当前选择】中试卷个数
+			var li_Total = $(".select_paper_cells").find("li").length;
+			
+			//var boxId = $(obj).parent().find("input[type='hidden']").attr("value");
+			//var boxName = $(obj).parent().find("input[type='hidden']").attr("name");
+			$(obj).find("input[type='checkbox'").prop("checked",true);
+			var boxId = $(obj).find("input[type='hidden']").attr("value");
+			var boxName = $(obj).find("input[type='hidden']").attr("name");
+			
+			/**当【当前试卷】中已经小于4套试卷时，点击未选择试卷的复选框时添加试卷，点击选中的试卷复选框时取消选中并删除【当前试卷】中该套试卷**/
+			if(li_Total < 4){
+				if($(obj).hasClass("visited")){//是否是选中状态
+					$(obj).removeClass("visited").addClass("active");//取消选中样式
+					$(obj).find("input[type='checkbox'").prop("checked",false);//取消选中
+					$("#"+boxId).remove();//删除【当前选择】中该试卷
+				}else if($(obj).hasClass("active")){//是否是未选中状态
+					$(obj).removeClass("active").addClass("visited");//选中样式
+					$(obj).find("input[type='checkbox'").prop("checked",true);//选中
+					//添加试卷到【当前选择】中
+					var str = "<li class='clearfix' id='" +boxId+ "' name='" +boxName+ "'><span class='fl'>" +boxName+ "</span><div class='fr close2' title='关闭' onclick='removeDiv($(this).parent())'></div></li>";
+					$(str).appendTo(".select_paper_cells");
+				}
+			}else{
+				/**当【当前试卷】中已经有4套试卷时，如果点击的是已经选中的试卷的复选框时，那么取消选中并删除【当前试卷】中该套试卷**/
+				if($(obj).hasClass("visited")){//是否是选中状态
+					$(obj).removeClass("visited").addClass("active");//取消选中样式
+					$(obj).find("input[type='checkbox'").prop("checked",false);//取消选中
+					$("#"+boxId).remove();//删除【当前选择】中该试卷
+				}else{
+					//当复选框个数大于4时，给出提示并不让其选中。
+					$(obj).find("input[type='checkbox'").prop("checked",false);
+					//$(obj).prop("checked",false);
+					return alert("最多只能选择4套试卷！");
+				}
+			}
+		}
+		
+		
+		
+		
+		function removeDiv(obj){
+			$(obj).remove();
+			var boxId = $(obj).attr("id");//获取id
+			//取消选中
+			$("#tr_"+boxId).removeClass("visited").addClass("active");//取消选中样式
+			$("#tr_"+boxId).find("input[type='checkbox'").prop("checked",false);//取消选中
+		}
+		//当考试类型单选框的值变为专练时，轮数不可点击
+		//function onchangeSetShowPro(obj){
+			//var radioVal = $(obj).val();//获取当前对象
+			//if(radioVal == 1){//当单选框的值为1时，将轮数置灰不可点击
+				//$(".level").val(0);//将值置为0
+				//$(".level").attr("disabled","true");
+			//}else{//当单选框的值不为1时，去掉轮数不可点击属性
+				//$(".level").removeAttr("disabled");
+			//}
+			//changBtnCss();//检查
+		//}
+		
+		
+		/**
+		*确认导入试卷
+		*/
+		function combineTestpaper(){
+			loadingAjax();
+			//试卷名称
+			var ccbPaperName = $(".paper_value").val();
+			//考试级别
+			var examLevel = $(".addTestpaper").find("input[name='examLevel']:checked").val();
+			//考试类型
+			var examType = $(".addTestpaper").find("input[name='examType']:checked").val();
+			//轮数
+			//var level = $(".level").val();
+			//试卷对象
+			var coms = $(".combineTestpaperList").find("input[type='hidden']");
+			//定义id集合
+			var ids = [];
+			var idsStr = "";
+			for(var i=0;i<coms.length;i++){
+				//将id添加到集合中
+				ids.push($(coms[i]).prop("value"));
+				if((coms.length-1) === i){
+					idsStr += $(coms[i]).prop("value");
+				}else{
+					idsStr += $(coms[i]).prop("value")+",";
+				}
+				
+			}
+			
+			var param = {};
+			param.name = ccbPaperName;//试卷名称
+			param.examType = examLevel;//考试级别（4四级,6六级）
+			param.practiceType = examType;//考试类型(0模考，1专练)
+			//param.level = level;//轮数
+			param.paperName = idsStr;//试卷id集合
+			//拼接参数
+			//var paramValue = "?ccbPaperName="+ccbPaperName+"&examLevel="+examLevel+"&examType="+examType+"&level="+level+"&ids="+ids;
+			//录入试卷
+			//window.location.href  = encodeURI("${baseURL}/ccbPaperConfig/addCcbPaper"+paramValue);
+			$.ajax({
+				type:"POST",
+				url:"${baseURL}/ccbPaperConfig/addCcbPaper",
+				data:param,
+				beforeSend:function(XMLHttpRequest){
+				},
+				complete : function(){
+					window.parent.closeAjaxLoad();//录入数据的时候给出提示：加载中。不让其点击界面
+				},
+				success:function(msg){
+					var resultValue = "";
+					if(msg.status === 'success'){
+						resultValue = "试卷添加成功！";
+						//显示提示弹窗 
+						showMessageBox(resultValue);
+					}else if(msg.status === 'fail'){
+						resultValue = "试卷添加失败！";
+						//显示提示弹窗 
+						showMessageBox(resultValue);
+					}else if(msg.status === 'name'){
+						resultValue = "当前试卷名称已存在，请重新输入！";
+						//显示重复试卷弹窗提示
+						showHitMessageBox(resultValue);
+					}else if(msg.status === 'id'){
+						resultValue = "当前所选试卷已存在，请重新选择！";
+						//显示重复试卷弹窗提示
+						showHitMessageBox(resultValue);
+					}
+				}
+			});
+			
+			
+		}
+		
+		//显示提示弹窗
+		function showMessageBox(resultValue){
+			$(".resultValue").text(resultValue)
+			$(".messageBox").show();
+			$(".resultMessage").show();
+			$(".coverDiv").show();
+		}
+		
+		//隐藏提示弹窗
+		function hideMessageBox(){
+			$(".messageBox").hide();
+			$(".resultMessage").hide();
+			$(".coverDiv").hide();
+		} 
+		
+		//显示重复试卷名称提示弹窗
+		function showHitMessageBox(resultValue){
+			$(".hitMessage").text(resultValue);
+			$(".messageBox").show();
+			$(".repeatTestpaper").show();
+			$(".coverDiv").show();
+		}
+		
+		//隐藏重复试卷名称提示弹窗
+		function hideHitMessageBox(){
+			$(".messageBox").hide();
+			$(".repeatTestpaper").hide();
+			$(".coverDiv").hide();
+		}
+		
+		//继续添加按钮
+		function goOnAddTestpaper(){
+			hideMessageBox();
+		}
+		
+		//返回首页
+		function goBackTestpaper(){
+			window.location.href  = "${baseURL}/ccbPaperConfig/ccbCombineTestpaperList";
+		}
+		
+		//提示重复添加按钮
+		function repeatTestpaper(){
+			hideHitMessageBox();
+		}
+		
+		
+		
+		
+		
+		function loadingAjax(){
+			closeAjaxLoad();
+			var mybg = document.getElementById("loadingAjax");
+		    if(mybg){
+		    	mybg.style.display = 'block';
+		    	return;
+		    }
+		    var procbg = document.createElement("div");  //首先创建一个div
+		    procbg.setAttribute("id", "loadingAjax");            //定义该div的id
+		    procbg.style.background = 'url(../ccbManage/images/load.gif) center center no-repeat';
+		    procbg.style.width = "100%";
+		    procbg.style.height = "100%";
+		    procbg.style.position = "fixed";
+		    procbg.style.top = "0";
+		    procbg.style.left = "0";
+		    procbg.style.backgroundColor = "rgba(0, 0, 0, 0.15)";
+		    procbg.style.zIndex = "999999";
+		    // procbg.style.opacity = "0.6";
+		    // procbg.style.filter = "Alpha(opacity=70)";
+		    //取消滚动条
+		    document.body.appendChild(procbg);
+		    document.body.style.overflow = "auto";
+		};
+
+		function closeAjaxLoad()   //关闭弹出层
+		{
+		    var mybg = document.getElementById("loadingAjax");
+		    if(mybg){
+		    	mybg.style.display = 'none';
+//		    	document.body.removeChild(mybg);
+		    	document.body.style.overflow = "auto";//恢复页面滚动条
+		    }
+		}
+		
+		
+		
+		
+	</script>
+	
+	<script id="combine_testpaper_list" type="text/html">
+		<table>
+				<tr>
+					<th></th>
+					<th>试卷名称</th>
+					<th>组合顺序</th>
+				</tr>
+				{{each data.testpaperList as paper i}}
+					<tr>
+                		<td>{{i+1}}</td>
+						<td class="paperName"><span class="paper_name_cell">map[prop]</span></td>
+						<td><a href="javascript:;" onclick="changeToBefore(this)">上移</a>&nbsp;<a href="javascript:;" onclick="changeToAfter(this)">下移</a></td>
+					</tr>
+				{{/each}}
+		</table>
+	</script>
+	<!-- 选择试卷列表展示 -->
+	<script id="select_testpaper_list" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="500px">试卷名称</th>
+					<th width="50px"></th>
+				</tr>
+				{{each data.testpaperList as paper i}}
+				<tr onclick="selectChange(this)" class="active" id="tr_{{paper.id}}">
+                	<td>{{i+1}}</td>
+					<td class="testpaperName"><span class="testpaper_name_cell">{{paper.name}}</span></td>
+					<td><input type="checkbox" class="checkbox_cell"/><input type="hidden" value="{{paper.id}}" name="{{paper.name}}"/></td>
+				</tr>
+				{{/each}}
+		</table>
+	</script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="../ccbManage/css/common.css"/>
+	<link rel="stylesheet" href="../ccbManage/css/style.css"/>
+	<link rel="stylesheet" href="../ccbManage/css/index.css"/>
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="../ccbManage/js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="../ccbManage/js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="../ccbManage/js/placeholder.js"></script>
+    <!-- 分页js -->
+<!--     <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/homework/workManage.js"></script> -->
+    <title>后台管理-学校管理</title>
+    <style>
+/*      .add_school{margin:0 auto;width:1000px;margin-top:5%;} */
+/*      .header_info tr .sc_title{text-align:right;} */
+/*      .header_info table{border-collapse:separate; border-spacing:5px 10px;} */
+/*      .header_info input[type='text']{width:200px;} */
+/*      .header_info input[type='button']{width:50px;align:center;} */
+/*      .header_info select{height:30px;width:auto;padding:0 2%;margin:0;} */
+/*      .header_info select option{text-align:center;} */
+/*      .schoolMsgContent{text-align: center;margin-top: 15px;} */
+/* 	 .schoolMsgBox{ display: none; background:#fff;position: absolute;z-index: 100099;margin-left: -300px;width: 300px;height:100px;top: 40%;left: 60%;} */
+/* 	 .closeDiv{margin: -20px 10px 0 0; width: 14px; height: 14px; background: url(../images/close.png) no-repeat; cursor: pointer;float: right;display: inline;} */
+/*      .openbg3{ display: none; z-index: 100098; width: 100%; height: 100%; left: 0; top: 0; background: transparent url(../../images/openbg_black.png); position:fixed!important;/* FF IE7*/ position:absolute;/*IE6*/ _top:expression(eval(document.compatMode && document.compatMode=='CSS1Compat') ? documentElement.scrollTop + (document.documentElement.clientHeight-this.offsetHeight)/2 :/*IE6*/ document.body.scrollTop + (document.body.clientHeight - this.clientHeight)/2);/*IE5 IE5.5*/} */
+    </style>
+</head>
+<body>
+	<!-- 遮罩层 -->
+	<div class="coverDiv openbg3"></div>
+	<div class="add_school">
+		<div class="school_top">
+			<div class="header_info">
+				<table>
+					<tr>
+						<td class="sc_title"><span class="new_school_id_title" id="tempSchoolIdTitle">新学校编号:</span></td>
+						<td><input type="text" class="new_school_id" id="newSchoolId" placeholder="请输新学校编号"/></td>
+					</tr>
+					<tr>
+						<td class="sc_title"><span class="new_school_name_title" id="tempSchoolNameTitle">新学校名称:</span></td>
+						<td><input type="text" class="new_school_name" id="newSchoolName" placeholder="请输新学校名称"/></td>
+					</tr>
+					<tr>
+						<td class="sc_title"><span class="temp_school_title" id="tempSchoolTitle">选择模板学校:</span></td>
+						<td>
+							<select class="temp_school_id" id="tempSchoolId">
+								<option value="0">请选择</option>
+								[#list scList as sc]
+									<option value="${sc.schoolId!}">${sc.schoolName!}</option>
+								[/#list]
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align:center;"><input type="button" class="submit_add_school" id="submitAddSchool" value="提交" onclick="submitSchoolInfo()"/></td>
+<!-- 						<td style="text-align:center;"><input type="button" class="config_school" id="configSchool" value="配置" onclick="configSchoolInfo()"/></td> -->
+						<td style="text-align:center;"><input type="button" class="back_school" id="backSchool" value="返回" onclick="backSchoolIndex()"/></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- 添加提示信息弹窗 -->
+	<div id="school_msg_box" class="schoolMsgBox">
+		<div class="openTitle">
+			<div class="school_title"><span>提示信息</span></div>
+			<div class="closeDiv" title="关闭" onclick="closeBox()"></div>
+		</div>	
+		<div id="school_msg_content" class="schoolMsgContent"></div>
+	</div>
+	
+	<script type="text/javascript">
+	
+		
+		/**保存学校信息**/
+		function submitSchoolInfo(){
+			//新学校编号
+			var newSchoolId = $("#newSchoolId").val();
+			//新学校名称
+			var newSchoolName = $("#newSchoolName").val();
+			//模板学校编号
+			var tempSchoolId = $("#tempSchoolId").prop("value");
+			var param={};
+			param.schoolId = newSchoolId;
+			param.schoolName = newSchoolName;
+			param.tempField = tempSchoolId;
+			var flag = checkSchoolInfo(param);
+			if(flag){
+				//window.location.href="${baseURL}/ccbAppSchoolInfo/saveSchoolInfo?param="+param;
+				//window.location.href="${baseURL}/ccbAppSchoolInfo/saveSchoolInfo?newSchoolId="+newSchoolId+"&newSchoolName="+newSchoolName+"&tempSchoolId="+tempSchoolId;
+				$.ajax({
+					type:"POST",
+					url:"${baseURL}/ccbAppSchoolInfo/saveSchoolInfo?newSchoolId="+newSchoolId+"&newSchoolName="+newSchoolName+"&tempSchoolId="+tempSchoolId,
+					success:function(msg){
+						if(msg.status=="success"){
+							updateSchoolData(msg.scList);
+							checkNum("添加成功！");
+						}else if(msg.status=="cid"){
+							checkNum("学校编号已存在！");
+						}else if(msg.status=="cname"){
+							checkNum("学校名称已存在！");
+						}
+					}
+				});
+			}
+		}
+		
+		
+		/**更新下拉数据**/
+		function updateSchoolData(scList){
+			if(scList || scList.length > 0){
+				$("#tempSchoolId").empty();
+				$("<option value='0'>请选择</option>").appendTo("#tempSchoolId");
+				for(var i=0;i<scList.length;i++){
+					$("<option value='"+scList[i].schoolId+"'>"+scList[i].schoolName+"</option>").appendTo("#tempSchoolId");
+				}
+			}
+			
+		}
+		
+		
+		
+		
+		/**返回主页**/
+		function backSchoolIndex(){
+			window.location.href="${baseURL}/ccbAppSchoolInfo/index";
+		}
+		
+		
+		/**配置学校信息**/
+		function configSchoolInfo(){
+			//新学校编号
+			var newSchoolId = $("#newSchoolId").val();
+			//新学校名称
+			var newSchoolName = $("#newSchoolName").val();
+			//模板学校编号
+			var tempSchoolId = $("#tempSchoolId").prop("value");
+			var param={};
+			param.schoolId = newSchoolId;
+			param.schoolName = newSchoolName;
+			param.tempField = tempSchoolId;
+			var flag = checkSchoolInfo(param);
+			if(flag){
+				//window.location.href="${baseURL}/ccbAppSchoolInfo/saveSchoolInfo?param="+param;
+				//window.location.href="${baseURL}/ccbAppSchoolInfo/saveSchoolInfo?newSchoolId="+newSchoolId+"&newSchoolName="+newSchoolName+"&tempSchoolId="+tempSchoolId;
+				$.ajax({
+					type:"POST",
+					url:"${baseURL}/ccbAppSchoolInfo/configSchoolInfo?newSchoolId="+newSchoolId+"&newSchoolName="+newSchoolName+"&tempSchoolId="+tempSchoolId,
+					success:function(msg){
+						if(msg.status=="success"){
+							checkNum("配置成功！");
+						}else if(msg.status=="fail"){
+							checkNum("配置失败！");
+						}
+					}
+				});
+			}
+		}
+		
+		
+		
+		
+		function checkScInfo(param){
+			if(!param.schoolId){
+				checkNum("请输入新学校编号！");
+				return false;
+			}else if(!param.schoolName){
+				checkNum("请输入新学校名称！");
+				return false;
+			}else{
+				return true;
+			}
+		}
+		
+		
+		
+		function checkSchoolInfo(param){
+			if(!param.schoolId){
+				checkNum("请输入新学校编号！");
+				return false;
+			}else if(!param.schoolName){
+				checkNum("请输入新学校名称！");
+				return false;
+			}else if(!param.tempField || param.tempField=="0"){
+				checkNum("请选择模板学校！");
+				return false;
+			}else if(verifySchoolInfo("ni",param.schoolId)){
+				checkNum("当前学校编号已存在！");
+				return false;
+			}else if(verifySchoolInfo("nn",param.schoolName)){
+				checkNum("当前学校名称已存在！");
+				return false;
+			}else{
+				return true;
+			}
+		}
+		
+		
+		/**验证学校编号和学校名称是否存在**/
+		function verifySchoolInfo(type,val){
+			var flag = false;
+			var options = $("#tempSchoolId").find("option");
+			if(options){
+				for(var i=0;i<options.length;i++){
+					var tsId = $(options[i]).prop("value");//id
+					var tsName = $(options[i]).text();//name
+					if(type=="ni"){//新学校编号
+						if(val == tsId){
+							flag = true;
+						}
+					}else if(type=="nn"){//新学校名称
+						if(val == tsName){
+							flag = true;
+						}
+					}
+				}
+			}
+			
+			
+// 			//模板学校id集合
+// 			var tsIds = $("#tempSchoolId").find("option");
+// 			//模板学校名称集合
+// 			var tsNames = $("#tempSchoolId option").text();
+// 			if(type=="ni"){//新学校编号
+// 				if(tsIds){
+// 					for(var i=0;i<options.length;i++){
+// 						var option
+// 						if(val == tsIds[i]){
+// 							flag = true;
+// 						}
+// 					}
+// 				}
+// 			}else if(type=="nn"){//新学校名称
+// 				if(tsNames){
+// 					for(var i=0;i<tsNames.length;i++){
+// 						if(val == tsNames[i]){
+// 							flag = true;
+// 						}
+// 					}
+// 				}
+// 			}
+			return flag;
+		}
+		
+		
+		
+		/**添加-弹窗内容**/
+		function checkNum(msg){
+			var ptMsg = "<span>"+msg+"</span>"; 
+			$(ptMsg).appendTo("#school_msg_content");
+			showBox();//打开弹窗
+		}
+		
+		
+		//提示信息-打开遮罩层
+		function showBox(){
+		    $(".schoolMsgBox").show();
+		    $(".openbg3").show();
+		}
+
+		//提示信息-关闭当前弹窗和遮罩层
+		function closeBox(){
+			$(".schoolMsgBox").hide();
+		    $(".openbg3").hide();
+		    $("#school_msg_content").empty();
+		}
+		
+		
+	</script>
+	
+
+	
+	
+	
+</body>
+</html>

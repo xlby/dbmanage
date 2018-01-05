@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title>
+  [#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+ 
+			<!--系统活动首页-->
+			
+			<div>
+				<div class="content-head mb20">
+					<span class="content-position pr10">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">作品评分></span>
+					<span class="content-position">作品浏览</span>
+				</div>
+				<div class="input-wrap clear">
+				  <form id="pageform" action="${baseURL}/score/workList/${eventId!}" method="post">
+
+                
+					<span class="input-title fl" style="width:13%;text-align: left;">我的评分状态：</span>
+					<select name="state" id="" class="input-select fl" style="width:25%;">
+						<option value="">全部状态</option>
+						<option value="1" [#if state==1]selected [/#if]>已评</option>
+						<option value="0" [#if state==0]selected [/#if]>未评</option>
+					</select>
+					<span class="lookfor cir-angle fl ml10 fl mr5">
+						<img src="${staticURL}/collect/img/big.png" alt="" onClick="submit();">
+					</span>
+					</form>
+				</div>
+				<table id="zpinmanage" class="mt20">
+					<tr class="t-title">
+						<th style="width:5%;">序号</th>
+						<th style="width:30%;">作品名</th>
+						<th style="width:10%;">上传时间</th>
+						<th style="width:10%;">我的评分状态</th>
+						<th style="width:15%;">操作</th>
+					</tr>
+						 [#list page.data as event]
+                <tr class="table-text">
+                    <td>${event_index+1}</td>
+                    <td>
+                    <a title="${event.work_name}" href="#" onclick="viewWork('${event.id}')" class="corblack elli addw308 cor333">${event.work_name}</a>
+                    </td>
+                    <td>${event.creat_time}</td>
+                    <td>
+  					[#if event.score_sum??]
+                        	已评
+                     [#else]
+                     		未评
+                     [/#if]
+					</td>
+                    <td>
+                    [#if event.score_sum??]
+                        <span class="mange" onclick="viewWork('${event.id}')">查看</span>
+                        <span class="mange" onclick="scoreWork('${event.id}')">重评</span>
+                     [#else]
+                      <span class="mange" onclick="scoreWork('${event.id}')">评分</span>
+                     [/#if]
+                    </td>
+                </tr>
+                [/#list]
+				</table>
+			[#include "collect/commonpage.htm"]
+			</div>
+			 
+ 
+ 
+</body>
+<script type="text/javascript">
+    function scoreWork(eventId) {
+        window.location.href = "${baseURL}/score/editWorkScore/" + eventId;
+    }
+    function viewWork(workId) {
+    	 window.location.href = "${baseURL}/score/viewWorkScore/" + workId;
+    }
+    function submit(){
+    	$("#pageform").submit();
+    }
+</script>
+</html>

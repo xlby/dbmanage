@@ -1,0 +1,41 @@
+	<link rel="stylesheet" href="${staticURL}/collect/css/common.css" />
+	<link rel="stylesheet" href="${staticURL}/collect/css/systemManage.css" />
+	<link rel="stylesheet" href="${staticURL}/collect/css/ui-dialog.css">
+	<link rel="stylesheet" href="${staticURL}/collect/css/jquery.datetimepicker.css" />
+	<script src="${staticURL}/collect/js/jQuery-v1.8.2.js"></script>
+	<script src="${staticURL}/collect/js/event.js"></script>
+	<script src="${staticURL}/collect/js/on.js"></script>
+	<script src="${staticURL}/collect/js/method.js"></script>
+	<script src="${staticURL}/collect/js/placeMe.js"></script>
+	<script src="${staticURL}/collect/js/art-dialog/dialog-plus-min.js"></script>
+	<script src="${staticURL}/collect/js/arttemplate/template.js"></script>
+	<script src="${staticURL}/collect/js/common.js"></script>
+	<script src="${staticURL}/collect/js/formFillTools.js"></script>
+	<script src="${staticURL}/collect/js/build/jquery.datetimepicker.full.min.js"></script>
+	<script src="${staticURL}/collect/js/jquery.datetimepicker.js"></script>
+	<script src="${staticURL}/collect/js/form-validator/jquery.form-validator.js"></script>
+		<script type="text/javascript">
+		$(function(){
+			
+			jQuery.datetimepicker.setLocale('de');
+
+			jQuery('#datetimepicker-b,#datetimepicker-c,#datetimepicker-d,#datetimepicker-e').datetimepicker({
+			 i18n:{
+			  de:{
+			   months:[
+			    '一月','二月','三月','四月',
+			    '五月','六月','七月','八月',
+			    '九月','十月','十一','十二',
+			   ],
+			   dayOfWeek:[
+			    "So.", "Mo", "Di", "Mi", 
+			    "Do", "Fr", "Sa.",
+			   ]
+			  }
+			 },
+			 timepicker:true,
+			 datepicker:true,
+  			 format:'Y-m-d H:i'
+			});
+		});
+	</script>

@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/libs/js/jquery.js"></script>
+    <title>后台管理</title>
+    <style>
+    .paperManage{margin:0 auto;width:800px;}
+    .testPaperName{width:600px}
+    .bottom_btn{margin:10px auto;width:800px;text-align:center;}
+    .paperList{margin-top:10px}
+    .paperList table{border-collapse: collapse;}
+    .testpaper_name{width:724px;}
+    .sosa_cell{width:38px;}
+    .paperList tr td{border:1px solid #ccc8cc;cell-padding:0;text-align:center;}
+    </style>
+</head>
+<body>
+	<div class="paperManage">
+		<div class="searchPaper">
+			<table>
+				<tr>
+					<td class="search_one">请输入试卷名称</td>
+					<td class="search_two"><input type="text" class="testPaperName"/></td>
+					<td class="search_three"><input type="button" value="搜索" class="searchButton"/></td>
+				</tr>
+			</table>
+		</div>
+		<div class="paperList">
+			<table>
+				<tr>
+					<td>序号</td>
+					<td>试卷名称</td>
+					<td>操作</td>
+				</tr>
+				[#list testPaperList as paper]
+				<tr>
+					<td class="sosa_cell">${paper_index+1}</td>
+					<td class="testpaper_name" style="text-align:left">${paper.name}</td>
+					<td style="align:center" class="sosa_cell"><input type="checkbox" /></td>
+				</tr>
+				[/#list]
+			</table>
+		</div>
+		<div class="bottom_btn"><input type="button" value="确认添加"/></div>
+	</div>
+	
+	<script type="text/javascript">
+		$(function(){
+			/**点击搜索按钮根据试卷名称搜索**/
+			$(".searchButton").click(function(){
+				var testPaperName = $(".testPaperName").val();
+					window.location.href  = encodeURI("${baseURL}ccbAnalysisPaper/paperList?testPaperName="+testPaperName);
+// 				if(testPaperName == null || testPaperName === ''){
+// 					return alert("请输入试卷名称！");
+// 				}else{
+// 				}
+			});
+			
+		});
+	</script>
+</body>
+</html>

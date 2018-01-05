@@ -1,0 +1,415 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>作品管理</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+
+<script type="text/javascript">
+	function goPage(i) {
+
+		window.location = "${baseURL}/works/worksManage?eid=${eid}&name="
+				+ $("#name").val() + "&author=" + $("#author").val()
+				+ "&cntbGroup=" + $("#cntbGroup").val() + "&cntbKnowledge="
+				+ $("#cntbKnowledge").val() + "&checkStatus="
+				+ $("#checkStatus").val() + "&status=" + $("#status").val()
+				+ "&scoreGroupStatus=" + $("#scoreGroupStatus").val()
+				+ "&pageNo=" + i;
+
+	}
+
+	function search() {
+
+		window.location = "${baseURL}/works/worksManage?eid=${eid}&name="
+				+ $("#name").val() + "&author=" + $("#author").val()
+				+ "&cntbGroup=" + $("#cntbGroup").val() + "&cntbKnowledge="
+				+ $("#cntbKnowledge").val() + "&checkStatus="
+				+ $("#checkStatus").val() + "&status=" + $("#status").val()
+				+ "&scoreGroupStatus=" + $("#scoreGroupStatus").val();
+	}
+
+	function getChooseId() {
+		var ids = "";
+		$(".choose-imgs").each(function() {
+			if ($(this).attr('value') != null && $(this).attr('value') != "") {
+				ids += "," + $(this).attr('value');
+			}
+		});
+		if (ids.charAt(0) == ",") {
+			ids = ids.substring(1);
+		}
+
+		return ids;
+	}
+
+	function exportInfo() {
+
+	}
+
+	function onekeyGD(eid) {
+		var param = {};
+		param.eid = eid;
+		if(param.eid==null||param.eid==""){
+			return ;
+		}
+		$.ajax({
+			type : "POST",
+			url : "${baseURL}/works/onekeyGD",
+			data : param,
+			success : function(msg) {
+				if (msg.status == "1") {
+					alert("操作成功！");
+				} else {
+					alert("操作失败，请稍后再试！");
+				}
+				window.location.reload();
+			}
+		});
+	}
+
+	function batchDestroy(id) {
+
+		var param = {};
+
+		if (id == null || id == "") {
+			param.ids = getChooseId();
+		} else {
+			param.ids = id;
+		}
+		param.type = "0";
+
+		if(param.ids==null||param.ids==""){
+			alert("请选择作品!");
+			return ;
+		}
+		$.ajax({
+			type : "POST",
+			url : "${baseURL}/works/batchManage",
+			data : param,
+			success : function(msg) {
+				if (msg.status == "1") {
+					alert("操作成功！");
+				} else {
+					alert("操作失败，请稍后再试！");
+				}
+				window.location.reload();
+			}
+		});
+	}
+
+	function batchRenew(id) {
+		
+		var param = {};
+
+		if (id == null || id == "") {
+			param.ids = getChooseId();
+		} else {
+			param.ids = id;
+		}
+		param.type = "1";
+
+		if(param.ids==null||param.ids==""){
+			alert("请选择作品!");
+			return ;
+		}
+		$.ajax({
+			type : "POST",
+			url : "${baseURL}/works/batchManage",
+			data : param,
+			success : function(msg) {
+				if (msg.status == "1") {
+					alert("操作成功！");
+				} else {
+					alert("操作失败，请稍后再试！");
+				}
+				window.location.reload();
+			}
+		});
+
+	}
+
+	function batchGD(id) {
+		
+		var param = {};
+
+		if (id == null || id == "") {
+			param.ids = getChooseId();
+		} else {
+			param.ids = id;
+		}
+		param.type = "2";
+
+		if(param.ids==null||param.ids==""){
+			alert("请选择作品!");
+			return ;
+		}
+		$.ajax({
+			type : "POST",
+			url : "${baseURL}/works/batchManage",
+			data : param,
+			success : function(msg) {
+				if (msg.status == "1") {
+					alert("操作成功！");
+				} else {
+					alert("操作失败，请稍后再试！");
+				}
+				window.location.reload();
+			}
+		});
+	}
+	
+function show(id){
+	window.location.href = "${baseURL}/works/worksShow?wid="+id;
+}
+</script>
+
+<body>
+
+	<div id="content" class="clear">
+
+		<div class="content-body" >
+			<!--系统活动首页-->
+			<div id="active-manage">
+				<div class="content-head">
+					<span class="content-position">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">活动管理></span>
+					<span class="content-position">作品管理></span>
+				</div>
+				<ul id="menu" class="mt40 pl10">
+					<li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eid}">活动设置</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eid}">人员管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/signup/list/${eid}">报名管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/workslist/${eid}">审核管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eid}">评分管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eid}">投票管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eid}"  class="add-on-style">作品管理</a></li>
+				</ul>
+				<div class="active-bm-wrap clear mt20">
+					<select name="cntbGroup" id="cntbGroup" class="input-select fl mr5" style="width:10%;">
+						[#if cntbGroup??]
+						<option value="" >作品分组</option>
+						[#else]
+						<option value="" selected="selected">作品分组</option>
+						[/#if]
+						
+						[#list cgList as item]
+						[#if cntbGroup==item.id]
+						<option value="${item.id!''}" selected="selected">${item.name!''}</option>
+						[#else]
+						<option value="${item.id!''}" >${item.name!''}</option>
+						[/#if]
+						[/#list]
+					</select>
+					
+					<select name="cntbKnowledge" id="cntbKnowledge" class="input-select fl mr5" style="width:10%;">
+						[#if cntbKnowledge??]
+						<option value="" >知识点</option>
+						[#else]
+						<option value="" selected="selected">知识点</option>
+						[/#if]
+						
+						[#list ckList as item]
+						[#if cntbKnowledge==item.id]
+						<option value="${item.id!''}" selected="selected">${item.name!''}</option>
+						[#else]
+						<option value="${item.id!''}" >${item.name!''}</option>
+						[/#if]
+						[/#list]
+					</select>
+					<input name="name" id="name" type="text" value="${name!''}" class="input-text P5 fl mr10" style="width:10%;" placeholder="作品名">
+					<input name="author" id="author" type="text" value="${author!''}" class="input-text P5 fl mr10" style="width:10%;" placeholder="投稿人">
+					<select name="checkStatus" id="checkStatus" class="input-select fl mr5" style="width:10%;">
+					[#if checkStatus??]
+							<option value="">审核状态</option>
+						[#if checkStatus=="1"]
+							<option value="1" selected="selected">未审核</option>
+						[#else]
+							<option value="1" >未审核</option>
+						[/#if]
+						[#if checkStatus=="2"]
+							<option value="2" selected="selected">初审完</option>
+						[#else]
+							<option value="2" >初审完</option>
+						[/#if]
+						[#if checkStatus=="3"]
+							<option value="3" selected="selected">复审完</option>
+						[#else]
+							<option value="3" >复审完</option>
+						[/#if]
+						[#if checkStatus=="4"]
+							<option value="4" selected="selected">终审完</option>
+						[#else]
+							<option value="4" >终审完</option>
+						[/#if]
+						[#if checkStatus=="5"]
+							<option value="5" selected="selected">退回</option>
+						[#else]
+							<option value="5" >退回</option>
+						[/#if]
+					[#else]
+						<option value="" selected="selected">审核状态</option>
+						<option value="1">未审核</option>
+						<option value="2">初审完</option>
+						<option value="3">复审完</option>
+						<option value="4">终审完</option>
+						<option value="5">退回</option>
+					[/#if]
+
+					</select>
+					<select name="scoreGroupStatus" id="scoreGroupStatus" class="input-select fl mr5" style="width:10%;">
+						<option value="">评分状态</option>
+						[#list sgList as item]
+							[#if scoreGroupStatus??]
+								[#if scoreGroupStatus== item.id+",0,"+item.num]
+									<option value="${item.id},0,${item.num}" selected="selected">${item.name!""}未评分</option>
+								[#else]
+									<option value="${item.id},0,${item.num}">${item.name!""}未评分</option>
+								[/#if]
+								[#if scoreGroupStatus== item.id+",1,"+item.num]
+									<option value="${item.id},1,${item.num}" selected="selected">${item.name!""}评分中</option>
+								[#else]
+									<option value="${item.id},1,${item.num}">${item.name!""}评分中</option>
+								[/#if]
+								[#if scoreGroupStatus== item.id+",2,"+item.num]
+									<option value="${item.id},2,${item.num}" selected="selected">${item.name!""}评分完</option>
+								[#else]
+									<option value="${item.id},2,${item.num}">${item.name!""}评分完</option>
+								[/#if]
+							[#else]
+								<option value="${item.id},0,${item.num}">${item.name!""}未评分</option>
+								<option value="${item.id},1,${item.num}">${item.name!""}评分中</option>
+								<option value="${item.id},2,${item.num}">${item.name!""}评分完</option>
+							[/#if]
+						[/#list]
+					</select>
+					<select name="status" id="status" class="input-select fl mr5" style="width:10%;">
+
+					[#if status??]
+							<option value="">可用状态</option>
+						[#if status=="1"]
+							<option value="1" selected="selected">正常</option>
+						[#else]
+							<option value="1" >正常</option>
+						[/#if]
+						[#if status=="0"]
+							<option value="0" selected="selected">销毁</option>
+						[#else]
+							<option value="0" >销毁</option>
+						[/#if]
+
+					[#else]
+						<option value="">可用状态</option>
+						<option value="1">正常</option>
+						<option value="0">销毁</option>
+					[/#if]
+					</select>
+					<span class="lookfor cir-angle fl ml10 fl mr5" onclick="search()">
+						<img src="${staticURL}/collect/img/big.png" alt="">
+					</span>
+				</div>
+				<div class="button-wrap mt20 mb10 clear" id="ac-button">
+					<div class="fl clear">
+						<span class="cir-angle mr10 fl ac-color pl10 pr10" onclick="batchDestroy()">批量销毁</span>
+						<span class="cir-angle mr10 fl ac-color pl10 pr10" onclick="batchRenew()">批量恢复</span>
+						<span class="cir-angle mr10 fl ac-color pl10 pr10" onclick="batchGD()">批量归档</span>
+					</div>
+					<div class="fr clear">
+						<span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:void(0)" style="color:#fff;" onclick="onekeyGD('${eid!''}')">一键归档</a></span>
+						<span class="on-button cir-angle fl mr10 pl10 pr10"><a href="javascript:void(0)" style="color:#fff;" onclick="exportInfo()">作品详细导出</a></span>
+					</div>
+				</div>
+				<table id="zpin-manage">
+					<tr class="t-title">
+						<th style="width:8%;" class="clear">
+							<span class="mr5 allcheck fl ml10 mt10" style="width:14px;height:14px;">
+								<input type="checkbox" value="全选" class="mr5 checkbox-on">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>全选
+						</th>
+						<th style="width:5%;">序号</th>
+						<th style="width:10%;">作品名</th>
+						<th style="width:9%;">投稿人</th>
+						<th style="width:8%;">审核状态</th>
+
+						<th style="width:13%;">当前评分总得分</th>
+						<th style="width:12%;">当前获得票数</th>
+						<th style="width:10%;">可用状态</th>
+						<th style="width:30%;">操作</th>
+
+					</tr>
+					[#list page.data as item]
+					<tr class="table-text">
+						<td class="pl20 pr20">
+							<span class="allcheck" style="width:14px;height:14px;">
+								<input type="checkbox"class="mr5 checkbox-on">
+								<span class="choose-img mr5 nochoose-imgs" value="${item.id!''}"></span>
+							</span>
+						</td>
+						
+						
+						<td>${item_index+1}</td>
+						<td><p title="${item.name!''}" class="elli add154">${item.name!''}</p></td>
+						<td>${item.author1!''}</td>
+						<td>
+							[#if item.checkStatus=="1"]
+								未审核
+							[/#if]
+							[#if item.checkStatus=="2"]
+								初审完
+							[/#if]
+							[#if item.checkStatus=="3"]
+								复审完
+							[/#if]
+							[#if item.checkStatus=="4"]
+								终审完
+							[/#if]
+							[#if item.checkStatus=="5"]
+								退回
+							[/#if]
+						</td>
+						
+						<td>
+						[#list scoreGroupInfoList as item2]
+							[#if item2.wid==item.id]
+								[#if item2.averageScore??]${item2.averageScore?string("0.##")}[/#if]
+							[/#if]
+						[/#list]
+						</td>
+						
+						<td>${item.voteAll}</td>
+						<td>
+							[#if item.status=="1"]
+								正常
+							[/#if]
+							[#if item.status=="0"]
+								销毁
+							[/#if]
+						</td>
+						<td>
+						
+						<span class="mange" onclick="show('${item.id}')">查看</span>
+						[#if item.status=="1"]
+						<span class="dele" onclick="batchDestroy('${item.id!''}')">销毁</span>
+						[/#if]
+						[#if item.status=="0"]
+						<span class="hf" onclick="batchRenew('${item.id!''}')">恢复</span>
+						[/#if]
+						<span class="fp-f" onclick="batchGD('${item.id!''}')">归档</span>
+						
+						</td>
+						
+					</tr>
+					[/#list]
+				</table>
+
+
+			<!-- 分页 -->
+			[#include "collect/include/page.htm"]
+			</div>
+		</div>
+	</div>
+
+</body>

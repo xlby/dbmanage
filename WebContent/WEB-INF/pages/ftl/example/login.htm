@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>example</title>
+<script type="text/javascript"
+	src="${staticURL}/assets/js/jQuery-2.1.3.min.js"></script>
+</head>
+
+<body>
+	<input type="text" name="username" id="username" placeholder="请输入用户名"
+		value="${username!}" />
+			<input type="text" name="username1" id="username1" placeholder="请输入用户名1"
+		value="${username1!}" />
+	<input type="text" name="password" id="password" placeholder="请输入密码" />
+	<input type="button" name="password" id="password" onClick="testAjax();" />
+</body>
+<script type="text/javascript">
+function testAjax(){
+	$.ajax({
+		type : "post",
+		url : "${baseURL}/example/login.do",
+		data : {
+			typeId:""
+		},
+		async : false,
+		success : function(data) {
+			  alert( JSON.stringify(data));
+			//alert(  data );
+		 	
+			 
+		}
+	});
+	
+	
+}
+</script>
+</html>

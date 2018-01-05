@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>评分任务分配</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div>
+        <div id="sys-active">
+            <div class="content-head">
+                <span class="content-position">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">评分管理></span>
+                <span class="content-position">评分任务分配></span>
+            </div>
+            <ul id="menu" class="mt40 pl10">
+                <li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}">活动设置</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}">人员管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/signup/list/${eventId}">报名管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}" class="add-on-style">评分管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+                <li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+            </ul>
+            <h2 class="ac-title-h2 mt20">评分浏览<strong>（${scoreGroupDetail.name!''}）</strong></h2>
+            <form id="pageform" action="${baseURL}/scoreManage/reviewList" method="post">
+                <input type="hidden" value="${paramMap.eventId}" name="eventId"/>
+                <input type="hidden" value="${paramMap.scoreGroupId}" name="scoreGroupId"/>
+
+                <div class="active-bm-wrap clear mt10">
+                    <span class="input-title fl add-width-9">作品分组：</span>
+                    <select name="worksGroup" id="worksGroup" class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        [#list cntbGroupList as cntbGroup]
+                        <option value="${cntbGroup.id}" [#if cntbGroup.id== paramMap.worksGroup]selected[/#if] >${cntbGroup.name}</option>
+                        [/#list]
+                    </select>
+
+                    <span class="input-title fl add-width-9">知识点：</span>
+                    <select name="knowledgePointId" id="knowledgePointId" class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        [#list knowledgeList as knowledgeGroup]
+                        <option value="${knowledgeGroup.id}" [#if knowledgeGroup.id== paramMap.knowledgePointId]selected[/#if] >${knowledgeGroup.name}</option>
+                        [/#list]
+                    </select>
+
+                    <span class="input-title fl add-width-9">作品名称：</span>
+                    <input type="text" id="worksName" name="worksName" value="${paramMap.worksName}"
+                           class="input-text P5 fl mr10" style="width:10%;border-left:none;"
+                           placeholder="作品名称">
+
+                    <span class="input-title fl add-width-9">分配状况：</span>
+                    <select name="allocateStatus" id="allocateStatus" class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        <option value="1" [#if paramMap.allocateStatus== 1]selected[/#if] >分配完</option>
+                        <option value="2" [#if paramMap.allocateStatus== 2]selected[/#if] >未分配</option>
+                        <option value="3" [#if paramMap.allocateStatus== 3]selected[/#if] >部分分配</option>
+                    </select>
+
+                    <span class="input-title fl add-width-9">评分状况：</span>
+                    <select name="scoreStatus" id="scoreStatus" class="input-select fl mr5" style="width:10%;">
+                        <option value="">请选择</option>
+                        <option value="1" [#if paramMap.scoreStatus== 1]selected[/#if] >已评完</option>
+                        <option value="2" [#if paramMap.scoreStatus== 2]selected[/#if] >未评</option>
+                        <option value="3" [#if paramMap.scoreStatus== 3]selected[/#if] >部分已评</option>
+                    </select>
+
+                    <!--<span class="input-title fl add-width-9 mt10">评分人：</span>
+                    <select name="staffId" id="staffId" class="input-select fl mr5 mt10" style="width:10%;">
+                        <option value="">请选择</option>
+                        [#list eventStaffList as eventStaff]
+                        <option value="${eventStaff.id}" [#if eventStaff.id== paramMap.staffId]selected[/#if] >${eventStaff.name}</option>
+                        [/#list]
+                    </select>-->
+
+                    <span class="input-title fl add-width-9 mt10">排序：</span>
+                    <select name="orderStatus" id="orderStatus" class="input-select fl mr5 mt10" style="width:10%;">
+                        <option value="">请选择</option>
+                        <option value="1" [#if paramMap.orderStatus== 1]selected[/#if] >平均分正排</option>
+                        <option value="-1"[#if paramMap.orderStatus== -1]selected[/#if] >平均分倒排</option>
+                    </select>
+                </div>
+
+                <div class="clear mt10">
+                    <span class="input-title fl" style="width:9%;">每页显示：</span>
+                    <select name="pageSizeStr" id="pageSizeStr" class="input-select fl mr5" style="width:10%;">
+                        <option value="20" [#if paramMap.pageSizeStr== 20]selected[/#if] >20</option>
+                        <option value="50" [#if paramMap.pageSizeStr== 50]selected[/#if] >50</option>
+                        <option value="200" [#if paramMap.pageSizeStr== 200]selected[/#if] >200</option>
+                    </select>
+                    <span class="input-title fl" style="width:2%;">条</span>
+
+					<span class="lookfor cir-angle fl ml10 fl mr5">
+						<img src="${staticURL}/collect/img/big.png" alt="" onclick="javascript:$('#pageform').submit()">
+					</span>
+                    <span class="cir-angle mr10 fr ac-color pl10 pr10 backs" onclick="backToList()">返回</span>
+                </div>
+            </form>
+
+            <table id="active-bm-table" class="worksTable mt10">
+                <tr class="t-title">
+                    <th style="width:7%;" class="clear">
+							<span class="mr5 allcheck fl ml10 mt10" style="width:14px;height:14px;">
+								<input type="checkbox" value="全选" class="mr5 checkbox-on">
+								<span class="choose-img mr5 nochoose-imgs"></span>
+							</span>全选
+                    </th>
+                    <th>序号</th>
+                    <th width="15%">作品名</th>
+                    <th>分组</th>
+                    <th>知识点</th>
+                    <th>分配状况</th>
+                    <th>评分状况</th>
+                    [#list 1..scoreGroupDetail.num as staffLoopTh]
+                    <th>评分人${staffLoopTh}</th>
+                    [/#list]
+                    <th>当前平均分</th>
+                </tr>
+                [#list dataList as data]
+                <tr class="table-text">
+                    <td class="pl20 pr20">
+                        <span class="allcheck" style="width:14px;height:14px;">
+                            <input type="checkbox" class="mr5 checkbox-on radio-check">
+                            <span class="choose-img mr5 nochoose-imgs"></span>
+                        </span>
+                        <input type="hidden" value="${data.id}"/>
+                    </td>
+                    <td>${data_index + 1}</td>
+                    <td title="${data.name}">${data.name}</td>
+                    <td>${data.cg_name}</td>
+                    <td>${data.ck_name}</td>
+                    <td>[#if data.assign_cnt != null && data.num != null]${data.assign_cnt}/${data.num}[/#if] </td>
+                    <td>[#if data.score_cnt != null && data.num != null]${data.score_cnt}/${data.num}[/#if] </td>
+                    [#list 1..scoreGroupDetail.num as staffLoop]
+                    <td>
+                        [#list staffList as staffListData]
+                        [#if staffListData.inner_index == staffLoop && staffListData.works_id == data.id]
+                            ${staffListData.staff_name}[#if staffListData.score_sum](<a href="${baseURL}/score/showWorkScore/${staffListData.ws_id}" target="_blank">${staffListData.score_sum}</a>)[/#if]
+                        [/#if]
+                        [/#list]
+                    </td>
+                    [/#list]
+                    <td><strong style="color: red">[#if data.score_avg??]${data.score_avg?string("0.##")}[/#if]</strong></td>
+                </tr>
+                [/#list]
+            </table>
+            [#include "collect/commonpage.htm"]
+        </div>
+    </div>
+</div>
+<div id="score_staffs" style="display: none;width:420px;height:200px;overflow-y:auto;">
+    <table id="windows-table" class="" style="width:400px;" >
+    </table>
+</div>
+
+<script type="text/javascript">
+    var busy_dialog = dialog({title: "正在处理中..."});
+    var ok_dialog = dialog({content: "操作完成"});
+    var v_event_id = '${eventId}';
+
+    //*******************************************************************************
+    function backToList() {
+        window.location.href = "${baseURL}/scoreManage/list/${eventId}";
+    }
+    
+    function viewWork(v_work_id) {
+
+    }
+
+
+</script>
+</body>
+</html>

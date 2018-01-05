@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title>
+	[#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+<div id="wap-a">
+
+	<div id="content" class="clear">
+
+
+			<!--系统分析-->
+			<div id="sys-fx" style="">
+				<div class="content-head">
+					<span class="content-position pr10">您的位置：</span>
+					<span class="content-position">首页></span>
+					<span class="content-position">作品审核></span>
+					<span class="content-position">活动审核统计</span>
+				</div>
+				<div class="clear mt20">
+					<div id="status-chart" style="width: 100%;height:400px;"></div>
+					<div id="return-chart" style="width: 100%;height:400px;"></div>
+				</div>
+				<p class="bt-p">审核人员审核量排名</p>
+				<table id="active-first" class="mt20 mb20">
+					<tbody>
+						<tr class="t-title">
+							<th style="width:10%;">排名</th>
+							<th style="width:20%;">审核人员</th>
+							<th style="width:20%;">类别</th>
+							<th style="width:20%;">审稿量</th>
+						</tr>
+                        [#list rankingList as ranking]
+						<tr class="table-text">
+							<td class="sys-num">${ranking_index+1}</td>
+							<td>${ranking.staff_name}</td>
+							<td>
+								[#switch ranking.staff_role]
+								[#case 1]
+								初审
+								[#break]
+								[#case 2]
+								复审
+								[#break]
+								[#case 3]
+								终审
+								[#break]
+								[#default]
+								默认
+								[/#switch]
+							</td>
+                            <td>
+                                ${ranking.review_amount}
+                            </td>
+						</tr>
+                    [/#list]
+					</tbody>
+				</table>
+
+				<div class="clear mt20">
+					<div id="daily-chart" style="width: 100%;height:500px;"></div>
+				</div>
+
+				<div class="on-button cir-angle " id="active-first-button">
+					<span class="on-button cir-angle back-on" style="background: rgb(15, 230, 177);">返回</span>
+				</div>
+			</div>
+			
+		</div>
+
+</div>
+<script src="${baseURL}/collect/js/echarts.min.js"></script>
+<script>
+	$(function () {
+		$('.on-button').click(function(){
+			history.go(-1);
+			$('#sys-active').hide();
+			$('#announce-active').show();
+		});
+		getCheckStatusChart();
+		getReturnReason();
+		getDailyStat();
+	});
+
+	
+	function getCheckStatusChart() {
+        var statusPieChart = echarts.init(document.getElementById("status-chart"));
+		statusPieChart.clear();
+        statusPieChart.showLoading({text:'正在加载数据'});
+        $.ajax({
+			url: '${baseURL}/works/analysis/${eventId}/status-chart',
+			type: 'GET'
+		}).done(function(data) {
+			if(data.result.status="0"){
+            var pieData=data.result.data;
+			var pieCharts=[];
+			pieData.forEach(function (item) {
+				var pie={
+					value:item.amount,
+					name:item.check_status
+				};
+				pieCharts.push(pie);
+			});
+
+                var option={
+                    title:{
+                        text:'作品审核情况图',
+                        left:'center',
+                        textStyle:{
+                            color:'#000',
+                            fontSize:19
+                        }
+                    },
+                    tooltip:{
+                        formatter:'{b}<br/>{c}'
+                    },
+                    series:[{
+                        type:'pie',
+                        data:pieCharts,
+
+                    }]
+                };
+                statusPieChart.setOption(option);
+                statusPieChart.hideLoading()
+            }
+            else{
+                statusPieChart.hideLoading();
+                statusPieChart.showLoading({text:'暂无数据'});
+            }
+		});
+	}
+	function getReturnReason() {
+		var reasonChart=echarts.init(document.getElementById("return-chart"));
+        reasonChart.clear();
+        reasonChart.showLoading({text:'正在加载数据'});
+        $.ajax({
+			url:'${baseURL}/works/analysis/${eventId}/return-status',
+			type:'GET'
+		}).done(function (data) {
+			if(data.result.status="0"){
+            var reasonPieData=data.result.data;
+
+			var reasonPieCharts=[];
+			reasonPieData.forEach(function (item) {
+				var pie={
+					value:item.amount,
+					name:item.return_reason
+				};
+				reasonPieCharts.push(pie);
+			});
+			var option={
+				title:{
+					text:'作品退回情况图',
+					left:'center',
+					textStyle:{
+						color:'#000',
+						fontSize:19
+					}
+				},
+                tooltip:{
+                    formatter:'{b}<br/>{c}'
+                },
+				series:[{
+					type:'pie',
+					data:reasonPieCharts,
+
+				}]
+			};
+			reasonChart.setOption(option);
+            reasonChart.hideLoading();
+            }
+            else{
+                reasonChart.hideLoading();
+                reasonChart.showLoading({text:'暂无数据'});
+            }
+		});
+	}
+
+	function getDailyStat(){
+		var dailyChart=echarts.init(document.getElementById("daily-chart"));
+		dailyChart.clear();
+		dailyChart.showLoading({text:'正在加载数据'});
+		$.ajax({
+			url:'${baseURL}/works/analysis/${eventId}/daily',
+			type:'get'
+		}).done(function (data) {
+			if(data.result.status=="0"){
+				var dailyData=data.result.data;
+				var returned=[];
+				var submit=[];
+				var reviewed=[];
+				var date=[]
+				dailyData.forEach(function (item) {
+					var returnedItem={name:item.ymd,value:parseInt(item.returned)};
+					returned.push(returnedItem);
+					date.push(item.ymd);
+					var submitItem={name:item.ymd,value:parseInt(item.submit)};
+					submit.push(submitItem);
+					var reviewItem={name:item.ymd,value:parseInt(item.reviewed)};
+					reviewed.push(reviewItem);
+				});
+				var option={
+					title:{
+						text:'每日投稿，审核，数量统计',
+						left:'center',
+						textStyle:{
+							color:'#000',
+							fontSize:19
+						}
+					},
+					legend:{
+						left:'left',
+						data:[{name:"每日投稿"},{name:"每日审核"},{name:"每日退回"}]
+					},
+					xAxis:{
+						name:'日期',
+						data:date,
+						type:'category'
+					},
+					yAxis:{
+						splitLine:{
+							show:false
+						}
+					},
+					series:[
+						{
+							type:'line',
+							name:"每日投稿",
+							data:submit
+						},
+						{
+							type:'line',
+							name:"每日审核",
+							data:reviewed
+						},
+						{
+							type:'line',
+							name:"每日退回",
+							data:returned
+						}
+					]
+				};
+				dailyChart.setOption(option);
+				dailyChart.hideLoading();
+			}
+			else{
+
+					dailyChart.hideLoading();
+					dailyChart.showLoading({text:'暂无数据'});
+				}
+
+		});
+	}
+</script>
+</body>
+
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <link rel="stylesheet" href="../ccbManage/css/common.css"/>
+	<link rel="stylesheet" href="../ccbManage/css/style.css"/>
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="../ccbManage/js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="../ccbManage/js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="../ccbManage/js/placeholder.js"></script>
+    <!-- 分页js -->
+<!--     <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/homework/workManage.js"></script> -->
+    <title>后台管理-学校管理</title>
+    <style>
+     .school_manage{margin:0 auto;width:1000px;margin-top:5%;}
+     .school_manage th,tr td{    border: 1px solid #ccc8cc;text-align:center;}
+     .header_info{width:1000px;margin-bottom:1%;}
+     .add_school{float:left;width:55px;}
+     .content_info{width:250px;margin-left:26%;}
+     .select_school{width:55px;margin-left:1%;}
+    </style>
+</head>
+<body>
+	<div class="coverDiv openbg"></div>
+	<div class="school_manage">
+		<div class="school_top">
+			<div class="header_info"><input type="button" class="add_school" id="addSchool" value="添加" onclick="addSchoolInfo()"/>
+			<input type="text" class="content_info" id="contentInfo" placeholder="请输入学校名称"/>
+			<input type="button" class="select_school" id="selectSchool"  value="搜索"/></div>
+		</div>
+		<div class="school_info">
+				<table>
+					<tr>
+						<th width="30px">序号</th>
+						<th width="200px">学校编号</th>
+	                    <th width="200px">学校名称</th>
+	                    <th width="100px">缓存序号</th>
+	                    <th width="100px">操作</th>
+					</tr>
+					
+					[#list scList as sc]
+					<tr>
+	                	<td>${sc_index+1}<input type="hidden" class="hidden_school_value" value="${sc.id}"/></td>
+	                    <td><span class="school_id_cell">${sc.schoolId!}</span></td>
+	                    <td><span class="school_name_cell">${sc.schoolName!}</span></td>
+	                    <td><span class="radis_num_cell">${sc.redisNum}</span></td>
+						<td>
+							[#if sc.paperId?exists]
+								<span style="color:gainsboro">配置</span>
+							[#else]
+								<a href="#" onclick="configSchool(this)" class="config_school_cell">配置</a>
+							[/#if]
+						</td>
+					</tr>
+					[/#list]
+		</div>
+	</div>
+	<!-- 配置项目信息弹窗 -->
+<!-- 	<div id="config_school" class="configSchool openbg"> -->
+<!-- 		<div class="openTitle"> -->
+<!-- 			<div class="config_school_title"><span>配置信息</span></div> -->
+<!-- 			<div class="closeDiv" title="关闭" onclick="viewCloseDiv()"></div> -->
+<!-- 		</div>	 -->
+<!-- 		<div id="config_school_content" class="configSchoolContent"> -->
+<!-- 	        <table> -->
+<!-- 	        	<tr> -->
+<!-- 	        		<td><span>学校编号:</span></td> -->
+<!-- 	        		<td><span class="new_school_id_title" id="tempSchoolIdTitle"></span></td> -->
+<!-- 	        	</tr> -->
+<!-- 	        	<tr> -->
+<!-- 	        		<td><span>学校名称:</span></td> -->
+<!-- 	        		<td><span class="new_school_name_title" id="tempSchoolNameTitle"></span></td> -->
+<!-- 	        	</tr> -->
+<!-- 	        	<tr> -->
+<!-- 	        		<td><span class="temp_school_title" id="tempSchoolTitle">选择模板学校:</span></td> -->
+<!-- 	        		<td> -->
+<!-- 						<select class="temp_school_id" id="tempSchoolId"> -->
+<!-- 								<option value="0">请选择</option> -->
+<!-- 						</select> -->
+<!-- 					</td> -->
+<!-- 	        	</tr> -->
+<!-- 	        	<tr> -->
+<!--          			<td><input class="buttonbar fl" type="button" value="提交" id="btn_submit" onclick="subConfigSchoolInfo()"></td> -->
+<!--          			<td><input class="buttonbar fr" type="button" value="返回" id="btn_cancel" onclick="closeDiv()"></td> -->
+<!-- 	        	</tr> -->
+<!-- 	        </table> -->
+<!-- 	    </div> -->
+<!-- 	</div> -->
+	<script type="text/javascript">
+		$(function(){
+			
+		});
+		
+		/**添加学校信息**/
+		function addSchoolInfo(){
+			window.location.href="${baseURL}/ccbAppSchoolInfo/addSchoolPage";
+		}
+		
+		/**配置学校**/
+		function configSchool(obj){
+			
+		}
+		
+		/**保存配置**/
+		function subConfigSchoolInfo(){
+			
+		}
+		
+		
+		
+		
+		
+		/**格式化时间**/
+		template.helper('dateFormat', function (time) {
+			if(time==null){
+				return "";
+			}
+		    date = new Date(time);
+		    var map = {
+		        "M": date.getMonth() + 1, //月份 
+		        "d": date.getDate(), //日 
+		    };
+		    var format ='yyyy-MM-dd';
+		    format = format.replace(/([yMd])+/g, function(all, t){
+		        var v = map[t];
+		        if(v !== undefined){
+		            if(all.length > 1){
+		                v = '0' + v;
+		                v = v.substr(v.length-2);
+		            }
+		            return v;
+		        }
+		        else if(t === 'y'){
+		            return (date.getFullYear() + '').substr(4 - all.length);
+		        }
+		        return all;
+		    });
+		    return format;
+		});
+		
+	</script>
+	
+
+	
+	
+	
+	<!-- 查询展示试卷信息 -->
+	<script id="combine_paper_page_list1" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="350px">试卷名称</th>
+					<th width="80px">考试级别</th>
+                    <th width="80px">考试类型</th>
+                    <th width="80px">轮数</th>
+                    <th width="150px">生成时间</th>
+                    <th width="200px">操作</th>
+				</tr>
+				
+				{{each data as value i}}
+				<tr>
+                	<td>{{i+1}}<input type="hidden" class="hidden_combine_value" value="{{value.id}}"/></td>
+					<td><span class="testpaper_name_cell">{{value.paperName}}</span></td>
+                    <td><span class="cet_cell">{{value.cet}}</span></td>
+                    <td><span class="exam_type_cell">{{value.examType}}</span></td>
+                    <td><span class="level_cell">{{if value.level != null}}{{value.level}}{{else}}--{{/if}}</span></td>
+                    <td><span class="create_time_cell">{{value.createTime}}</span></td>
+					<td><a href="${baseURL}/ccbPaperConfig/testpaperView?ccbPaperId={{value.id}}" target="_blank" class="preview_combine_cell">预览</a>&nbsp;<a href="#" class="edit_cell" onclick="configCcbPaper(this)">配置</a>&nbsp;<a href="#" class="sync_cell">同步</a>&nbsp;<a href="#" class="delete_cell" onclick="deleteCcbPaper(this)">删除</a></td>
+				</tr>
+				{{/each}}
+			</table>
+	</script>
+	
+	<script id="feedback_data_list" type="text/html">
+		<table>
+				<tr>
+					<th width="30px"></th>
+					<th width="30px">用户名</th>
+					<th width="80px">学校编号</th>
+                    <th width="80px">学校名称</th>
+                    <th width="80px">角色</th>
+                    <th width="80px">创建时间</th>
+                    <th width="150px">意见反馈内容</th>
+                    <th width="200px">操作</th>
+				</tr>
+				
+				{{each data as value i}}
+				<tr>
+                	<td>{{i+1}}<input type="hidden" class="hidden_combine_value" value="{{value.id}}"/></td>
+					<td><span class="user_name_cell">{{value.userName}}</span></td>
+					<td><span class="school_id_cell">{{value.schoolId}}</span></td>
+					<td><span class="school_name_cell">{{value.schoolName}}</span></td>
+					<td><span class="role_name_cell">{{value.roleName}}</span></td>
+                    <td><span class="create_time_cell">{{value.createDate}}</span></td>
+                    <!--<td><span class="create_time_cell">{{dateFormat value.createTime}}</span></td>-->
+                    <td><span class="feedback_cell">{{value.content}}</span></td>
+					<td><a href="#" target="_blank" class="preview_combine_cell">查看</a></td>
+				</tr>
+				{{/each}}
+			</table>
+	</script>
+</body>
+</html>

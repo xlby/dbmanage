@@ -1,0 +1,876 @@
+<!doctype html>
+<head>
+<meta charset="utf-8"/>
+<title></title>
+<link rel="stylesheet" href="http://192.168.71.26:808/static/ccb/ccbManage/css/common.css"/>
+<link rel="stylesheet" href="http://192.168.71.26:808/static/ccb/ccbManage/css/style.css"/>
+</head>
+<body>
+    <div class="header">
+        <div class="wraper clearfix">
+            <h1>FiF冲刺宝</h1>
+            <h2>CET-4</h2>
+        </div>
+    </div>
+    <div class="wraper" id="wraper_paper">
+
+
+
+        
+    </div>
+    <a class="scrollTop"></a>
+
+    <script src="http://192.168.71.26:808/static/ccb/ccbManage/js/jquery-1.7.2.min.js"></script>
+    <!--表格  -->
+    <script src="http://192.168.71.26:808/static/ccb/ccbManage/js/tableUI.js"></script>
+    <!--jplayer音视频播放  -->
+    <link href="http://192.168.71.26:808/static/ccb/ccbManage/jplayer/jplayer.blue.monday.css" rel="stylesheet" type="text/css" />
+    <script src="http://192.168.71.26:808/static/ccb/ccbManage/jplayer/jquery.jplayer.min.js"></script>
+	<!-- jquery模板 -->
+	<script type="text/javascript" src="http://192.168.71.26:808/static/fiftest/libs/js/jquery.tmpl.js"></script>   
+	<script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/assets/paper/js/placeholder.js"></script>   
+	<script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/assets/paper/js/paperCommon.js"></script>   
+	<!-- 加载音频播放函数事件 -->
+	<script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/libs/js/main/marking.js"></script>   
+	
+    <script type="text/javascript">
+    	/**skillNum-技能标记,sectionNum-section标记,pqnTypeNum-父级题型标记,qnTypeNum-题型标记,questionNum-试题标记,subQuestionNum-子试题标记,partMsg-试卷内容全局数组,answerMsg-难度区分度接收数据,falMsg-易错题接收数据,qnDifMsg-难度区分度展示表格数据，paperFalMsg-易错题他表格展示数据，directions-描述**/
+		var skillNum=0,sectionNum=0,pqnTypeNum=0,qnTypeNum=0,questionNum=0,subQuestionNum=0,playnum=0,partMsg={},answerMsg={},falMsg={},qnDifMsg={},paperFalMsg={},directions="",sectionName="";
+		//选项常量
+    	var titleColumn = ["选项A","选项B","选项C","选项D"];
+    	//定义试卷预览json串
+		var paperViewContent = {};
+    	//试卷名称
+    	var paperName = "";
+    	$(function(){
+            // 获取置顶对象
+            var obj = $(".scrollTop"),scrollTop = null;
+            obj.hide();
+            // 置顶对象点击事件
+            /*obj.click(function() {
+                var timer = setInterval(function() {
+                    window.scrollBy(0, -50);
+                    if (scrollTop == 0) 
+                        clearInterval(timer);
+                }, 2);
+            });*/
+            // 窗口滚动检测
+            window.onscroll = function() {
+                scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop;
+                if(scrollTop >= 100) obj.show();
+                else obj.hide();
+            };
+            
+//            	var paperViewContent = eval("("+${paperViewContent}+")");
+			//从后台获取试卷预览json串数据
+            paperViewContent = ${paperViewContent};
+            //设置试卷名称
+            paperName = paperViewContent.paperName;
+          	//获取试卷难度区分度、易错题json串信息(参数：试卷id、班级id、学校id)，
+          	//并展示头部班级信息和易错题信息 
+    		getAnswerMsg("ad13c4eaa5414a75b6a6d762ab268849","2811000226000009807","2000000026000000001");
+          	
+
+
+            
+        });
+        
+    	/**递归调用拼接html展示页面**/
+        function getExamPaperHtml(co){
+        	if("root"==co.type){//根层
+        		//获取skill集合
+        		var skillList = co.skillList;
+        		//循环skill集合
+        		for(var i = 0; i<skillList.length; i++){
+        			var skill = co.skillList[i];
+        			getExamPaperHtml(skill);
+        		}
+        	}else if("skill"==co.type){//技能层
+        		//section集合
+        		var sectionList = co.sectionList;
+        		//技能标记累加
+        		skillNum++;
+        		//技能层级section的值为0
+        		sectionNum=0;
+        		partMsg.skillNum=skillNum;
+    			partMsg.sectionNum=sectionNum;
+    			//技能名称
+    			partMsg.skillTypeName=co.skillTypeName;
+    			//(1) 第一层 - （听说读写译标题Writing、Listening、Reading、Translation）class="paperview-partwrap"
+    			$('#div_skill_msg').tmpl(partMsg).appendTo('#div_view_container');
+        		for(var i=0; i<sectionList.length; i++){
+        			var section = sectionList[i];
+        			getExamPaperHtml(section);
+        		}
+        	} if("section"==co.type){//section层
+        		//父级题型集合
+        		var parentQuestionTypeList = co.parentQuestionTypeList;
+        		//描述
+        		directions = (co.sectionDirections==null)?0:co.sectionDirections;
+        		//section名称
+        		sectionName = (co.sectionName==null)?0:co.sectionName;
+        		sectionNum++;
+    			partMsg.sectionNum=sectionNum;
+    			partMsg.sectionDirections=directions;
+    			partMsg.sectionName=co.sectionName;
+    			//(1.1) 第二层 -- class="sectionwrap"
+    			$('#div_section_msg').tmpl(partMsg).appendTo('#div_view_container');
+    			
+    			for(var i=0; i<parentQuestionTypeList.length; i++){
+        			var parentQuestionType = parentQuestionTypeList[i];
+        			getExamPaperHtml(parentQuestionType);
+        		}
+        	} if("parentType"==co.type){//父级题型层
+        		var questionTypeList = co.questionTypeList;
+        		for(var i=0; i<questionTypeList.length; i++){
+        			var questionType = questionTypeList[i];
+        			getExamPaperHtml(questionType);
+        		}
+        	} if("questionType"==co.type){//题型层
+        		//在此将题型分类，然后根据题型来调用不同的模板
+        		var quetionList = co.quetionList;
+        		qnTypeNum++;
+        		partMsg.qnTypeNum=qnTypeNum;
+        		partMsg.questionTypeId = co.id;//题型id(用于易错题定位)
+        		//(1.1.1) 第三层   --- 添加层class="paperview-editcon"，【class选择器paperview-editcon，id选择器构成（paperview-editcon_+skillNum+sectionNum+qnTypeNum），添加到id选择器为sectionwrap_+skillNum+sectionNum的层内】
+        		$('#question_type_main').tmpl(partMsg).appendTo('#sectionwrap_'+skillNum+"_"+sectionNum);
+        		for(var i=0; i<quetionList.length; i++){
+        			var question = quetionList[i];
+        			getExamPaperHtml(question);
+        		}
+        	} if("question"==co.type){//试题层
+        		//子试题集合
+        		var subQuestionList = co.subQuestionList;
+        		//试题记号
+        		questionNum++;
+        		partMsg.questionNum=questionNum;
+        		partMsg.title=co.title;
+        		//(1.1.1.1) 第四层  ---- 添加层class="paperview-question"
+        		$('#div_questionType_one').tmpl(partMsg).appendTo("#paperview-editcon_"+skillNum+"_"+sectionNum+"_"+qnTypeNum);
+        		//题型模板类型
+        		tmplType = co.tmplType;
+        		if("one"==tmplType){/**1.短篇新闻、短对话、长对话、听力篇章、讲座/讲话**/
+        			var resource = {};
+        			var prefix_path = "http://192.168.71.26:808/Exam/";
+        			resource.resourcePath = prefix_path+co.resourcePath;
+        			resource.jqid = "jquery_jplayer_"+playnum;
+        			resource.jqconid = "jp_container_"+playnum;
+        			//(1.1.1.1.1) 第五层 ----- 在层class="paperview-question"内添加音频
+	        		$('#player_one').tmpl(resource).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+        			loadplay(resource);
+        			playnum++;
+        			$('#answerType_resource_old').tmpl(resource).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+        			//(1.1.1.1.2) 第五层 ----- 大题的script标题内容
+        			$('#script_content_one').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+            	}else if("two"==tmplType){/**2.短文听写**/
+            		var resource = {};
+            		var prefix_path = "http://192.168.71.26:808/Exam/";
+        			resource.resourcePath = prefix_path+co.resourcePath;
+        			resource.jqid = "jquery_jplayer_"+playnum;
+        			resource.jqconid = "jp_container_"+playnum;
+        			//(1.1.1.1.1) 第五层 ----- 在层class="paperview-question"内添加音频
+	        		$('#player_one').tmpl(resource).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+        			loadplay(resource);
+        			playnum++;
+        			$('#answerType_resource_old').tmpl(resource).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+        			//(1.1.1.1.2) 第五层 ----- 大题的script标题内容
+        			$('#script_content_one').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+        			//(1.1.1.1.3) 第五层 ----- class="box-noborder noH2-padtop27"
+	    			$('#question_content_two').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+        			
+            	}else if("three"==tmplType){/**3.写作**/
+            		//partMsg.title = co.title;
+            		partMsg.sample = co.sample;
+            		partMsg.comment = (typeof co.comment==='undefined')?"Yangtse very good!":co.comment;
+            		partMsg.questionTypeId = co.parentId;//题型id(用于易错题定位)
+            		//(1.1.1.1.1) 第五层 ----- class="box-greenborder
+            		$('#question_content_three').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+					//getErrorQuestionMsg(co.questionNo);
+					getErrorQuestionMsg(0);
+	        		//(1.1.1.1.1.1.2) 第七层 ----- class="table_info"
+	        		$('#difficulty_degree_unanswer').tmpl(qnDifMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+            	}else if("four"==tmplType){/**4.词汇理解**/
+            		partMsg.answers = co.answers;
+            		//(1.1.1.1.1) 第五层 ----- class="box-noborder noH2-padtop17
+            		$('#question_title_four').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+            	}else if("five"==tmplType){/**5.长篇阅读解**/
+            		//(1.1.1.1.1) 第五层 ----- class="box-noborder noH2-padtop17
+            		$('#question_title_five').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+            	}else if("six"==tmplType){/**6.仔细阅读**/
+            		//(1.1.1.1.1) 第五层 ----- class="box-noborder noH2-padtop17
+            		$('#question_title_five').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+            	}else if("seven"==tmplType){/**7.翻译**/
+            		partMsg.sample = co.sample;
+            		partMsg.comment = (typeof co.comment==='undefined')?"Yangtse very good!":co.comment;
+            		partMsg.questionTypeId = co.parentId;//题型id(用于易错题定位)
+            		//(1.1.1.1.1) 第五层 ----- class="box-greenborder
+            		$('#question_content_three').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+					getErrorQuestionMsg(co.questionNo);
+	        		//(1.1.1.1.1.1.2) 第七层 ----- class="table_info"
+	        		$('#difficulty_degree_unanswer').tmpl(qnDifMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+            	}
+        		for(var i=0; i<subQuestionList.length; i++){
+        			var subQuestion = subQuestionList[i];
+        			getExamPaperHtml(subQuestion);
+        		}
+        	} if("subQuestion"==co.type){//子试题层
+        		subQuestionNum++
+        		//子试题标记
+        		partMsg.subQuestionNum=subQuestionNum;
+        		//题型模板类型
+        		tmplType = co.tmplType;
+    			if("one"==tmplType){/**1.短篇新闻、短对话、长对话、听力篇章、讲座/讲话**/
+    				//问题
+    				partMsg.subTitle=co.title;
+    				//答案选项数组
+    				partMsg.answerOptionArray=co.answerOption;
+    				//正确答案在答案选项数组中的下标
+    				partMsg.answerMark=co.answerMark;
+    				//正确答案（显示为字母A、B、C、D...）
+    				partMsg.answerReal=co.answerReal;
+    				//解析
+    				partMsg.analyse=co.analyse;
+    				//题号
+	        		partMsg.questionNo = co.questionNo;
+    				//alert("title:"+co.title+"|answerMark:"+co.answerMark+"|answerReal:"+co.answerReal+"|analyse:"+co.analyse);
+    				//console.log("partMsg11:" + JSON.stringify(partMsg));
+        			//当不为短对话、短文听写题时（短对话和听写题的子题没有音频听力）
+        			if(co.resourcePath !== null){
+		        		var resource = {};
+		        		var prefix_path = "http://192.168.71.26:808/Exam/";
+	        			resource.resourcePath = prefix_path+co.resourcePath;
+	        			resource.jqid = "jquery_jplayer_"+playnum;
+	        			resource.jqconid = "jp_container_"+playnum;
+	        			//(1.1.1.1.1) 第五层 ----- 在层class="paperview-question"内添加音频
+		        		$('#player_one').tmpl(resource).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+	        			loadplay(resource);
+	        			playnum++;
+	        			//控制播放
+	        			$('#answerType_resource_old').tmpl(resource).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+        			}
+    				
+        			//(1.1.1.1.3) 第五层 ----- 大题下每道小题的展示
+	    			$('#question_content_one').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+	        		//根据试题id获取每道题的难度区分度信息
+	        		getErrorQuestionMsg(co.questionNo);
+	        		//正确答案下标
+	        		qnDifMsg.answerMark = co.answerMark;
+	        		//选项列标题数组
+	        		qnDifMsg.titleColumn = titleColumn;
+	        		//(1.1.1.1.1.1) 第六层 ------ 难度区分度
+       				$('#difficulty_degree_answer').tmpl(qnDifMsg).appendTo("#box-noborder_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum+"_"+subQuestionNum);
+	        	}else if("two"==tmplType){/**2.短文听写**/
+	        		//题号
+	        		partMsg.questionNo = co.questionNo;
+	        		//答案
+	        		partMsg.answer = co.answer;
+	        		//(1.1.1.1.1.1) 第六层 ----- class="answer-true tiankong"
+	    			$('#answer_tiankong_two').tmpl(partMsg).appendTo("#box-noborder_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+	    			//根据试题id获取每道题的难度区分度信息
+					getErrorQuestionMsg(co.questionNo);
+	        		//(1.1.1.1.1.1.1) 第七层 ----- class="table_info"
+	    			$('#difficulty_degree_unanswer').tmpl(qnDifMsg).appendTo("#answer_tiankong_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum+"_"+subQuestionNum);
+	        		
+	        	}else if("three"==tmplType){/**3.写作**/
+	        	}else if("four"==tmplType){/**4.词汇理解**/
+	        		//题号
+	        		partMsg.questionNo = co.questionNo;
+	        		//答案
+	        		partMsg.answer = co.answer;
+	        		//解析
+	        		partMsg.analyse = co.analyse;
+	        		//(1.1.1.1.1.1) 第六层 ----- class="box-noborder noH2-padtop27"
+	        		$('#question_content_four').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+	        		//(1.1.1.1.1.1.1) 第七层 ----- class="answer-true tiankong"
+	        		$('#answer_tiankong_four').tmpl(partMsg).appendTo("#box-noborder_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum+"_"+subQuestionNum);
+					getErrorQuestionMsg(co.questionNo);
+	        		//(1.1.1.1.1.1.2) 第七层 ----- class="table_info"
+	        		$('#difficulty_degree_unanswer').tmpl(qnDifMsg).appendTo("#box-noborder_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum+"_"+subQuestionNum);
+	        	}else if("five"==tmplType){/**5.长篇阅读解**/
+	        		//问题
+    				partMsg.subTitle=co.title;
+	        		//题号
+	        		partMsg.questionNo = co.questionNo;
+	        		//答案
+	        		partMsg.answer = co.answer;
+	        		//解析
+	        		partMsg.analyse = co.analyse;
+	        		//(1.1.1.1.1.1) 第六层 ----- class="box-noborder noH2-padtop27"
+	        		$('#question_content_four').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+	        		//(1.1.1.1.1.1.1) 第七层 ----- class="answer-true tiankong"
+	        		$('#answer_tiankong_five').tmpl(partMsg).appendTo("#box-noborder_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum+"_"+subQuestionNum);
+					getErrorQuestionMsg(co.questionNo);
+	        		//(1.1.1.1.1.1.2) 第七层 ----- class="table_info"
+	        		$('#difficulty_degree_unanswer').tmpl(qnDifMsg).appendTo("#box-noborder_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum+"_"+subQuestionNum);
+	        	}else if("six"==tmplType){/**6.仔细阅读**/
+	        		//问题
+    				partMsg.subTitle=co.title;
+    				//答案选项数组
+    				partMsg.answerOptionArray=co.answerOption;
+    				//正确答案在答案选项数组中的下标
+    				partMsg.answerMark=co.answerMark;
+    				//正确答案（显示为字母A、B、C、D...）
+    				partMsg.answerReal=co.answerReal;
+    				//解析
+    				partMsg.analyse=co.analyse;
+    				//题号
+	        		partMsg.questionNo = co.questionNo;
+	        		//(1.1.1.1.3) 第五层 ----- 大题下每道小题的展示
+	    			$('#question_content_one').tmpl(partMsg).appendTo("#paperview-question_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum);
+	        		//根据试题id获取每道题的难度区分度信息
+					getErrorQuestionMsg(co.questionNo);
+	        		//正确答案下标
+	        		qnDifMsg.answerMark = co.answerMark;
+	        		//选项列标题数组
+	        		qnDifMsg.titleColumn = titleColumn;
+	        		//(1.1.1.1.1.1) 第六层 ------ 难度区分度
+       				$('#difficulty_degree_answer').tmpl(qnDifMsg).appendTo("#box-noborder_"+skillNum+"_"+sectionNum+"_"+qnTypeNum+"_"+questionNum+"_"+subQuestionNum);
+	        	}else if("seven"==tmplType){/**7.翻译**/
+	        	}
+        	}
+        }
+        
+    	
+    	
+        function loadplay(resource) {
+        	$("#"+resource.jqid).jPlayer({
+                ready: function () {
+                    $(this).jPlayer("setMedia", {
+                        mp3: resource.resourcePath
+                    });
+                },
+                play: function() {
+                    $(this).jPlayer("pauseOthers");
+                },
+                swfPath: "jplayer",
+                supplied: "mp3",
+                cssSelectorAncestor: "#"+resource.jqconid,
+                globalVolume: true,
+                useStateClassSkin: true,
+                autoBlur: false,
+                smoothPlayBar: true,
+                keyEnabled: true,
+                preload:"none"
+            });
+        }
+        
+       // var answerMsg ="{answerMsg!}";
+        //难度区分度以及易错题信息
+        function getAnswerMsg(ccbPaperId,classId,schoolId){
+        	//根据试卷id获取每道题的难度
+        	var param ={};
+        	param.ccbPaperId = ccbPaperId;
+        	param.classId = classId;
+        	param.schoolId = schoolId;
+        	/* ?ccbPaperId="+ccbPaperId+"&classId="+classId+"&schoolId="+schoolId+" */
+    		$.ajax({
+				type:"get",
+				url:"${baseURL}/ccbPaperConfig/getAnswerMsg.json",
+				data: param,
+				success:function(data){
+					answerMsg = JSON.parse(data.answerMsg);
+					falMsg = JSON.parse(data.falMsg);
+					
+					//头部班级信息（设置时间）
+					var classScoreMsg = data.classScoreMsg;
+					classScoreMsg.updateTime = data.updateTime;
+					//显示班级信息
+					getClassScoreMsg(classScoreMsg,data.className);
+					
+					
+					//显示易错题
+					getFallibilityMsg();
+					
+					//试卷预览添加到div层class="wraper"
+					$("#div_paper_container").tmpl(null).appendTo("#wraper_paper");
+		          	//试卷内容展示入口
+		            getExamPaperHtml(paperViewContent);
+				}
+			});
+        }
+        
+        
+        
+    
+    
+    
+    
+    
+     //班级统计信息
+	 function getClassScoreMsg(classScoreMsg,className){
+	 	//班级信息
+	 	var classReport = {};
+	 	//试卷名称
+	 	classReport.paperName = paperName;
+	 	//班级名称
+	 	classReport.className = (className=== null || className === '')?"火箭冲刺班":className;
+	 	//班级总人数
+	 	classReport.classStudentCount = classScoreMsg.studentTotleCount;
+	 	//班级作答人数
+	 	var cfCount = classScoreMsg.studentFinishCount;
+	 	classReport.classFinishCount = !cfCount?"0":cfCount;
+	 	//班级完成度
+	 	var fRate = classScoreMsg.finishRate;
+	 	classReport.finishRate = !fRate?"0":fRate;
+	 	//班级平均分
+	 	var avgScore = classScoreMsg.averageScore;
+	 	classReport.averageScore = !avgScore?"0":avgScore;
+	 	//班级通过率
+	 	var pRate = classScoreMsg.passRate;
+	 	classReport.passRate = !pRate?"0":pRate;
+	 	//更新时间
+	 	classReport.updateTime = classScoreMsg.updateTime;
+	 	//调用模板生成头部信息
+	 	$("#top_class_info").tmpl(classReport).appendTo("#wraper_paper");
+	 }
+    
+    
+    
+   	
+    
+    
+        
+    //易错题信息
+    function getFallibilityMsg(){
+    	//标记
+    	var flag = true;
+    	//获取试卷下的试题集合
+    	var falAns = [];
+    	//如果没有易错题信息则不展示该层信息
+    	if(falMsg.questionArray !== null && falMsg.questionArray !== ''){
+    		falAns = falMsg.questionArray;
+	    	$("#paper_fal_msg").tmpl(null).appendTo("#wraper_paper");
+	    	$("#tbody_paper_fal_msg").tmpl(falAns).appendTo("#tr_fal_msg");
+	    	
+	    	//加载完易错题表格后再绑定事件
+	    	// 易错题表格展开收起
+	    	$(".table_tips tbody tr:gt(3)").hide();
+	        $(".openmore").bind("click",function(){
+	            if($(this).hasClass("open")){
+	                $(this).removeClass("open").text("展开全部");
+	                $(".table_tips tbody tr:gt(3)").hide();
+	            }else{
+	                $(this).addClass("open").text("收起");
+	                $(".table_tips tbody tr:gt(3)").show();
+	            }
+	        });
+    		
+    	}
+    	
+    		
+    }
+	
+    var getIdx =function (){
+    	return idx++;
+    } , idx=1;
+    var getIds =function (){
+    	return ids++;
+    } , ids=1;
+    var getIdy =function (){
+    	return idy++;
+    } , idy=1;
+	
+	/**获取当前选项对应的人数**/
+	function getOptPeopleSum(answerOption){
+		//返回值数组
+		var answerOpt = [];
+		if(answerOption === null){
+			answerOpt = ["0","0","0","0"];
+		}else{
+			//答案选项对应的前缀
+			var ans = ["1.","2.","3.","4."];
+			for(var i=0; i<ans.length; i++){
+				//标记
+				var flag = false;
+				//当前选项人数
+				var curOpt = "";
+				var a = ans[i];
+				//
+				for(var j=0; j<answerOption.length; j++){
+					//当前选项
+					var answer = answerOption[j];
+					//当含有当前循环的前缀时则获取当前选项的值
+					if(answer.indexOf(a) !== -1){
+						flag = true;
+						//通过点来切割
+						var optArr = answer.split(".");
+						//获取到点后面的值
+						curOpt = optArr[optArr.length-1];
+					}
+				}
+				//如果存在当前前缀则给数组赋值，不存在则赋值为0
+				if(flag){
+					answerOpt[i] = curOpt;
+				}else{
+					answerOpt[i] = "0";
+				}
+			}
+		}
+		return answerOpt;
+	}
+	
+	
+	
+	
+	//某道题的难度区分度信息
+	function getErrorQuestionMsg(questionNo){
+		var flag = true;
+		//获取试卷下的试题集合
+		var difAns = answerMsg.questionArrayMap;
+		//通过题号获取当前题的信息
+		var qnMsg = difAns[questionNo];
+		if(!!qnMsg){
+			//满分
+			qnDifMsg.originalScore=qnMsg.originalScore;
+			//难度
+			qnDifMsg.difficulty=qnMsg.difficulty;
+			//区分度
+			qnDifMsg.diffDegree=qnMsg.diffDegree;
+			//得分率
+			qnDifMsg.questionAverageRate=qnMsg.questionAverageRate;
+			//选项人数
+			var answerOption = [];
+			answerOption = getOptPeopleSum(qnMsg.answerOption);
+			qnDifMsg.answerOption = answerOption;
+		}
+	}
+	
+	
+	
+	
+        
+        
+    </script>
+    
+    
+    <script type="text/html" id="div_skill_msg">
+		<div class="paperview-partwrap" id="partwrap_{{= skillNum}}_{{= sectionNum}}">
+            <div class="paperview-edittitle paperview-edittitle-part clearfix">
+                <p>{{= skillTypeName}}</p>
+            </div>
+        </div>
+		
+	</script>
+	
+    <script type="text/html" id="div_section_msg">
+		<div class="sectionwrap" id="sectionwrap_{{= skillNum}}_{{= sectionNum}}">
+			<div class="paperview-edittitle paperview-edittitle-sect clearfix">
+				{{if sectionName != 0}}<p>{{= sectionName}}</p>{{/if}}
+        	</div>
+			{{if sectionDirections != 0}}
+        	<div class="paperview-edittitle paperview-edittitle-direc clearfix">
+            	<span>• Directions：</span>
+            	<p>{{= sectionDirections}}</p>
+        	</div>
+			{{/if}}
+        </div>
+	</script>
+	
+	<!-- 
+		tip_no_{{= getIds}}
+		 name="tip_no_{{= getIdy}}"
+	 -->
+	<!-- questionType - main -->
+	<script type="text/html" id="question_type_main">
+		<a name="tip_no_{{= questionTypeId}}"></a>
+		<div class="paperview-editcon" id ="paperview-editcon_{{= skillNum}}_{{= sectionNum}}_{{= qnTypeNum}}">
+		
+		</div>
+	</script>
+	
+	<!-- questionType - main -->
+	<script type="text/html" id="player_one">
+      	<!-- 音频开始 -->
+        <div id="{{= jqid}}" class="jp-jplayer"></div>
+        <div id="{{= jqconid}}" class="jp-audio" role="application" aria-label="media player">
+            <div class="jp-type-single">
+                <div class="jp-gui jp-interface">
+                    <div class="jp-controls">
+                        <button class="jp-play" role="button" tabindex="0">play</button>
+                        <button class="jp-stop" role="button" tabindex="0">stop</button>
+                    </div>
+                    <div class="jp-progress">
+                        <div class="jp-seek-bar">
+                            <div class="jp-play-bar"></div>
+                        </div>
+                    </div>
+                    <div class="jp-time-holder">
+                        <div class="jp-current-time" role="timer" aria-label="time">&nbsp;</div>
+                        <div class="jp-duration" role="timer" aria-label="duration">&nbsp;</div>
+                    </div>
+                </div>
+                <div class="jp-details">
+                    <div class="jp-title" aria-label="title">&nbsp;</div>
+                </div>
+                <div class="jp-no-solution">
+                    <span>Update Required</span>
+                    To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+                </div>
+            </div>
+        </div>
+        <!-- 音频结束 -->
+	</script>
+	
+	
+	<script type="text/html" id="answerType_resource_old">
+		<div class="btn_music clearfix">
+	        <div class="start" resource="{{= resourcePath}}" onclick="playerResource(this)"></div>
+	        <div class="playing" resource="{{= resourcePath}}" onclick="playerResource(this)"></div>
+        </div>
+	</script>	
+	
+	
+	
+
+	<!-- 题型为one的大题的script标题内容 -->
+	<script type="text/html" id="script_content_one">
+		<div class="box-greenborder">
+           <p class="script">Script</p>
+           {{= title}}
+       	</div>
+	</script>
+	
+	
+	
+	<!-- 题型为one的子题答案选项 -->
+	<script type="text/html" id="question_content_one">
+		<div class="box-noborder noH2-padtop27" id="box-noborder_{{= skillNum}}_{{= sectionNum}}_{{= qnTypeNum}}_{{= questionNum}}_{{= subQuestionNum}}">
+			<dl>
+				<dt><a name="tip1"></a>{{= questionNo}}.&nbsp;{{= subTitle}}</dt>
+				{{each answerOptionArray}}
+					{{if $index==answerMark}}
+						<dd class="true">{{= $value}}</dd>
+					{{else}}
+						<dd>{{= $value}}</dd>
+					{{/if}}
+				{{/each}}
+			</dl>
+			<div class="answer-true"><span class="green">正确答案：<b>{{= answerReal}}</b></span></div>
+			<h2 class="dianping">解析</h2>
+			<div class="box-dianping">
+				<p>{{= analyse}}</p>
+			</div>
+		</div>	
+	</script>
+	
+	
+	<!-- 题型为two的子题答案选项 -->
+	<script type="text/html" id="question_content_two">
+		<div class="box-noborder noH2-padtop27" id="box-noborder_{{= skillNum}}_{{= sectionNum}}_{{= qnTypeNum}}_{{= questionNum}}">		
+        </div>	
+	</script>
+	
+	<!-- 题型为four的子题答案选项 -->
+	<script type="text/html" id="question_content_four">
+		<div class="box-noborder noH2-padtop27" id="box-noborder_{{= skillNum}}_{{= sectionNum}}_{{= qnTypeNum}}_{{= questionNum}}_{{= subQuestionNum}}">		
+        </div>	
+	</script>
+	
+	<!-- 题型为two的子题答案选项 -->
+	<script type="text/html" id="answer_tiankong_two">
+        <div class="answer-true tiankong" id="answer_tiankong_{{= skillNum}}_{{= sectionNum}}_{{= qnTypeNum}}_{{= questionNum}}_{{= subQuestionNum}}">
+            <a name="tip6"></a>{{= questionNo}}<span class="green">正确答案：<b>{{= answer}}</b></span>
+        </div>  	
+	</script>
+	
+	<!-- 题型为four的子题答案选项 -->
+	<script type="text/html" id="answer_tiankong_four">
+        <div class="answer-true tiankong"><a name="tip9"></a>{{= questionNo}}.<span class="green">正确答案：<b>&nbsp;{{= answer}}</b></span></div>
+        <h2 class="dianping">解析</h2>
+        <div class="box-dianping">
+            <p>{{= analyse}}</p>
+        </div>	
+	</script>
+
+	<!-- 题型为five的子题答案选项 -->
+	<script type="text/html" id="answer_tiankong_five">
+        <dl>
+            <dt><a name="tip11"></a>{{= questionNo}}.&nbsp;{{= subTitle}}</dt>
+        </dl>
+        <div class="answer-true match"><span class="green">正确答案：<b>{{= answer}}</b></span></div>
+        <h2 class="dianping">解析</h2>
+        <div class="box-dianping">
+            <p>{{= analyse}}</p>
+        </div>
+	</script>
+	
+	
+	
+	
+	
+      
+	<!-- 题型为three的子题答案选项 -->
+	<script type="text/html" id="question_content_three">
+        <a name="tip_no_{{= questionTypeId}}"></a>
+        <div class="box-greenborder">
+            <!-- <img src="images/shipin.png"> -->
+            {{= title}}
+        </div>
+        <h5>参考范文</h5>
+        {{= sample}}
+        <!--<h6>范文点评</h6>-->
+        <!--<p>{{= comment}}</p>-->	
+	</script>
+                        
+	<!-- 题型为four的试题标题 -->
+	<script type="text/html" id="question_title_four">
+        <div class="box-noborder noH2-padtop17">
+            {{= title}}
+        </div>
+        <div class="box-Fill clearfix">
+            {{= answers}}
+        </div>	
+	</script>
+
+	<!-- 题型为five的试题标题-->
+	<script type="text/html" id="question_title_five">
+        <div class="box-noborder noH2-padtop17">
+			{{= title}}
+        </div>
+	</script>
+
+	
+	<!-- 难度区分度 -->
+	<script type="text/html" id="difficulty_degree_answer">
+        <table border="0" cellspacing="0"  cellpadding="0" class="table_info">
+            <tr>
+                <th>满分</th>
+                <th>难度</th>
+                <th>区分度</th>
+                <th>得分率</th>
+				{{each titleColumn}}
+					{{if $index==answerMark}}
+						<th class="true">{{= $value}}</th>
+					{{else}}
+						<th>{{= $value}}</th>
+					{{/if}}
+				{{/each}}
+            </tr>
+            <tr>
+                <td>{{= originalScore}}</td>
+                <td>{{= difficulty}}</td>
+                <td>{{= diffDegree}}</td>
+                <td>{{= questionAverageRate}}%</td>
+				{{each answerOption}}
+					{{if $index==answerMark}}
+						<td class="true">{{= $value}}人</td>
+					{{else}}
+						<td>{{= $value}}人</td>
+					{{/if}}
+				{{/each}}
+            </tr>
+        </table>
+		<div style='width: 1px;height: 3rem'></div>
+	</script>
+	
+		<!-- 难度区分度 -->
+	<script type="text/html" id="difficulty_degree_unanswer">
+        <table border="0" cellspacing="0"  cellpadding="0" class="table_info">
+            <tr>
+                <th>满分</th>
+                <th>难度</th>
+                <th>区分度</th>
+                <th>得分率</th>
+            </tr>
+            <tr>
+				<td>{{= originalScore}}</td>
+                <td>{{= difficulty}}</td>
+                <td>{{= diffDegree}}</td>
+                <td>{{= questionAverageRate}}%</td>
+            </tr>
+        </table>
+		<div style='width: 1px;height: 3rem'></div>
+	</script>
+
+	
+	<!-- 1.one-短篇新闻、短对话、长对话、听力篇章、讲座/讲话 -->
+	<script type="text/html" id="div_questionType_one">
+        <!-- 参考学生查看试卷原题型结构 -->
+        <div class="paperview-question" id="paperview-question_{{= skillNum}}_{{= sectionNum}}_{{= qnTypeNum}}_{{= questionNum}}">
+        </div>
+	</script>
+	
+	
+	<!-- 当前试卷易错题信息展示 -->
+	<script type="text/html" id="paper_fal_msg">
+        <table border="0" cellspacing="0"  cellpadding="0" class="table_tips">
+           <thead>
+               <tr>
+                   <td colspan="4" class="headtd">本试卷易错题</td>
+               </tr>
+               <tr>
+                   <th width="120">序号</th>
+                   <th width="350">题型</th>
+                   <th width="350">题号</th>
+                   <th width="120">得分率</th>
+               </tr>
+           </thead>
+           <tbody id="tr_fal_msg">
+
+           </tbody>
+       </table>
+       <p class="openmore">展开全部</p>
+	</script>
+	
+	
+	<!-- 易错题循环展示行信息 -->
+		<!-- {{each questionArray}}
+		{{/each}}
+	        <td>{{= $index+1}}</td>
+	        <td>{{= $value.questionTypeName}}</td>
+	        <td>{{= $value.questionNo}}</td>
+	        <td>{{= $value.questionAverageRate}}%</td> -->
+<!-- 	    <tr onclick="location.href='#tip_no{{= 1}}'">
+			<td>dddd</td>
+			<td>{{= getIdx()}}</td>
+			<tr onclick="location.href='.tip_no_{{= questionTypeId}}'">
+	    </tr> -->
+	<script type="text/html" id="tbody_paper_fal_msg">
+            <tr onclick="location.href='#tip_no_{{= questionTypeId}}'">
+                <td>{{= getIdx()}}</td>
+                <td>{{= questionTypeName}}</td>
+                <td>{{= questionNo}}</td>
+                <td>{{= questionAverageRate}}%</td>
+            </tr>
+	</script>
+
+	
+	
+	<!-- 当前试卷内容div -->
+	<script type="text/html" id="div_paper_container">
+	   <!-- part -->
+       <div class="partwrap" id="div_view_container">
+           <!-- part -->
+       </div> 
+	</script>
+ 
+	<!-- 头部班级信息显示 -->
+	<script type="text/html" id="top_class_info">
+       <div class="paperinfo">
+           <p class="enddata">• 截至: {{= updateTime}}</p>
+           <h3>{{= paperName}}</h3>
+           <span>班级：</span>
+           <p>{{= className}}</p>
+           <span>丨</span>
+           <span>本班人数：</span>
+           <p>{{= classStudentCount}}</p>
+           <span>丨</span>
+           <span>作答人数：</span>
+           <p>{{= classFinishCount}}</p>
+           <span>丨</span>
+           <span>完成度：</span>
+           <p>{{= finishRate}}%</p>
+           <span>丨</span>
+           <span>平均分：</span>
+           <p>{{= averageScore}}</p>
+           <span>丨</span>
+           <span>通过率：</span>
+           <p>{{= passRate}}%</p>
+       </div>
+	</script>
+
+
+    
+    
+</body>
+</html>

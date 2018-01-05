@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>人员管理</title>
+    [#include "collect/index/headLink.htm"]
+</head>
+<body>
+<div id="content" class="clear">
+    <div class="content-body">
+        <div class="content-head">
+            <span class="content-position">您的位置：</span>
+            <span class="content-position">首页></span>
+            <span class="content-position">活动管理></span>
+            <span class="content-position">人员管理></span>
+        </div>
+        <form action="${staticURL}/staffManage/saveStaff" id="staffFrom" name="staffFrom" method="post" enctype="multipart/form-data">
+            <div class="input-wrap mt40 clear">
+                <span class="input-title fl">展示照片：</span>
+                <div id="preview">
+                    <img id="imghead" style="width: 320px;height: 400px;" src='${staffDetail.photo}'>
+                </div>
+                <!--<img src="" alt="" class="photo-show fl" style="width: 320px;height: 400px;"/>-->
+                <div class="fl photo-texts pt40">
+                    <span class="input-t ml20" style="width:30%;">格式大小要求:</span>
+                    <span class="ml20">照片为jpg、png格式，像素不超过320x400</span>
+                    <p class="select-file mt20 ml20">
+                        <input type="file" class="photo-button" onchange="previewImage(this)" name="imgFile" value="${staffDetail.photo}" style="cursor:pointer;"/>
+                        <input type="button" value="上传照片" class="button-sec cir-angle">
+                    </p>
+                </div>
+            </div>
+            <div class="input-wrap mt15">
+                <span class="input-title">姓名：</span>
+                <span id="ucUserName" class="input-t" style="width:20%;">${staffDetail.name}</span>
+                <input type="button" id="selectPerson" value="人员选择" [#if staffDetail.id != '']disabled[/#if] class="button-sec cir-angle">
+            </div>
+            <div class="input-wrap mt15">
+                <span class="input-title">身份：</span>
+                <span class="input-t" id="roleName">${staffDetail.identity}</span>
+            </div>
+            <div class="input-wrap mt15">
+                <span class="input-title fl">工作单位：</span>
+                <p class="input-t elli fl" style="width:80%;" id="comName" title="${staffDetail.unit}">${staffDetail.unit}</p>
+            </div>
+            <div class="input-wrap mt15">
+                <span class="input-title">人员类别：</span>
+                <select name="type" id="type" [#if staffDetail.id != '']disabled[/#if] class="input-select" style="width:15%;">
+                    <option value="3" [#if staffDetail.type == 3]selected[/#if] >审核人员</option>
+                    <option value="4" [#if staffDetail.type == 4]selected[/#if] >评分人员</option>
+                </select>
+            </div>
+            <div class="input-wrap mt15 text-area clear">
+                <span class="input-title fl">简介：</span>
+                <textarea name="comment" id="comment" cols="30" rows="10" class="textarea-in fl p10" maxlength="255">${staffDetail.comment}</textarea>
+            </div>
+            <div class="button-wrap mt40 mb10" id="fb-button">
+                <span class="on-button cir-angle back-on pl40 pr40" onclick="submitForm()" style="background: rgb(15, 230, 177);">提交</span>
+                <span class="on-button cir-angle back-on pl40 pr40" onclick="backToList()" style="background: rgb(15, 230, 177);">返回</span>
+            </div>
+            <input type="hidden" value="${staffDetail.eventId}" id="eventId" name="eventId"/>
+            <input type="hidden" value="${staffDetail.ucId}" id="ucId" name="ucId"/>
+            <input type="hidden" value="${staffDetail.id}" id="id" name="id"/>
+            <input type="hidden" value="${staffDetail.identity}" id="identity" name="identity"/>
+            <input type="hidden" value="${staffDetail.photo}" id="photo" name="photo"/>
+        </form>
+    </div>
+    <div class="window-wrap" id="lookfor" style="display:none;">
+        <div class="window-text-wrap clear">
+            <span class="window-span fl">姓名：</span>
+            <input type="text" id="queryUserName" class="p5 fl addw59"/>
+            <span class="lookfor cir-angle fl" onclick="getUcUsersJson()">
+                <img src="${staticURL}/collect/img/big.png" alt=""/>
+            </span>
+        </div>
+        <div class="window-content-wrap clear mt10">
+            <span class="window-span fl">匹配人员：</span>
+            <div class="fl window-more p5">
+                <select size="5" id="selPerson" style="width: 100%;" class="addwidth" onclick="showLoginName(this)">
+
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var busy_dialog = dialog({title: "正在处理中...",cancel:false});
+
+    var v_tmp_role_name = "";
+    var v_tmp_org_name = "";
+
+    function submitForm() {
+        busy_dialog.showModal();
+        //组织结构
+        var v_form = $("#staffFrom");
+        var v_uc_id = $("#ucId").val();
+        if(v_uc_id == ''){
+            alert("请选择人员");
+            busy_dialog.close();
+            return false;
+        }
+        $.ajaxSettings.async = false;
+        var v_isok = true;
+        if($("#id").val() == ''){
+            $.getJSON("${staticURL}/staffManage/validateSingleStaff",{
+                eventId:$("#eventId").val(),
+                ucId:$("#ucId").val()
+            },function (data) {
+                if(data.result.status == '1'){
+                    alert(data.result.message);
+                    v_isok = false;
+                }
+            });
+        }
+        if(v_isok == false){
+            busy_dialog.close();
+            return false;
+        }
+
+        v_form.submit();
+    }
+
+    $("#selectPerson").click(function () {
+        dialog({
+            title: '选择人员',
+            content: $("#lookfor"),
+            cancel: function () {
+
+            },
+            cancelValue: "取消",
+            ok: function () {
+                var v_person_text = $("#selPerson").find("option:selected").text();
+                v_person_text = v_person_text.substr(0, v_person_text.indexOf(' ') + 1);
+                var v_person_id = $("#selPerson").find("option:selected").val();
+
+                $("#ucId").val(v_person_id);
+                $("#ucUserName").html(v_person_text);
+
+                $("#roleName").html(v_tmp_role_name);
+                $("#identity").val(v_tmp_role_name);
+                $("#comName").html(v_tmp_org_name);
+            },
+            okValue: "确定"
+        }).width(420).height(150).showModal();
+    });
+
+    function showLoginName(v_select) {
+        if($(v_select).val() != null){
+            $.getJSON("${staticURL}/sysManage/getUcUser",
+                    {
+                        userid: $(v_select).val()
+                    },
+                    function (json) {
+                        if (json.user.error != '0002') {
+                            var v_login_name = json.user.loginName;
+                            v_tmp_role_name = json.user.role_pinyin_name;
+                            v_tmp_org_name = json.user.comName;
+                            dialog({
+                                content: "登陆用户名:" + v_login_name,
+                                align: 'right',
+                                quickClose: true// 点击空白处快速关闭
+                            }).show(document.getElementById('selPerson'));
+                        }
+                    }
+            );
+        }
+    }
+
+    function getUcUsersJson() {
+        if($("#queryUserName").val() != ''){
+            var v_user_name = $("#queryUserName").val();
+            $.getJSON("${staticURL}/staffManage/getStaffByName", {
+                userName: encodeURI(v_user_name)
+            },function (json) {
+                if(json.result.status == 0){
+                    var v_json = eval(json.result.data);
+                    $("#selPerson").find("option").remove();
+                    for(var i = 0;i < v_json.length;i++){
+                        $("#selPerson").append('<option value="'+ v_json[i].id +'">' + v_json[i].pinyin_name + ' ' + v_json[i].role_pinyin_name + ' ' + v_json[i].com_name + '</option>');
+                    }
+                }else{
+                    alert("无查询结果");
+                }
+            });
+        }
+    }
+
+    function backToList() {
+        var v_event_id = $("#eventId").val();
+        window.location.href = "${staticURL}/staffManage/list/" + v_event_id;
+    }
+
+    function previewImage(file) {
+        var MAXWIDTH = 320;
+        var MAXHEIGHT = 400;
+        var filepath = $(file).val();
+        filepath = filepath.toLowerCase().substring(filepath.lastIndexOf('.')+1,filepath.length);
+        if(filepath != 'jpg' && filepath != 'png'){
+            alert("只能上传jpg或png格式的图片");
+            return;
+        }
+        var div = document.getElementById('preview');
+        if (file.files && file.files[0]) {
+            div.innerHTML = '<img id=imghead>';
+            var img = document.getElementById('imghead');
+            img.onload = function () {
+                var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+                img.width = rect.width;
+                img.height = rect.height;
+                img.style.marginLeft = rect.left + 'px';
+                img.style.marginTop = rect.top + 'px';
+            };
+            var reader = new FileReader();
+            reader.onload = function (evt) {
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file.files[0]);
+        } else {
+            var sFilter = 'filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src="';
+            file.select();
+            var src = document.selection.createRange().text;
+            div.innerHTML = '<img id=imghead>';
+            var img = document.getElementById('imghead');
+            img.filters.item('DXImageTransform.Microsoft.AlphaImageLoader').src = src;
+            var rect = clacImgZoomParam(MAXWIDTH, MAXHEIGHT, img.offsetWidth, img.offsetHeight);
+            status = ('rect:' + rect.top + ',' + rect.left + ',' + rect.width + ',' + rect.height);
+            div.innerHTML = "<div id=divhead style='width:" + rect.width + "px;height:" + rect.height + "px;margin-top:" + rect.top + "px;margin-left:" + rect.left + "px;" + sFilter + src + "\"'></div>";
+        }
+        //赋值
+        $("#photo").val($(file).val());
+    }
+    function clacImgZoomParam(maxWidth, maxHeight, width, height) {
+        var param = {top: 0, left: 0, width: width, height: height};
+        if (width > maxWidth || height > maxHeight) {
+            rateWidth = width / maxWidth;
+            rateHeight = height / maxHeight;
+
+            if (rateWidth > rateHeight) {
+                param.width = maxWidth;
+                param.height = Math.round(height / rateWidth);
+            } else {
+                param.width = Math.round(width / rateHeight);
+                param.height = maxHeight;
+            }
+        }
+
+        param.left = Math.round((maxWidth - param.width) / 2);
+        param.top = Math.round((maxHeight - param.height) / 2);
+        return param;
+    }
+
+</script>
+</body>

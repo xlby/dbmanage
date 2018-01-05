@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>评分状况分析</title>
+    [#include "collect/index/headLink.htm"]
+    <script type="text/javascript" src="${staticURL}/collect/js/echarts.min.js"></script>
+</head>
+<body>
+<div id="content" class="clear">
+    <div class="content-body" style="width:820px;">
+        <!--系统分析-->
+        <div id="sys-fx">
+            <div class="content-head">
+                <span class="content-position pr10">您的位置：</span>
+                <span class="content-position">首页></span>
+                <span class="content-position">系统管理></span>
+                <span class="content-position">全站统计></span>
+            </div>
+            <div class="clear mt20">
+                <div id="eventStatusChart" style="width: 100%;height:400px;float:left;margin:0 auto;"></div>
+                <div id="eduorgChart" style="width: 100%;height:400px;float:left;margin:0 auto;"></div>
+            </div>
+            <div class="clear mt20">
+                <div id="eventWorksChart" style="width: 100%;height:400px;float:left;margin:0 auto;"></div>
+            </div>
+            <div class="clear mt20">
+                <div id="worksEachDayChart" style="width: 100%;height:400px;float:left;margin:0 auto;"></div>
+            </div>
+        </div>
+        <div class="button-wrap mt40 mb10" id="active-first-button">
+            <span class="on-button cir-angle back-on pl10 pr10" style="background: rgb(15, 230, 177);" onclick="gobackSysmanageList()">返回</span>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //init加载图表
+    $(document).ready(function () {
+        methodGroup();
+    });
+    //加载图表刷新
+    function methodGroup() {
+        eduorgRange();
+        eventStatus();
+        eventWorks();
+        worksEachDay();
+    }
+
+    function eduorgRange() {
+        var chart = echarts.init(document.getElementById('eduorgChart'));
+        chart.clear();
+        chart.showLoading({text: "加载中..."});
+        $.getJSON("${baseURL}/sysManage/eduorgRange", {
+        }, function (data) {
+            if (data.chart.status == 0) {
+                chart.setOption(data.chart.data, true);
+                chart.hideLoading();
+            }else if(data.chart.status == 1){
+                chart.hideLoading();
+                chart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function eventStatus() {
+        var chart = echarts.init(document.getElementById('eventStatusChart'));
+        chart.clear();
+        chart.showLoading({text: "加载中..."});
+        $.getJSON("${baseURL}/sysManage/eventStatusChart", {
+        }, function (data) {
+            if (data.chart.status == 0) {
+                chart.setOption(data.chart.data, true);
+                chart.hideLoading();
+            }else if(data.chart.status == 1){
+                chart.hideLoading();
+                chart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function eventWorks() {
+        var chart = echarts.init(document.getElementById('eventWorksChart'));
+        chart.clear();
+        chart.showLoading({text: "加载中..."});
+        $.getJSON("${baseURL}/sysManage/eventWorksChart", {
+        }, function (data) {
+            if (data.chart.status == 0) {
+                chart.setOption(data.chart.data, true);
+                chart.hideLoading();
+            }else if(data.chart.status == 1){
+                chart.hideLoading();
+                chart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function worksEachDay() {
+        var chart = echarts.init(document.getElementById('worksEachDayChart'));
+        chart.clear();
+        chart.showLoading({text: "加载中..."});
+        $.getJSON("${baseURL}/sysManage/worksEachChart", {
+        }, function (data) {
+            if (data.chart.status == 0) {
+                chart.setOption(data.chart.data, true);
+                chart.hideLoading();
+            }else if(data.chart.status == 1){
+                chart.hideLoading();
+                chart.showLoading({
+                    text : '暂无数据',
+                    effect : 'bubble'
+                });
+            }
+        });
+    }
+
+    function gobackSysmanageList() {
+        window.location.href = "${baseURL}/sysManage/list";
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>系统管理</title>
+  [#include "collect/index/headLink.htm"]
+</head>
+<body>
+
+ 
+			
+			 
+			 
+			 
+			 
+ <div class="zpinlists-wrap-pf">
+					<table id="zpinlists-pf" class="mt20" style="width:100%;">
+					<tr class="t-title">
+						<th style="width:5%;" rowspan="2">一级</th>
+						<th style="width:20%;" rowspan="2">二级</th>
+						<th style="width:20%;" rowspan="2">描述</th>
+						<th style="width:20%;" colspan="4">评分参考</th>
+						<th style="width:5%;" rowspan="2">评分</th>
+					</tr>
+					<tr class="table-text pfen">
+						<td>优秀</td>
+						<td>良好</td>
+						<td>一般</td>
+						<td>差</td>
+					</tr>
+					 
+					  [#list workScoreDetail as event]
+               <tr class="table-text">
+						<td >${event.fir_name!}</td>
+						<td>${event.sec_name!}</td>
+						<td>${event.comment!}</td>
+						<td>${event.per_score!}</td>
+						<td>${event.good_score!}</td>
+						<td>${event.ordinary_score!}</td>
+						<td>${event.bad_score!}</td>
+						<td>	${event.score!}
+								</td>
+					</tr>
+                [/#list]
+					</table>
+				</div>
+				
+				
+				<div class="textes-wrap mt5">
+						<span class="text-style-t corblack add-width10">最终得分：</span>
+						<span class="textes-style-big corblack add-width85" id="score_sum">${workScore.score_sum!}</span>
+					</div>
+					<div class="textes-wrap mt5 clear">
+						<span class="text-style-t corblack add-width10 fl">评语：</span>
+						<p class="fl textes-p">${workScore.comment!}</p>
+					</div>
+					<div class="textes-wrap mt5">
+						<span class="text-style-t corblack add-width10">评分时间：</span>
+						<span class="textes-style-t corblack add-width85">${workScore.last_update_time!}</span>
+					</div>
+					<div class="textes-wrap mt5">
+						<span class="text-style-t corblack add-width10">评分人：</span>
+						<span class="textes-style-t corblack add-width85">${workScore.name!}</span>
+					</div>
+					 [#if show=='1']
+					 [#else]
+					<div class="button-wrap mt20 mb10" id="fb-button">
+						<span class="on-button cir-angle back-on" style="width: 99px; background: rgb(15, 230, 177);" onClick="save()">重评</span>
+						<span class="on-button cir-angle back-on ml10" style="width: 99px; background: rgb(15, 230, 177);" onClick="back()">返回</span>
+					</div>
+					  [/#if]
+									
+				 
+  <iframe id="matchbody" name="matchbody" width="100%;" height="500px;"
+							style="padding-top: 10px;" src="${baseURL}/contribute/c_view?wid=${workScore.works_id!}&limit=1" marginheight="0"
+							marginwidth="100%;" frameborder="0"
+							 scrolling="yes"></iframe>
+</body>
+<script type="text/javascript">
+    function back() {
+        window.location.href = "${baseURL}/score/workList/${workScore.event_id!}"   ;
+    }
+    function save(){
+    	window.location.href = "${baseURL}/score/editWorkScore/${workScore.id!}" ;
+    }
+    function viewWork(workId) {
+        window.open('http://www.baidu.com/'+workId);
+    }
+    function scoreChange(){
+    	var score_sum=0;
+    	$("select[name='dem_score']").each(
+				function() {
+					var id =$(this).attr("id");
+					var value=$(this).val();
+					
+					score_sum=score_sum+parseInt(value);
+				});
+    	$("#score_sum").html(score_sum);
+    }
+    
+    
+    
+  
+    	
+</script>
+</html>

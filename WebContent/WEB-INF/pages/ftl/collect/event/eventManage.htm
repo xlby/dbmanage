@@ -1,0 +1,1889 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>评分管理</title> [#include "collect/index/headLink.htm"]
+</head>
+<body>
+	<div id="content" class="clear">
+		<div>
+			<div id="sys-active">
+				<div class="content-head">
+					<span class="content-position">您的位置：</span> <span
+						class="content-position">首页></span> <span class="content-position">活动管理></span>
+					<span class="content-position">评分管理></span>
+				</div>
+				<ul id="menu" class="mt40">
+					<li class="menu-li fl"><a href="${baseURL}/event/eventManage/${eventId}" class="add-on-style">活动设置</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/staffManage/list/${eventId}">人员管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/signup/list/${eventId}">报名管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/workslist/${eventId}">审核管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/scoreManage/list/${eventId}">评分管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/vote/voteManage?eid=${eventId}">投票管理</a></li>
+					<li class="menu-li fl"><a href="${baseURL}/works/worksManage?eid=${eventId}">作品管理</a></li>
+				</ul>
+
+				<div>
+
+					<div id="content" class="clear">
+						<!--系统活动首页-->
+						<div id="active-selectactive-manage" style="width: 100%;">
+							<!--悬停文字-->
+
+
+							<h2 class="ac-title clear mt20 jb">
+								基本设置<a class="jt-button fr pr10"></a>
+							</h2>
+							<div class="corfff basicsetup pt20 mt10">
+								<form action="" id="eventInfo" class="pb20 mb10">
+									<input type="hidden" name="id">
+										<div class="input-wrap" id="">
+											<span class="input-title">名称：</span> <input type="text"
+												value="2016课件大赛" class="input-text P5" name="name">
+										</div>
+										<div class="input-wrap mt15" id="">
+											<span class="input-title">活动状态：</span> <select name="status"
+												class="input-select">
+												<option value="1">未开始</option>
+												<option value="2">进行中</option>
+												<option value="3">已关闭</option>
+												<option value="4">已存档</option>
+											</select>
+										</div>
+										<div class="input-wrap mt15" id="">
+											<span class="input-title">类型：</span> <select
+												class="input-select" name="type" disabled="disabled">
+												<option value="1">独立征集</option>
+												<option value="2">赛事征集</option>
+											</select>
+										</div>
+										<div class="input-wrap mt15" id="">
+											<span class="input-title">所属赛事：</span> <input type="text"
+												value="普法网第一届课件大赛" class="input-text P5" name="contestName"
+												disabled="disabled">
+										</div>
+										<div class="input-wrap mt15" id="">
+											<span class="input-title">组织范围：</span> <select
+												class="input-select" name="scope" disabled="disabled">
+												<option value="1">全站</option>
+												<option value="2">地方</option>
+											</select>
+										</div>
+										<div class="input-wrap mt15" id="">
+											<span class="input-title">组织机构：</span> <input type="text"
+												class="input-text P5" name="eduOrgName" disabled="disabled">
+										</div>
+										<div class="selec-more mt15 clear" id="">
+											<span class="selec-object fl">征集对象：</span>
+											<div class="clear fl addw78">
+                            [#list roleList as roles]
+                            <div class="checkes-div p5 mt20">
+                                <div class="checkeswrap"><a href="javascript:void(0)" class="title-checkes elli pl20 pr20">${roles.app_name!''}</a></div>
+                                <div class="checkes-wrap mt20 over-x pb20 pl20">
+                                    [#list roles.childArray as children]
+                                    <span class="checkboxes-span mt10 pl10 pr10 pt5 pb5 mr10">
+                                        <input type="checkbox" value="${children.id}"  name="groupContent" class="mr5 checkboxes-on collect-zjdx"  />
+                                        <span class="choose-img mr5 noselects">
+                                    </span>
+                                        <a href="javascript:void(0)" class="elli addw80">${children.name}</a>
+                                    </span>
+                                    [/#list]
+                                    </div>
+                            </div>
+                            [/#list]
+                        </div>
+											 
+										</div>
+										<div class="input-wrap mt15" id="">
+											<span class="input-title">资源类型：</span> <select
+												class="input-select" name="resType" disabled="disabled">
+												<option value="1">文章</option>
+												<option value="2">文档</option>
+												<option value="3">视频</option>
+												<option value="4">图片</option>
+												<option value="5">音频</option>
+												<option value="6">综合</option>
+											</select>
+										</div>
+										<div class="mt15 radio-wrap" id="bm">
+											<span class="input-title-radio">报名环节：</span> <span
+												class="radio-yes-wrap mr20"> <input type="radio"
+												name="regStep" class="radio-no" value="1"> <span
+													class="noradios"></span> <label for="yes-a">有</label></span> <span
+												class="radio-no-wrap mr20"> <input type="radio"
+												name="regStep" class="radio-no" value="0"> <span
+													class="noradios"></span> <label for="no-a">无</label></span>
+										</div>
+										<div class="mt15 radio-wrap-b" id="pf">
+											<span class="input-title-radio">评分环节：</span> <span
+												class="radio-yes-wrap mr20"> <input type="radio"
+												id="yes-b" name="scoreStep" class="radio-yes" value="1">
+													<span class="noradios"></span> <label for="yes-b">有</label></span>
+											<span class="radio-no-wrap mr20"> <input type="radio"
+												id="no-b" name="scoreStep" class="radio-no" value="0">
+													<span class="noradios"></span> <label for="no-b">无</label></span>
+										</div>
+										<div class="mt15 radio-wrap-c" id="tp">
+											<span class="input-title-radio">投票环节：</span> <span
+												class="radio-yes-wrap mr20"> <input type="radio"
+												id="yes-c" name="voteStep" class="radio-yes" value="1">
+													<span class="noradios"></span> <label for="yes-c">有</label></span>
+											<span class="radio-no-wrap mr20"> <input type="radio"
+												id="no-c" name="voteStep" class="radio-no" value="0">
+													<span class="noradios"></span> <label for="no-c">无</label></span>
+										</div>
+										<div class="button-wrap mt20 mb10" id="fb-button">
+											<span class="on-button cir-angle back-on"
+												onClick="baseInfoSave();" name="save"
+												style="background: rgb(15, 230, 177); width: 99px;">保存</span>
+										</div>
+								</form>
+							</div>
+							<div id="reg-config">
+								<h2 class="ac-title clear mt20 bm">
+									报名设置<a class="jt-button fr pr10"></a>
+								</h2>
+								<div class="corfff basicsetup pt20 mt10">
+									<form action="" id="eventSign" class="pb20 mb10">
+										<input type="hidden" name="id">
+											<div class="input-wrap mt15 clear" id="">
+												<span class="input-title fl">报名开始时间：</span>
+												<input				type="text" id="datetimepicker-b" name="regStartTime"
+													class="input-text-in p6 cir-angle fl addw18"> <span
+													class="input-title fl">报名截至时间：</span>
+
+													<input type="text" id="datetimepicker-c"
+													name="regEndTime"
+													class="input-text-in p6 cir-angle fl addw18">
+											</div>
+											<div class="button-wrap mt40 mb10" id="fb-button">
+												<span class="on-button cir-angle back-on"
+													onClick="eventSignSave();"
+													style="background: rgb(15, 230, 177); width: 99px;"  name="save">保存</span>
+											</div>
+									</form>
+								</div>
+							</div>
+							<h2 class="ac-title clear mt20 tg">
+								投稿设置<a class="jt-button fr pr10"></a>
+							</h2>
+							<div class="corfff basicsetup pt20 mt10">
+								<form action="" id="sendInfo" class="pb20 mb10">
+								<input type="hidden" name="id">
+								<input type="hidden" name="eventId">
+								<input type="hidden" name="fileFormatLimit">
+								<input type="hidden" name="attachFormatLimit">
+								<input type="hidden" name="groupContent">
+								
+									<div class="input-wrap mt15" id="">
+									<span class="input-title fl">投稿截至时间：</span>
+										 
+										 <input	type="text" id="datetimepicker-d" name="endTime"
+												class="input-text-in p6 cir-angle fl addw18"> 
+									</div>
+									<div class="input-wrap mt15" id="">
+										<span class="input-title pl10">每人投稿数限制：</span> 
+										<select name="numLimit"	id="" class="input-select">
+							[#list 1..10 as t]
+								<option value="${t}"  >[#if t==0]不限制 [#else] ${t}[/#if] </option>
+							[/#list]
+										</select>
+									</div>
+									<div class="mt15 radio-wrap" id="bm">
+										<span class="input-title-radio pl10">是否支持指导人：</span> <span
+											class="radio-yes-wrap mr20"> <input type="radio"
+											  name="directorSupport" class="radio-yes" checked="checked" value="1" >
+												<span class="radios"></span> <label for="yes-a">有</label></span>
+										<span class="radio-no-wrap mr20"> <input type="radio"
+											  name="directorSupport" class="radio-no" value="0">
+												<span class="noradios"></span> <label for="no-a">无</label></span>
+									</div>
+									<div class="mt15 radio-wrapes clear" id="bm">
+										<div class="fl" style="width: 40%;">
+											<span class="input-title-radio pl10" style="width: 38%;">投稿是否分组：</span>
+											<span class="radio-yes-wrap mr20"> 
+													<input type="radio"  name="groupSupport" checked="checked" class="radio-yes" value="1" onChange="showSendGroup()">
+													<span class="noradios"></span> 
+													<label for="yes-a">有</label>
+											</span>
+											<span class="radio-no-wrap mr20"> <input type="radio"
+												  name="groupSupport" class="radio-no" value="0" onChange="hideSendGroup()">
+													<span class="noradios"></span> <label for="no-a">无</label></span>
+										</div>
+										
+										
+										 
+										
+										
+										<div class="fr clear" style="width: 50%;" id="sendGroupDiv">
+											<div style="width: 160px;" class="tgfz-div fl" id="">
+												<div class="clear">
+													<span class="addsrun fl">投稿分组：</span> <span
+														class="adds-blue cir-angle fr" onClick="addSendGrop();">+</span>
+												</div>
+												<ul class="adds-ul pt10 cor-bor mt10" id="sendGroup" name="sendGroup">
+												</ul>
+											</div>
+											<div style="width: 160px;" class="knowledge-div fl ml20">
+												<div class="clear">
+													<span class="addsrun fl">知识点：</span> <span
+														class="adds-blue cir-angle fr" onClick="addPoint();">+</span>
+												</div>
+												<ul class="adds-ul pt10 cor-bor mt10" id="groupPoint" name ="groupPoint">
+												</ul>
+											</div>
+										</div>
+
+									</div>
+									<div class="input-wrap mt30" id="">
+										<span class="input-title pl10" style="width:150px">业务文件个数限制：</span> 
+										<select name="fileSumMax"	 style="width:50px"  class="input-select" >
+							[#list 1..10 as t]
+								<option value="${t}"  >${t} </option>
+							[/#list]
+										</select>
+									</div>
+									<div class="input-wrap mt20">
+										<span class="input-title pl10" style="width:150px">业务文件大小限制：</span> 
+										<select name="fileSizeMax"	style="width:70px" class="input-select">
+							[#list 1..10 as t]
+								<option value="${t*10}"  >${t*10}M </option>
+							[/#list]
+										</select>	
+									</div>
+									<div class="mt15 radio-wrapes clear" id="bm">
+										<div class="fl" style="width: 40%;">
+											<span class="input-title-radio pl10" style="width: 38%;">业务文件格式限制：</span>
+											<span class="radio-yes-wrap mr20" style="width: 64px;">
+												<input type="radio"   name="fileFormat"
+												class="radio-yes" value="1" onChange="showFormatA()"> <span
+													class="noradios"></span> <label for="yes-a">限制</label>
+											</span> <span class="radio-no-wrap mr20" style="width: 64px;">
+												<input type="radio"   name="fileFormat"
+												class="radio-no" value="0"  onChange="hideFormatA()"> <span
+													class="noradios"></span> <label for="no-a">不限制</label>
+											</span>
+										</div>
+										<div class="fr clear" style="width: 50%;" id="formatA">
+											<div style="width: 160px;" class="jpges-div fl" id="">
+												<div class="clear">
+													<span class="addsrun fl">支持的附件格式：</span> <span
+														class="adds-blue cir-angle fr" id="jpges" onClick="fileLimitAdd()";>+</span>
+												</div>
+					
+												<ul class="adds-ul pt10 cor-bor mt10" id="fileFormatLimit" name="fileFormatLimit">
+												</ul>
+											</div>
+										</div>
+
+									</div>
+									<div class="input-wrap mt20">
+										<span class="input-title pl10 ">模块个数限制：</span>
+										<select name="moduleSumMax"	  class="input-select" style="width:50px">
+											[#list 1..10 as t]
+											<option value="${t}"  >${t} </option>
+											[/#list]
+										</select>
+											
+											
+											
+											
+										<span class="input-title pl10 add-width-18">模块内文件大小限制：</span>
+										<select name="moduleFileSizeMax"	  class="input-select"  style="width:70px">
+											[#list 1..10 as t]
+											<option value="${t*50}"  >${t*50}M </option>
+											[/#list]
+										</select>
+												
+												
+												
+										<span class="input-title pl10 add-width-18">模块内文件个数限制：</span>
+										<select name="moduleFileSumMax"	  class="input-select" style="width:50px">
+											[#list 1..10 as t]
+											<option value="${t}"  >${t} </option>
+											[/#list]
+										</select>		
+												 
+									</div>
+									<div class="input-wrap mt20">
+										<span class="input-title pl10 ">附件个数限制：</span> 
+										<select name="attachSumMax"	  class="input-select" style="width:50px">
+											[#list 1..10 as t]
+											<option value="${t}"  >${t} </option>
+											[/#list]
+										</select>
+											
+										<span class="input-title pl10 add-width-18">附件大小限制：</span>
+										<select name="attachSizeMax"	 class="input-select" style="width:70px">
+											[#list 1..50 as t]
+											<option value="${t*10}"  >${t*10}M </option>
+											[/#list]
+										</select>
+											
+									</div>
+									<div class="mt15 radio-wrapes clear"  id="bm">
+										<div class="fl" style="width: 40%;" >
+											<span class="input-title-radio pl10" style="width: 38%;">业务文件格式限制：</span>
+											<span class="radio-yes-wrap mr20" style="width: 64px;">
+												<input type="radio"   name="attachFormat" 	class="radio-yes "  value="1"  onChange="showFormatB()"> 
+												<span class="noradios"></span> 
+												<label for="no-yes">限制</label>
+											</span> 
+											<span class="radio-no-wrap mr20" style="width: 64px;">
+												 <input type="radio"   name="attachFormat" class="radio-no" value="0"  onChange="hideFormatB()">
+												 <span 	class="noradios"></span>
+												 <label for="no-a">不限制</label>
+											</span>
+										</div>
+										
+										
+										
+										
+										<div class="fr clear" style="width: 50%;" id="formatB">
+											<div style="width: 160px;" class="jpgesa-div fl" id="">
+												<div class="clear">
+													<span class="addsrun fl">支持的附件格式：</span> 
+													<span class="adds-blue cir-angle fr" id="jpgesa" onClick="attachLimitAdd();">+</span>
+												</div>
+												<ul class="adds-ul pt10 cor-bor mt10" id="attachFormatLimit" name="attachFormatLimit">
+												</ul>
+											</div>
+										</div>
+
+									</div>
+									<div class="button-wrap mt40 mb10" id="fb-button">
+										<span class="on-button cir-angle back-on"
+											style="background: rgb(15, 230, 177); width: 99px;" onClick="sendInfoSave();"  name="save">保存</span>
+									</div>
+								</form>
+							</div>
+							<h2 class="ac-title clear mt20 sh">
+								审核设置<a class="jt-button fr pr10"></a>
+							</h2>
+							<div class="corfff basicsetup pt20 mt10">
+								<form action="" id="checkInfo" class="pb20 mb10">
+								<input type="hidden" name="id">
+								<input type="hidden" name="checkListA">
+								<input type="hidden" name="checkListB">
+								<input type="hidden" name="checkListC">
+									<div class="input-wrap mt15" id="">
+										<span class="input-title pl10">审核分级：</span> 
+										<select name="checkLevel"  class="input-select" id="check-select">
+											<option value="1">一级</option>
+											<option value="2">二级</option>
+											<option value="3">三级</option>
+										</select> 
+										<span class="ctext-style20">（一级：终审 二级：初审+终审 三级：初审+复审+终审）</span>
+									</div>
+									<div class="clear" style="width: 84%; margin: 20px auto;">
+										<div style="width: 160px;" class="tgfzcheck-div fl" id="firstCheck">
+											<div class="clear">
+												<span class="addsrun fl">初审人员：</span> <span
+													class="adds-blue cir-angle fr" id="tgfzcheck" onClick="staffContentAdd('checkListA')">+</span>
+											</div>
+											<ul class="adds-ul pt10 cor-bor mt10" id="checkListA" name="checkListA"></ul>
+										</div>
+										<div style="width: 160px;" class="knowledgecheck-div fl ml116" id="reviewCheck">
+											 
+											<div class="clear">
+												<span class="addsrun fl">复审人员：</span> <span
+													class="adds-blue cir-angle fr" id="knowledgecheck" onClick="staffContentAdd('checkListB')">+</span>
+											</div>
+											<ul class="adds-ul pt10 cor-bor mt10" id="checkListB" name="checkListB">
+											</ul>
+										</div>
+										<div style="width: 160px;" class="knowledgech-div fr ml20" id="lastCheck">
+											<div class="clear">
+												<span class="addsrun fl">终审人员：</span> <span
+													class="adds-blue cir-angle fr" id="knowledgech" onClick="staffContentAdd('checkListC')">+</span>
+											</div>
+											<ul class="adds-ul pt10 cor-bor mt10" id="checkListC" name="checkListC">
+											</ul>
+										</div>
+									</div>
+									<div class="button-wrap mt40 mb10" id="fb-button">
+										<span class="on-button cir-angle back-on"
+											style="width: 99px; background: rgb(15, 230, 177);" onClick="saveCheckInfo();"  name="save">保存</span>
+									</div>
+								</form>
+							</div>
+							<div id="score-config">
+								<h2 class="ac-title clear mt20 pf">
+									评分设置<a class="jt-button fr pr10"></a>
+								</h2>
+								<div class="corfff basicsetup pt20 mt10">
+									<form action="" id="scoreInfo" class="pb20 mb10">
+											<input type="hidden" name="id">
+											<input type="hidden" name="scoreInfo">
+										<span class="ctext-style12 corred pl10 pr10">*系统支持多个分组评分，每组由不同人员评分，且评分维度、评分次数可分别设置，分组评分一旦开始、将无法修改设置和删除.</span>
+										<div class="input-wrap mt15 clear" id="">
+											<span class="input-title fl">目前已有评分组：</span>
+											<span class="button-b pl10 pr10 cir-angle fr mr40" 	onClick="addScoreGroup();">添加分组</span>
+
+										</div>
+										<div id="scoreInfoList">
+
+										<div class="input-wrap mt15 clear" id="">
+											<span class="input-title fl mr20">普通教师评分组</span> <a
+												class="cir-angle mr10 fl ac-color pl10 pr10 button-gray" onClick="addScoreGroup('評分組A')">设置</a>
+											<a class="cir-angle mr10 fl ac-color pl10 pr10 button-gray">删除</a>
+										</div>
+										<div class="input-wrap mt15 clear" id="">
+											<span class="input-title fl mr20">高级教师评分组</span> <a
+												class="cir-angle mr10 fl ac-color pl10 pr10 button-gray">设置</a>
+											<a class="cir-angle mr10 fl ac-color pl10 pr10 button-gray">删除</a>
+										</div>
+										<div class="input-wrap mt15 clear" id="">
+											<span class="input-title fl mr20">法学专家评分组</span> <a
+												class="cir-angle mr10 fl ac-color pl10 pr10 button-gray">设置</a>
+											<a class="cir-angle mr10 fl ac-color pl10 pr10 button-gray">删除</a>
+										</div>
+
+										</div>
+
+										<div class="button-wrap mt40 mb10" id="fb-button">
+											<span class="on-button cir-angle back-on"
+												style="width: 99px; background: rgb(15, 230, 177);" onClick="saveScoreInfo();"  name="save">保存</span>
+										</div>
+									</form>
+								</div>
+							</div>
+							<div id="vote-config">
+							<h2 class="ac-title clear mt20 tp">
+								投票设置<a class="jt-button fr pr10"></a>
+							</h2>
+							<div class="corfff basicsetup pt20 mt10 mb1000">
+								<form action="" id="voteInfo" class="pb20 mb10">
+								<input type="hidden" name="id">
+									<div class="input-wrap mt15" id="">
+										<span class="input-title pl10">投票限制：</span> 
+										<select name="voteLimit" class="input-select">
+ 								[#list 0..10 as t]
+									<option value="${t}"  >[#if t==0]不限制 [#else] ${t}[/#if] </option>
+								[/#list]
+										</select> 
+										<span class="ctext-style20">（投票人每天投票次数限制）</span>
+									</div>
+									<div class="input-wrap mt15 clear" id="">
+										<span class="input-title fl">投票截止时间：</span> 
+											<input	 type="text" id="datetimepicker-e" name="voteEndTime"
+												class="input-text-in p6 cir-angle fl addw18">
+										
+									</div>
+									 
+									  <div class="button-wrap mt40 mb10" id="fb-button">
+										<span class="on-button cir-angle back-on"
+											style="width: 99px; background: rgb(15, 230, 177);" onClick="saveVoteInfo();"  name="save">保存</span>
+									</div>
+									 	
+								</form>
+							</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<ul id="navigation-select">
+					<li class="navigation-li"><span class="navigation-span p10">快速导航</span></li>
+					<li class="navigation-li"><a href="javascript:void(0)"
+												 class="navigation-a p10 jb">基本设置</a></li>
+					<li class="navigation-li"><a href="javascript:void(0)"
+												 class="navigation-a p10 bm">报名设置</a></li>
+					<li class="navigation-li"><a href="javascript:void(0)"
+												 class="navigation-a p10 tg">投稿设置</a></li>
+					<li class="navigation-li"><a href="javascript:void(0)"
+												 class="navigation-a p10 sh">审核设置</a></li>
+					<li class="navigation-li"><a href="javascript:void(0)"
+												 class="navigation-a p10 pf">评分设置</a></li>
+					<li class="navigation-li"><a href="javascript:void(0)"
+												 class="navigation-a p10 tp">投票设置</a></li>
+					<li class="navigation-li"><a href="#" style="cursor: pointer;"
+												 class="navigation-spans pl10 pr10 pt20 pb10 bs">TOP</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		var busy_dialog = dialog({
+			title : "正在处理中..."
+		});
+		var ok_dialog = dialog({
+			content : "操作完成"
+		});
+
+		$("#pf-button")
+				.click(
+						function() {
+							window.location.href = "${baseURL}/scoreManage/showCharts/${eventId}";
+						});
+
+		function changeState(v_scoreGroupId, v_someVar) {
+			var v_status;
+			if ($(v_someVar).text() == "关闭") {
+				v_status = 0;
+			} else if ($(v_someVar).text() == "开启") {
+				v_status = 1;
+			}
+			$.ajaxSettings.async = false;
+			$.getJSON("${baseURL}/scoreManage/changeStatus", {
+				scoreGroupId : v_scoreGroupId,
+				status : v_status
+			}, function(data) {
+				if (data.result.status == 1) {
+					alert(data.result.message);
+				} else if (data.result.status == 0) {
+					alert("do sth.");
+				}
+			});
+		}
+
+		function allocateTask(scoreGroupId) {
+			var v_event_id = $("#eventId").val();
+			window.location.href = "${baseURL}/scoreManage/allocate/list?eventId="
+					+ v_event_id + "&scoreGroupId=" + scoreGroupId;
+		}
+
+		function testdai() {
+			dialog(
+					{
+						title : '选择负责人',
+						width: 300,
+						height: 70,
+						content : $("#lookfor"),
+						cancel : function() {
+
+						},
+						cancelValue : "取消",
+						ok : function() {
+							var v_person_text = $("#selPerson").find(
+									"option:selected").text();
+							v_person_text = v_person_text.substr(0,
+									v_person_text.indexOf(' ') + 1);
+							var v_person_id = $("#selPerson").find(
+									"option:selected").val();
+
+							//fzrShow
+							$("#fzrShow").html(v_person_text);
+							var selPerson = new Object();
+							selPerson.person_id = v_person_id;
+							selPerson.person_name = v_person_text;
+							$("#reserve2").val(JSON.stringify(selPerson));
+						},
+						okValue : "确定"
+					}).width(420).height(150).showModal();
+		}
+
+		//保存基本信息
+		function baseInfoSave() {
+			$.ajax({
+				type : "post",
+				url : "${baseURL}/event/saveBaseInfo",
+				data : $("#eventInfo").serialize(),
+				success : function(data) {
+					if (data.exMsg && data.exMsg != "") {
+						alert("异常编码:" + data.exMsg);
+					} else {
+						alert("保存成功");
+					}
+				}
+			});
+		}
+		//报名信息保存
+		function eventSignSave() {
+			if($('#datetimepicker-b').val()==''||$('#datetimepicker-c').val()==''){
+				dialog({
+					title:'提示',
+					content:'请选择时间',
+					okValue:"确定",
+					ok:function () {
+
+					}
+				}).width(200).height(60).showModal();
+				return;
+			}
+			if(Date.parse($('#datetimepicker-b').val())>Date.parse($('#datetimepicker-c').val())){
+					dialog({
+						title:'提示',
+						content:'开始时间不能大于截止时间',
+						okValue:"确定",
+						ok:function () {
+
+						}
+					}).width(200).height(60).showModal();
+				return;
+			}
+
+			$.ajax({
+				type : "post",
+				url : "${baseURL}/event/saveSignInfo",
+				data : $("#eventSign").serialize(),
+				success : function(data) {
+					if (data.exMsg && data.exMsg != "") {
+						alert("异常编码:" + data.exMsg);
+					} else {
+						alert("保存成功");
+					}
+					 
+				}
+			});
+		}
+		
+		//投稿信息保存
+		function sendInfoSave(){
+			 $("#sendInfo").find("input[name=fileFormatLimit]").val(getSubmitFromUL(fileLimit));
+			 $("#sendInfo").find("input[name=attachFormatLimit]").val(getSubmitFromUL(attachLimit));
+			 $("#sendInfo").find("input[name=groupContent]").val(JSON.stringify(sendGroupList));
+			if($("input[name=fileSumMax]").val()==0){
+					return;
+			}
+			$.ajax({
+				type : "post",
+				url : "${baseURL}/event/saveSendInfo",
+				data : $("#sendInfo").serialize(),
+				success : function(data) {
+					if (data.exMsg && data.exMsg != "") {
+						alert("异常编码:" + data.exMsg);
+					} else {
+						
+						 $("#sendInfo").find("input[name=id]").val(data.id);
+						
+						alert("保存成功");
+					}
+					 
+				}
+			});
+		}
+		
+		//投稿信息保存
+		function saveVoteInfo(){
+			$.ajax({
+				type : "post",
+				url : "${baseURL}/event/saveVoteInfo",
+				data : $("#voteInfo").serialize(),
+				success : function(data) {
+					if (data.exMsg && data.exMsg != "") {
+						alert("异常编码:" + data.exMsg);
+					} else {
+						alert("保存成功");
+					}
+					 
+				}
+			});
+		}
+		
+		//审核信息保存
+		function saveCheckInfo(){
+            var checkLevel=$('#check-select').val();
+            if(checkLevel==1){
+                if(contentList[2].data==null||contentList[2].data==""){
+
+                    dialog({
+                        title:'添加错误',
+                        content:'每级审核人员都不能为空',
+                        okValue:"确定",
+                        ok: function () {
+
+                        }
+                    }).showModal();
+                    return;
+                }
+            }
+            if(checkLevel==2){
+                if(contentList[0].data==null||contentList[0].data==""||contentList[2].data==null||contentList[2].data==""){
+                    dialog({
+                        title:'添加错误',
+                        content:'每级审核人员都不能为空',
+                        okValue:"确定",
+                        ok: function () {
+
+                        }
+                    }).showModal();
+                    return;
+                }
+            }
+            if(checkLevel==3){
+                for(var o1 in contentList){
+                if(contentList[o1].data==null||contentList[o1].data==""){
+                    contentList[o1].data=[];
+                    dialog({
+                        title:'添加错误',
+                        content:'每级审核人员都不能为空',
+                        okValue:"确定",
+                        ok: function () {
+
+                        }
+                    }).showModal();
+                    return;
+                    }
+                }
+            }
+			for(var o1 in contentList){
+				 $("#checkInfo").find("input[name="+contentList[o1].id+"]").val( JSON.stringify(contentList[o1].data));
+			}
+			$.ajax({
+				type : "post",
+				url : "${baseURL}/event/saveCheckInfo",
+				data : $("#checkInfo").serialize(),
+				success : function(data) {
+					if (data.exMsg && data.exMsg != "") {
+						alert("异常编码:" + data.exMsg);
+					} else {
+						alert("保存成功");
+					}
+				}
+			});
+		}
+		//评分信息保存
+		function saveScoreInfo(){
+			for(var o1 in contentList){
+				 $("#scoreInfo").find("input[name=scoreInfo]").val( JSON.stringify(scoreGroupList));
+			}
+			$.ajax({
+				type : "post",
+				url : "${baseURL}/event/saveScoreInfo",
+				data : $("#scoreInfo").serialize(),
+				success : function(data) {
+					if (data.exMsg && data.exMsg != "") {
+						alert("异常编码:" + data.exMsg);
+					} else {
+						alert("保存成功");
+					}
+				}
+			});
+		}
+		 
+		 
+		
+		function showSendGroup(){
+			
+			$("#sendGroupDiv").show();
+		}
+		function hideSendGroup(){
+			$("#sendGroupDiv").hide();
+			sendGroupList=[];
+			ULInit($("#sendGroup"),sendGroupList);
+		}
+		
+		
+		function showFormatA(){
+			
+			$("#formatA").show();
+		}
+		function hideFormatA(){
+			$("#formatA").hide();
+			fileLimit=[];
+			ULInit($("#fileFormatLimit"),fileLimit);
+		}
+		
+		function showFormatB(){
+			
+			$("#formatB").show();
+		}
+		function hideFormatB(){
+			$("#formatB").hide();
+			attachLimit=[];
+			ULInit($("#attachFormatLimit"),attachLimit);
+		}
+		
+		
+		//投稿分組列表
+		function sendGroupListShow(){
+			ULInit($("#sendGroup"),sendGroupList);
+		}
+		//增加投稿分组
+		function addSendGrop() {
+			$('#namePop').find("input[name='name']").val("");
+			$('#namePop').find(".tj-span").hide();
+			dialog(
+					{
+						title : '添加投稿分組',
+						content : $('#namePop'),
+						width: 300,
+						height: 70,
+						ok : function() {
+							var name = $('#namePop').find("input[name='name']")
+									.val();
+							//var reg = /^[\u4e00-\u9fa5\.]{2,20}$/i; //只限中文   //验证
+							if (name.length>=2&&name.length<=40) {
+								
+								for(o1 in sendGroupList){
+									if(sendGroupList[o1].name==name){
+										$('#namePop').find(".tj-span").html(
+										"重复添加,请重新输入2-20中文。");
+										$('#namePop').find(".tj-span").show();
+										return false;
+									}
+								}
+								var tmp={};
+								tmp["name"]=name;
+								tmp["pointList"]=[];
+								sendGroupList.push(tmp);
+								sendGroupListShow();
+							} else {
+								$('#namePop').find(".tj-span").html(
+										"请输入2-40中文。");
+								$('#namePop').find(".tj-span").show();
+								return false;
+							}
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		//删除分组
+		function sendGroupDel(obj){
+			var name = $(obj).prev().html();
+			for ( var o1 in sendGroupList) {
+				if(sendGroupList[o1].name==name){
+					sendGroupList.splice(o1, 1);
+					sendGroupListShow();
+				}
+			}
+		}
+		//知识点列表
+		function sendGroupSubList(obj) {
+			var name =$(obj).html();
+			for(o1 in sendGroupList){
+				if(sendGroupList[o1].name==name){
+					var pointList = sendGroupList[o1].pointList;
+					ULInit($("#groupPoint"),pointList);
+				}
+			}
+		}
+		//增加知识点
+		function addPoint() {
+			var name = $("#sendGroup").find(".addcorl")
+					.find("span:first-child").html();
+			if(name ==null||name==''){
+				dialog({content:"请填写知识点名称",ok:function () {},okValue:"确定"}).showModal();
+				return;
+			}
+			$('#namePop').find("input[name='name']").val("");
+			$('#namePop').find(".tj-span").hide();
+			dialog(
+					{
+						title : '添加<'+name+'>知识点',
+						content : $('#namePop'),
+						width: 300,
+						height: 70,
+						ok : function() {
+							var pointName = $('#namePop').find("input[name='name']").val();
+							if (pointName.length>=2&&pointName.length<=40) {
+								var tmp={};
+								tmp["name"]=pointName;
+								 
+								
+								for ( var o1 in sendGroupList) {
+									if(sendGroupList[o1].name==name){
+										 
+										var pointList  =sendGroupList[o1].pointList;
+										for ( var o2 in pointList) {
+											 if(pointList[o2].name==pointName){
+												 $('#namePop').find(".tj-span").html("内容重复,请输入2-40中文");
+												 $('#namePop').find(".tj-span").show();
+												 return ;
+											 }
+										}
+										pointList.push(tmp);
+										sendGroupSubList($("#sendGroup").find(".addcorl")
+												.find("span:first-child"));
+									}
+								}
+								
+							} else {
+								$('#namePop').find(".tj-span").html("请输入2-40个中文");
+								$('#namePop').find(".tj-span").show();
+								return false;
+							}
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		//删除知识点
+		function groupPointDel(obj){
+			var name = $("#sendGroup").find(".addcorl")
+			.find("span:first-child").html();
+			var pointName = $(obj).prev().html()
+			if(name ==null||name==''){
+				return;
+			}
+			for ( var o1 in sendGroupList) {
+				if(sendGroupList[o1].name==name){
+					 
+					for ( var o2 in sendGroupList[o1].pointList) {
+						 if(sendGroupList[o1].pointList[o2].name==pointName){
+							 sendGroupList[o1].pointList.splice(o2, 1);
+							 sendGroupSubList($("#sendGroup").find(".addcorl")
+										.find("span:first-child"));
+						 }
+					}
+				}
+				
+			}
+		}
+		
+		
+		
+	
+		
+		
+		//文件格式列表
+		function fileLimitList(){
+			ULInit($("#fileFormatLimit"),fileLimit);
+		}
+		 //文件格式增加
+		function fileLimitAdd(){
+
+			$('#namePop').find("input[name='name']").val("");
+			$('#namePop').find(".tj-span").hide();
+			dialog(
+					{
+						title : '添加文件格式',
+						content : $('#namePop'),
+						width: 300,
+						height: 70,
+						ok : function() {
+							var name = $('#namePop').find("input[name='name']")
+									.val();
+							if(name==null||name==''){
+								$('#namePop').find(".tj-span").html(
+								"请重新输入格式");
+								$('#namePop').find(".tj-span").show();
+								return false;
+							}
+								for(o1 in fileLimit){
+									if(fileLimit[o1].name==name){
+										$('#namePop').find(".tj-span").html(
+										"重复添加");
+										$('#namePop').find(".tj-span").show();
+										return false;
+									}
+								}
+								var tmp={};
+								tmp["name"]=name;
+								fileLimit.push(tmp);
+								fileLimitList();
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		 //文件格式删除
+		function fileFormatLimitDel(obj){
+			var name = $(obj).prev().html();
+			for ( var o1 in fileLimit) {
+				if(fileLimit[o1].name==name){
+					fileLimit.splice(o1, 1);
+					fileLimitList();
+				}
+			}
+		}
+				
+		function fileFormatLimitSubList(){
+		}
+		function attachFormatLimitSubList(){
+		}
+		function fileFormatLimitSubDBList(){
+		}
+		function attachFormatLimitSubDBList(){
+		}
+		function  demInfoSubList(){
+		} 
+		
+		
+		//文件格式列表
+		function attachLimitList(){
+			ULInit($("#attachFormatLimit"),attachLimit);
+		}
+		 //文件格式增加
+		function attachLimitAdd(){
+
+			$('#namePop').find("input[name='name']").val("");
+			$('#namePop').find(".tj-span").hide();
+			dialog(
+					{
+						title : '添加文件格式',
+						content : $('#namePop'),
+						width: 300,
+						height: 70,
+						ok : function() {
+							var name = $('#namePop').find("input[name='name']")
+									.val();
+							if(name==null||name==''){
+								$('#namePop').find(".tj-span").html(
+								"请重新输入格式");
+								$('#namePop').find(".tj-span").show();
+								return false;
+							}
+								for(o1 in attachLimit){
+									if(attachLimit[o1].name==name){
+										$('#namePop').find(".tj-span").html(
+										"重复添加。");
+										$('#namePop').find(".tj-span").show();
+										return false;
+									}
+								}
+								var tmp={};
+								tmp["name"]=name;
+								attachLimit.push(tmp);
+								attachLimitList();
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		 //文件格式删除
+		function attachFormatLimitDel(obj){
+			var name = $(obj).prev().html();
+			for ( var o1 in fileLimit) {
+				if(attachLimit[o1].name==name){
+					attachLimit.splice(o1, 1);
+					attachLimitList();
+				}
+			}
+		}
+		 
+		 
+		 
+		 
+		 
+		
+		 
+		 function listScoreGroup(){
+			 $("#scoreInfoList").html("");
+				for(var o1 in scoreGroupList){
+					 
+					var scoreInfoMap =scoreGroupList[o1];
+					var  result ='<div class="input-wrap mt15 clear" >';
+					result+='<span class="input-title fl mr20">'+scoreInfoMap["name"]+'</span>';
+					result+= '<a class="cir-angle mr10 fl ac-color pl10 pr10 button-gray" onClick=addScoreGroup("'+scoreInfoMap["name"]+'") >设置</a>';
+					result+= '<a class="cir-angle mr10 fl ac-color pl10 pr10 button-gray" onClick=delScoreGroup("'+scoreInfoMap["name"]+'")>删除</a>';
+					result+='</div>';
+					$("#scoreInfoList").append(result);
+				}
+			 
+		 }
+		 
+			function delScoreGroup(soreGroupName){
+				if(soreGroupName==null||soreGroupName==""){
+					//所有字段初始化为空
+					scoreGroupMap={};
+					scoreGroupMap.groupStaff=[];
+				}
+				
+				for(o1 in scoreGroupList){
+					if(scoreGroupList[o1].name==soreGroupName){
+						scoreGroupList.splice(o1, 1);
+
+					}
+				}
+				listScoreGroup();
+			}
+		 
+		
+		//增加评分分组
+		function addScoreGroup(soreGroupName){
+			scoreGroupInit(soreGroupName);
+			dialog(
+					{
+						title : '添加评分组',
+						content : $('#scoreGroup'),
+						cancel:false,
+						ok : function() {
+							var num =$('#scoreGroup').find("select[name=num]").val();
+							var name =$('#scoreGroup').find("input[name=name]").val();
+							console.log(num);
+							scoreGroupMap.num =num;
+							scoreGroupMap.name =name;
+							if(name==null||name==""){
+	                            dialog({title:'错误',content:"分组名称不可为空",okValue:"确定",ok:function () {}}).showModal();
+	                            return false;
+	                        }
+							if($('#groupStaff li').size()<num){
+								dialog({title:'错误',content:'分配的人数必须大于等于评分的次数',okValue:"确定",ok:function(){}}).showModal();
+								return false;
+							}
+							var scoreSum=0;
+							
+							for ( var o1 in scoreGroupMap.demGroup ) {
+								 
+									 
+									for ( var o2 in scoreGroupMap.demGroup[o1].demInfo) {
+										 
+											 scoreSum=parseInt(scoreGroupMap.demGroup[o1].demInfo[o2].totalScore)+scoreSum
+											 
+									}
+									 
+								 
+							}
+							// 8.29 原需求必须验证100分.后续需求以百分位基础....后来又说不加了.预计对其他功能有影响.没法管.说改啥就该啥吧~
+							/**
+							
+							if(scoreSum!=100){
+								 dialog({title:'错误',content:"各维度总分和必须为100,现在是"+scoreSum,okValue:"确定",ok:function () {}}).showModal();
+		                            return false;
+							}
+							*/
+							if(soreGroupName==null||soreGroupName==""){
+								scoreGroupList.push(scoreGroupMap);
+							}else{
+								for(o1 in scoreGroupList){
+									if(scoreGroupList[o1].name==soreGroupName){
+										scoreGroupList[o1]=scoreGroupMap;
+									}
+								}
+							}
+							listScoreGroup();
+							
+							
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		 
+		//评分分组初始化
+	 	 function scoreGroupInit(soreGroupName){
+			if(soreGroupName==null||soreGroupName==""){
+				//所有字段初始化为空
+				scoreGroupMap={};
+				scoreGroupMap.groupStaff=[];
+			}
+			
+			for(o1 in scoreGroupList){
+				if(scoreGroupList[o1].name==soreGroupName){
+					scoreGroupMap=scoreGroupList[o1];
+					
+				}
+			}
+			contentShow($("#scoreGroup"), scoreGroupMap);
+	 	 }
+		//评分分组人员列表
+		function groupStaffList(){
+			ULInit($("#groupStaff"),scoreGroupMap.groupStaff);
+		}
+		 //评分分组人员增加
+		function groupStaffAdd(){
+
+			$('#staffPop').find("select[name='name']").val("");
+			
+			var optionStr="";
+			for(var o1 in eventStaffList){
+				if(eventStaffList[o1].type=="4"){
+				optionStr=optionStr+'<option value="'+eventStaffList[o1].id+'">'+eventStaffList[o1].name+'</option>';	
+				}
+				
+			}
+			$("#staffPop").find("select[name=name]").html(optionStr);
+			
+			
+			$('#staffPop').find(".tj-span").hide();
+			dialog(
+					{
+						title : '添加评分人员',
+						content : $('#staffPop'),
+						width: 300,
+						height: 70,
+						ok : function() {
+							var id = $('#staffPop').find("select[name='name']")
+									.val();
+							var name = $('#staffPop').find("option:selected").text();
+							
+							if(scoreGroupMap.groupStaff==null||scoreGroupMap.groupStaff==""){
+								scoreGroupMap.groupStaff=[];
+							}
+								console.log(scoreGroupMap.groupStaff);
+								for(o1 in scoreGroupMap.groupStaff){
+									if(scoreGroupMap.groupStaff[o1].id==id){
+										$('#staffPop').find(".tj-span").html(
+										"重复添加");
+										$('#staffPop').find(".tj-span").show();
+										return false;
+									}
+								}
+								
+								for(o1 in scoreGroupList ){
+									for(o2 in scoreGroupList[o1].groupStaff ){
+										if( scoreGroupList[o1].groupStaff[o2].id==id){
+											$('#staffPop').find(".tj-span").html(
+											"重复添加");
+											$('#staffPop').find(".tj-span").show();
+											return false;
+										}
+									}
+									
+								}
+								
+								
+								
+								var tmp={};
+								tmp["name"]=name;
+								tmp["id"]=id;
+								scoreGroupMap.groupStaff.push(tmp);
+								groupStaffList();
+							 
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		 //评分分组人员删除
+		function groupStaffDel(obj){
+			var name = $(obj).prev().html();
+			for ( var o1 in scoreGroupMap.groupStaff) {
+				if(scoreGroupMap.groupStaff[o1].name==name){
+					scoreGroupMap.groupStaff.splice(o1, 1);
+					groupStaffList();
+				}
+			}
+		}
+		 
+		//维度分组列表
+		function demGroupList(){
+			ULInit($("#demGroup"),scoreGroupMap.demGroup);
+		}
+		 //维度分组增加
+		function demGroupAdd(){
+
+			$('#namePop').find("input[name='name']").val("");
+			$('#namePop').find(".tj-span").hide();
+			dialog(
+					{
+						title : '添加维度',
+						content : $('#namePop'),
+						width: 300,
+						height: 70,
+						ok : function() {
+							var name = $('#namePop').find("input[name='name']")
+									.val();
+							  if(name.length>=2&&name.length<=40){
+
+										for(o1 in scoreGroupMap.demGroup){
+											if(scoreGroupMap.demGroup[o1].name==name){
+												$('#namePop').find(".tj-span").html(
+												"重复添加,请重新输入2-40中文。");
+												$('#namePop').find(".tj-span").show();
+												return false;
+											}
+										}
+										var tmp={};
+										tmp["name"]=name;
+										if(scoreGroupMap.demGroup==null||scoreGroupMap.demGroup==""){
+											scoreGroupMap.demGroup=[];
+										}
+										scoreGroupMap.demGroup.push(tmp);
+										demGroupList();
+							 
+						}
+						else{
+								  dialog({title:'错误',content:"请输入2-40个字",okValue:"确定",ok:function () {}}).showModal();
+								  return false;
+							  }
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		 //维度分组删除
+		function demGroupDel(obj){
+			var name = $(obj).prev().html();
+			for ( var o1 in scoreGroupMap.demGroup) {
+				if(scoreGroupMap.demGroup[o1].name==name){
+					scoreGroupMap.demGroup.splice(o1, 1);
+					demGroupList();
+				}
+			}
+		}
+		 
+		//维度信息列表
+		function demGroupSubList(obj) {
+			var name =$(obj).html();
+			for(o1 in scoreGroupMap.demGroup){
+				if(scoreGroupMap.demGroup[o1].name==name){
+					var pointList = scoreGroupMap.demGroup[o1].demInfo;
+					ULInit($("#demInfo"),pointList);
+				}
+			}
+		}
+		//维度信息查看
+		function demInfoSubDBList(obj){
+			
+			var demInfoName =$(obj).html();
+			
+			
+			
+			var name = $("#demGroup").find(".addcorl")
+			.find("span:first-child").html();
+			for(o1 in scoreGroupMap.demGroup){
+				if(scoreGroupMap.demGroup[o1].name==name){
+					  scoreGroupMap.demGroup[o1].demInfo;
+					 
+					for(o2 in  scoreGroupMap.demGroup[o1].demInfo){
+						if(scoreGroupMap.demGroup[o1].demInfo[o2].name==demInfoName){
+							 
+							contentShow($("#demInfoPop"),scoreGroupMap.demGroup[o1].demInfo[o2]);
+							
+						}
+					}
+				}
+			}
+
+	//$('#demInfoPop').find("input[name='name']").val("");
+	$('#demInfoPop').find(".tj-span").hide();
+	dialog(
+			{
+				title : '查看<'+demInfoName+'>的维度信息',
+				content : $('#demInfoPop'),
+				width: 500,
+				height: 420,
+				ok : function() {
+					var pointName = $('#demInfoPop').find(
+							"input[name='name']").val();
+					//var reg = /^[\u4e00-\u9fa5\.]{2,20}$/i; //只限中文   //验证
+					if (pointName.length>=2&&pointName.length<=40) {
+						var tmp={};
+						tmp["name"]=pointName;
+						 
+						tmp["comment"]= $('#demInfoPop').find("textarea[name='comment']").val();;
+						tmp["totalScore"]= $('#demInfoPop').find("input[name='totalScore']").val();;
+						tmp["badScore"]= $('#demInfoPop').find("input[name='badScore']").val();;
+						tmp["ordinaryScore"]= $('#demInfoPop').find("input[name='ordinaryScore']").val();;
+						tmp["goodScore"]= $('#demInfoPop').find("input[name='goodScore']").val();;
+						if(tmp["totalScore"]==0){
+                            dialog({title:'错误',content:"总分不能为空",okValue:"确定",ok:function () {}}).showModal();
+                            return false;
+                        }
+						
+						
+						var type="^[0-9]*[1-9][0-9]*$"; 
+						var re = new RegExp(type); 
+						if(tmp["totalScore"].match(re)==null||tmp["goodScore"].match(re)==null||tmp["ordinaryScore"].match(re)==null||tmp["badScore"].match(re)==null) 
+						{ 
+							 dialog({title:'错误',content:"分数必须为正整数",okValue:"确定",ok:function () {}}).showModal();
+	                            return false;
+						} 
+						
+						
+						
+                        if((parseInt(tmp["badScore"])>=parseInt(tmp["ordinaryScore"]))||(parseInt(tmp["badScore"])>=parseInt(tmp["goodScore"]))||(parseInt(tmp["ordinaryScore"])>=parseInt(tmp["goodScore"]))||(parseInt(tmp["goodScore"])>parseInt(tmp["totalScore"])))
+                        {
+                            dialog({title:'错误',content:"各等级分数无效",okValue:"确定",ok:function () {}}).showModal();
+                            return false;
+                        }
+						for ( var o1 in scoreGroupMap.demGroup ) {
+							if(scoreGroupMap.demGroup[o1].name==name){
+								 
+								for ( var o2 in scoreGroupMap.demGroup[o1].demInfo) {
+									 if(scoreGroupMap.demGroup[o1].demInfo[o2].name==demInfoName){
+										 scoreGroupMap.demGroup[o1].demInfo.splice(o2, 1);
+										 scoreGroupMap.demGroup[o1].demInfo.push(tmp);
+										 
+									 }
+								}
+								 
+								demGroupSubList($("#demGroup").find(".addcorl")
+										.find("span:first-child"));
+							}
+						}
+						
+					} else {
+						$('#demInfoPop').find(".tj-span").html("请输入2-40个字符");
+						$('#demInfoPop').find(".tj-span").show();
+						return false;
+					}
+				},
+				okValue : '确定'
+			}).showModal();
+		}
+		//增加维度信息
+		function demInfoAdd() {
+			var name = $("#demGroup").find(".addcorl")
+					.find("span:first-child").html();
+			if(name ==null||name==''){
+                dialog({title:"提示",content:"维度名字不能为空",okValue:"确定",ok:function () {
+                    
+                }}).show();
+				return;
+			}
+			contentShow($("#demInfoPop"),"");
+			$('#demInfoPop').find("textarea[name='comment']").val("");
+			$('#demInfoPop').find("input[name='name']").val("");
+			$('#demInfoPop').find(".tj-span").hide();
+			dialog(
+					{
+						title : '添加<'+name+'>的维度信息',
+						content : $('#demInfoPop'),
+						width: 500,
+						height: 420,
+						ok : function() {
+							var pointName = $('#demInfoPop').find(
+									"input[name='name']").val();
+							//var reg = /^[\u4e00-\u9fa5\.]{2,20}$/i; //只限中文   //验证
+							console.log(pointName.length);
+							if (pointName.length>=2&&pointName.length<=40) {
+								var tmp={};
+								tmp["name"]=pointName;
+								 
+								tmp["comment"]= $('#demInfoPop').find("textarea[name='comment']").val();;
+								tmp["totalScore"]= $('#demInfoPop').find("input[name='totalScore']").val();;
+								tmp["badScore"]= $('#demInfoPop').find("input[name='badScore']").val();;
+								tmp["ordinaryScore"]= $('#demInfoPop').find("input[name='ordinaryScore']").val();;
+								tmp["goodScore"]= $('#demInfoPop').find("input[name='goodScore']").val();;
+								if(tmp["totalScore"]==0){
+                                    dialog({title:'错误',content:"总分不能为空",okValue:"确定",ok:function () {}}).showModal();
+                                    return false;
+                                }
+								var type="^[0-9]*[1-9][0-9]*$"; 
+								var re = new RegExp(type); 
+								if(tmp["totalScore"].match(re)==null||tmp["goodScore"].match(re)==null||tmp["ordinaryScore"].match(re)==null||tmp["badScore"].match(re)==null) 
+								{ 
+									 dialog({title:'错误',content:"分数必须为正整数",okValue:"确定",ok:function () {}}).showModal();
+			                            return false;
+								} 
+								
+                                if((parseInt(tmp["badScore"])>parseInt(tmp["ordinaryScore"]))||(parseInt(tmp["badScore"])>parseInt(tmp["goodScore"]))||(parseInt(tmp["ordinaryScore"])>parseInt(tmp["goodScore"]))||(parseInt(tmp["goodScore"])>=parseInt(tmp["totalScore"])))
+                                {
+                                    dialog({title:'错误',content:"各等级分数无效",okValue:"确定",ok:function () {}}).showModal();
+                                    return false;
+                                }
+								for ( var o1 in scoreGroupMap.demGroup ) {
+									if(scoreGroupMap.demGroup[o1].name==name){
+										 
+										for ( var o2 in scoreGroupMap.demGroup[o1].demInfo) {
+											 if(scoreGroupMap.demGroup[o1].demInfo[o2].name==pointName){
+												 
+												 
+												 
+												 dialog({title:"提示",content:"维度名字重复,请输入2-20中文",okValue:"确定",ok:function () {
+									                    
+									                }}).show();
+												 
+												 return false;
+											 }
+										}
+										if(scoreGroupMap.demGroup[o1].demInfo==null||scoreGroupMap.demGroup[o1].demInfo==""){
+											scoreGroupMap.demGroup[o1].demInfo=[];
+										}
+										scoreGroupMap.demGroup[o1].demInfo.push(tmp);
+										demGroupSubList($("#demGroup").find(".addcorl")
+												.find("span:first-child"));
+									}
+								}
+								
+							} else {
+							 
+								 dialog({title:"提示",content:"维度名字错误,请输入2-40中文",okValue:"确定",ok:function () {
+					                    
+					                }}).show();
+								return false;
+							}
+						},
+						okValue : '确定'
+					}).showModal();
+		}
+		//删除维度信息
+		function demInfoDel(obj){
+			var name = $("#demGroup").find(".addcorl")
+			.find("span:first-child").html();
+			var pointName = $(obj).prev().html()
+			if(name ==null||name==''){
+				return;
+			}
+			for ( var o1 in scoreGroupMap.demGroup) {
+				if(scoreGroupMap.demGroup[o1].name==name){
+					 
+					for ( var o2 in scoreGroupMap.demGroup[o1].demInfo) {
+						 if(scoreGroupMap.demGroup[o1].demInfo[o2].name==pointName){
+							 scoreGroupMap.demGroup[o1].demInfo.splice(o2, 1);
+							 demGroupSubList($("#demGroup").find(".addcorl")
+										.find("span:first-child"));
+						 }
+					}
+				}
+				
+			}
+		}
+		$(function() {
+			//基本信息查询
+			var dialoga;
+		 
+				dialoga = dialog({title: "正在处理中...",cancel:false});
+				dialoga.showModal();
+			 
+
+		 
+				
+			 
+			$.ajax({
+						type : "post",
+						async: false,
+						url : "${baseURL}/event/baseInfo/${eventId}",
+						success : function(data) {
+							
+							if(data.baseInfo.status!='1'){
+							
+								$("#content").find("span[name=save]").each(function(){
+									$(this).hide();
+								});
+							}
+							
+							
+							
+							if(data.map ==null||data.map.group_content==null ||data.map.group_content==""){
+								data.map={};
+								data.map.group_content=[];
+							}
+							data.baseInfo["groupContent"] = data.map.group_content;
+							data.baseInfo.regStartTime = getDateSrc(data.baseInfo.regStartTime);
+							data.baseInfo.regEndTime = getDateSrc(data.baseInfo.regEndTime);
+							data.baseInfo.voteEndTime = getDateSrc(data.baseInfo.voteEndTime);
+							contentShow($("#eventInfo"), data.baseInfo);
+							contentShow($("#eventSign"), data.baseInfo);
+							contentShow($("#voteInfo"), data.baseInfo);
+                            //动态隐藏相应的模块
+                            var isReg=$('input:radio[name="regStep"]:checked').val();
+                            var isVote=$('input:radio[name="voteStep"]:checked').val();
+                            var isScore=$('input:radio[name="scoreStep"]:checked').val();
+
+                            if(isReg!=1){
+                                $('#reg-config').hide();
+                                $('#navigation-select li:eq(2)').hide();
+                            }
+                            if(isVote!=1){
+                                $('#vote-config').hide();
+                                $('#navigation-select li:eq(6)').hide();
+                            }
+                            if(isScore!=1){
+                                $('#score-config').hide();
+                                $('#navigation-select li:eq(5)').hide();
+                            }
+                           
+						}
+						
+					});
+			//投稿信息查询
+			$.ajax({
+				type : "post",
+				async: false,
+				url : "${baseURL}/event/sendInfo/${eventId}",
+				success : function(data) {
+					if(data.sendInfo.fileFormatLimit==null||data.sendInfo.fileFormatLimit==''){
+						data.sendInfo.fileFormat="0";
+					}else{
+						data.sendInfo.fileFormat="1";
+					}
+					if(data.sendInfo.attachFormatLimit==null||data.sendInfo.attachFormatLimit==''){
+						data.sendInfo.attachFormat="0";
+					}else{
+						data.sendInfo.attachFormat="1";
+					}
+					//业务文件格式转换 form标准模板
+					data.sendInfo.fileFormatLimit=getULData(data.sendInfo.fileFormatLimit);
+					//业务文件数据 缓存.
+					fileLimit=data.sendInfo.fileFormatLimit;
+					//附件格式转换 form标准模板
+					data.sendInfo.attachFormatLimit=getULData(data.sendInfo.attachFormatLimit);
+					
+					//附件数据 缓存.
+					attachLimit=data.sendInfo.attachFormatLimit;
+					data.sendInfo.endTime = getDateSrc(data.sendInfo.endTime);
+					data.sendInfo.sendGroup =data.sendGroup;
+					sendGroupList=data.sendInfo.sendGroup;
+					contentShow($("#sendInfo"), data.sendInfo);
+				}
+			});
+			//审核信息查询
+			$.ajax({
+				type : "post",
+				async: false,
+				url : "${baseURL}/event/checkInfo/${eventId}",
+				success : function(data) {
+
+				//	data.baseInfo.checkListA=(data.checkListA);
+				//	data.baseInfo.checkListB=(data.checkListB);
+				//	data.baseInfo.checkListC=(data.checkListC);
+					//checkListA=data.checkListA;
+					//checkListB=data.baseInfo.checkListB;
+					//checkListC=data.baseInfo.checkListC;
+					contentShow($("#checkInfo"), data.baseInfo);
+					checkListA = new $.ulContent();
+					checkListA.data =data.checkListA;
+					checkListA.id ="checkListA";
+					checkListA.dataDiv= $("#checkListA");
+					contentList.push(checkListA);
+					checkListB = new $.ulContent();
+					checkListB.data =data.checkListB;
+					checkListB.id ="checkListB";
+					checkListB.dataDiv= $("#checkListB");
+					contentList.push(checkListB);
+					checkListC = new $.ulContent();
+					checkListC.data =data.checkListC;
+					checkListC.id ="checkListC";
+					checkListC.dataDiv= $("#checkListC");
+					contentList.push(checkListC);
+					//ULInit($("#checkListA"),checkListA);
+				
+
+                    //根据等级显示
+                    switch($('#check-select').val()){
+                        case '1':
+                        	checkListA.data =[];
+                        	checkListB.data =[];
+                        	
+                            $('#firstCheck').hide();
+                            $('#reviewCheck').hide();
+                            break;
+                        case '2':
+                        	 
+                        	checkListB.data =[];
+                            $('#reviewCheck').hide();
+                            break;
+                        default:
+                            break;
+                    }
+
+					checkListA.dataList();
+					checkListB.dataList();
+					checkListC.dataList();
+					//根据审核等级显示模块
+		            $('#check-select').change(function () {
+		                var level=$(this).val();
+		                checkListA.dataList();
+						checkListB.dataList();
+						checkListC.dataList();
+		                switch(level){
+		                    case '1':
+		                    	checkListA.data =[];
+		                    	checkListB.data =[];
+		                        $('#firstCheck').hide();
+		                        $('#reviewCheck').hide();
+		                        $('#lastCheck').show();
+		                        break;
+		                    case '2':
+		                    	checkListB.data =[];
+		                        $('#firstCheck').show();
+		                        $('#reviewCheck').hide();
+		                        $('#lastCheck').show();
+		                        break;
+		                    default:
+		                        $('#firstCheck').show();
+		                        $('#reviewCheck').show();
+		                        $('#lastCheck').show();
+		                        break;
+		                }
+
+						
+		            });
+				}
+			});
+			//活动人员查询
+			$.ajax({
+				type : "post",
+				async: false,
+				url : "${baseURL}/event/listEventStaff/${eventId}",
+				success : function(data) {
+					eventStaffList =data.staffList;
+					var optionStr="";
+					for(var o1 in eventStaffList){
+						optionStr=optionStr+'<option value="'+eventStaffList[o1].id+'">'+eventStaffList[o1].name+'</option>';
+					}
+					$("#staffPop").find("select[name=name]").html(optionStr);
+				}
+			});
+			
+			
+			//评分信息查询
+			$.ajax({
+				type : "post",
+				async: false,
+				url : "${baseURL}/event/scoreInfo/${eventId}",
+				success : function(data) {
+					
+					var temp={};
+					temp["name"]="評分組A";
+					temp["num"]="3";
+					temp["groupStaff"]=[];
+					temp["demGroup"]=[];
+					var tmp={};
+					tmp["name"]="人員1";
+					temp["groupStaff"].push(tmp);
+					temp["demGroup"].push(tmp);
+					var tmp1={};
+					tmp1["name"]="人員2";
+					temp["groupStaff"].push(tmp1);
+					temp["demGroup"].push(tmp1);
+					
+					$("#scoreInfo").find("input[name=id]").val(data.eventId);
+					
+					scoreGroupList=  (data.scoreInfo);
+					
+					for(var o1 in scoreGroupList){
+						 if(scoreGroupList[o1].demGroup!=null&&scoreGroupList[o1].demGroup!=""){
+							 scoreGroupList[o1].demGroup=  jQuery.parseJSON(scoreGroupList[o1].demGroup);	 
+						 }else{
+							 scoreGroupList[o1].demGroup=[];
+						 }
+						 if(scoreGroupList[o1].groupStaff!=null&&scoreGroupList[o1].groupStaff!=""){
+							 scoreGroupList[o1].groupStaff=  jQuery.parseJSON(scoreGroupList[o1].groupStaff);	 
+						 }else{
+							 scoreGroupList[o1].groupStaff=[];
+						 }
+						 for(var o2 in scoreGroupList[o1].demGroup){
+								if(scoreGroupList[o1].demGroup[o2].demInfo!=null&&scoreGroupList[o1].demGroup[o2].demInfo!=""){
+								//	scoreGroupList[o1].demGroup[o2].demInfo= jQuery.parseJSON(scoreGroupList[o1].demGroup[o2].demInfo); 
+								 }else{
+									 scoreGroupList[o1].demGroup[o2].demInfo=[];
+								 }
+							}
+					}
+					listScoreGroup();
+					dialoga.close();
+				}
+			});
+            //根据环节有无隐藏各个设置板块
+            $('input:radio[name="regStep"]').click(function () {
+                if($(this).val()==0){
+                    $('#reg-config').hide();
+                    $('#navigation-select li:eq(2)').hide();
+                }else{
+                    $('#reg-config').show();
+                    $('#navigation-select li:eq(2)').show();
+                }
+            });
+            $('input:radio[name="voteStep"]').click(function () {
+                if($(this).val()==0){
+                    $('#vote-config').hide();
+                    $('#navigation-select li:eq(6)').hide();
+                }else{
+                    $('#vote-config').show();
+                    $('#navigation-select li:eq(6)').show();
+                }
+            });
+            $('input:radio[name="scoreStep"]').click(function () {
+                if($(this).val()==0){
+                    $('#score-config').hide();
+                    $('#navigation-select li:eq(5)').hide();
+                }else{
+                    $('#score-config').show();
+                    $('#navigation-select li:eq(5)').show();
+                }
+            });
+            
+        });
+		
+	 var checkListA=new $.ulContent();;
+	 var checkListB=new $.ulContent();;
+	 var checkListC=new $.ulContent();;
+		//活动人员列表
+		var eventStaffList = [];
+		//投稿分组信息
+		var sendGroupList = [];
+		//评分分组信息
+		var scoreGroupList = [];
+		//评分分组信息
+		var scoreGroupMap={};
+		//分组人员
+		scoreGroupMap.groupStaff=[];
+		//业务文件格式
+		var fileLimit=[];
+		//附件文件格式
+		var attachLimit=[];
+	</script>
+	<div id="namePop" style="display: none;">
+		<input type="text" value="" class="input-text-add P5 mt10 addw95" name="name">
+			<span class="tj-span  mt20 addcred" style="display: none;">请输入中文的分组名称</span>
+ 	</div>
+	<div class="window-wrap-a clear add-widthes" id="scoreGroup" style="display: none;">
+	<div class="window-textes-wrap mt40">
+		<span class="window-span">分组名称：</span>
+		<input type="text" name="name"  value="" class="input-text P5" style="width:34%;">
+	</div>
+	<div class="window-textes-wrap mt20 clear" >
+		<span class="window-span fl">评分人员：</span>
+		<div style="width:160px;" class="pfenpeople-div fl" id="">
+			<div class="clear">
+				<span class="adds-blue cir-angle fr" id="pfenpeople" onClick="groupStaffAdd();">+</span>
+			</div>
+			<ul class="adds-ul pt10 cor-bor mt10" id="groupStaff" name="groupStaff"></ul>
+		</div>
+ 
+	</div>
+	<div class="window-textes-wrap mt20">
+		<span class="window-span">评分次数：</span>
+		<select name="num"   class="input-select addwidth" style="width:34%;">
+			[#list 1..10 as t]
+			<option value="${t}"  >${t} </option>
+			[/#list]
+		</select>
+	</div>
+	<div class="window-textes-wrap mt20 clear" >
+		<div class="clear fl add-w25">
+			<span class="window-spans fl">评分维度：</span>
+		</div>
+		<div class="clear add-w70 fl pt6">
+			<div style="width:160px;" class="wdteams-div fl" id="">
+				<div class="clear">
+					<span class="addsrun fl">维度分组：</span>
+					<span class="adds-blue cir-angle fr" id="wdteams" onClick="demGroupAdd();">+</span>
+				</div>
+				<ul class="adds-ul pt10 cor-bor mt10" id="demGroup" name="demGroup"></ul>
+			</div>
+			<div style="width:160px;" class="weiduteam-div fr ml10" id="">
+				<div class="clear">
+					<span class="addsrun fl">维度：</span>
+					<span class="adds-blue cir-angle fr"   onClick="demInfoAdd();">+</span>
+				</div>
+				<ul class="adds-ul pt10 cor-bor mt10" id="demInfo" name="demInfo"></ul>
+			</div>
+		</div>
+	</div>
+	<div class="button-wrap mt40 mb10" id="add-button">
+	</div>
+</div>
+	<div id="staffPop" style="display: none;">
+		<span class="input-title" style="width: 30%;text-align:left;">活动状态：</span>
+		
+		<select name="name" class="input-text-add addw95 p5 mt10" width="150px">
+				<option value="1">未开始</option>
+				<option value="2">进行中</option>
+				<option value="3">已关闭</option>
+				<option value="4">已存档</option>
+		</select>
+			<span class="tj-span  mt20 addcred" style="display: none;">请输入中文的分组名称</span>
+ 	</div>
+ 	
+ 	
+ 	
+	<div class="window-wrap-a clear add-widthes" id="demInfoPop"   style="display: none;left:203px;top:68px;">
+	 
+		<div class="window-text-wrap mt40">
+			<span class="window-span">维度名：</span>
+			<input type="text" name="name" class="input-text P5" style="width:34%;">
+		</div>
+		<div class="pfen-wrap mt20 clear" >
+			<span class="window-span fl">描述：</span>
+			<textarea name="comment" id="" cols="30" rows="10" class="tarea fl p10 cor-bor" maxlength="200"></textarea>
+		</div>
+		<div class="window-text-wrap mt20">
+			<span class="window-span">维度总分：</span>
+			<input type="text" name="totalScore" class="input-text P5" style="width:34%;">
+		</div>
+		
+		
+		
+		
+		<div class="pfen-wrap mt20 clear">
+			<span class="window-span fl">各等级最高分：</span>
+			<div class="fl mb20" style="width: 75%;">
+				<span class="window-span fl" style="width:14%;">差：</span>
+				<input type="text"  name="badScore" class="input-text P5 add-w50 fl" style="width:14%;">
+				<span class="window-span fl" style="width:14%;">一般：</span>
+				<input type="text"  name="ordinaryScore" class="input-text P5 add-w50 fl" style="width:14%;">
+				<span class="window-span fl" style="width:14%;">良好：</span>
+				<input type="text"  name="goodScore" class="input-text P5 add-w50 fl" style="width:14%;">
+				 
+			</div>
+		</div>
+		 <span class="tj-span  mt20 addcred" style="display: none;">请输入中文的分组名称</span>
+	 
+</div>
+	
+	
+</body>
+</html>

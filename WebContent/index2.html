@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    
+ <link rel="stylesheet" href="css/main.css"/>
+    <!-- jquery核心组件 -->
+    <script type="text/javascript" src="js/jquery.js"></script>
+    <!-- jquery模板 -->
+    <script type="text/javascript" src="js/template.js"></script>
+    <!-- h5插件 -->
+    <script type="text/javascript" src="js/placeholder.js"></script>
+    
+    <!-- table 列表 -->
+    <script type="text/javascript" src="js/tableUI.js"></script>
+
+   <script type="text/javascript" src="js/paperCommon.js"></script>
+   
+   
+   
+    <!-- 分页js -->
+<!--     <script type="text/javascript" src="http://192.168.71.26:808/static/izuoye/homework/workManage.js"></script> -->
+    <title>数据展示</title>
+    <style>
+     .school_manage{margin:0 auto;width:1000px;margin-top:5%;}
+     .school_manage th,tr td{    border: 1px solid #ccc8cc;text-align:center;}
+     .header_info{width:1000px;margin-bottom:1%;}
+     .add_school{float:left;width:55px;}
+     .content_info{width:250px;margin-left:26%;}
+     .select_school{width:55px;margin-left:1%;}
+     .pageload{ position: fixed; z-index: 999999; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,.5) url(css/loading.gif) no-repeat center center; background-size: 7rem auto;}
+    
+    </style>
+</head>
+<body>
+<script type="text/javascript"> 
+
+//加载中
+function showLoad() {
+    $("body").append('<div class="pageload"></div>');
+   // document.onreadystatechange = subSomething;
+}
+
+function subSomething() {
+    if (document.readyState == "complete") { //当页面加载状态为完全结束时进入
+        $(".pageload").remove();
+    }
+}
+</script>
+
+
+	<div class="coverDiv openbg"></div>
+	<div class="school_manage">
+		<div class="school_top">
+			<div class="header_info">
+				<input type="text" class="content_info" id="userRealName_uc" placeholder="请输入user_real_name"/>
+				<input type="text" class="content_info" id="phone_uc" placeholder="请输入phone"/>
+				<input type="text" class="content_info" id="pay_code_uc" placeholder="请输入pay_code"/>
+				<input type="button" class="select_db_idx"  id="selectDbCode_uc"  onclick="getCodeInfo()"  value="搜索"/>
+			</div>
+		</div>
+		<div class="db_info">
+				
+					
+		</div>
+	</div>
+	
+	 <div class="scrollDiv">
+            <table border="0" cellspacing="0"  cellpadding="0" class="tableUI">
+                 <tbody id="codeInfo">
+                    
+                </tbody>
+            </table>
+     </div>
+     
+
+
+<!--start 修改面板-->
+<div class="openDiv openDiv-pubtest openDiv-pubtest-paper openDiv-resize">
+    <div class="openTitle">
+        <div class="fl title">修改用户</div>
+        <div class="fr close" title="关闭" onclick="closeDiv($(this).parents('.openDiv'))"></div>
+    </div>
+    <div class="openCon">
+        ID    : &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;          <input type="text"  placeholder="用户Id,注意不要修改" class="pubtest_inputText pubtest_inputText-w400 fl"  readonly="true" id="id_uc" />
+        pingyinName:<input type="text"  placeholder="用户拼音" class="pubtest_inputText pubtest_inputText-w400 fl" id="pinyinName_uc" />
+         IdCardNo    :  &nbsp;&nbsp;&nbsp; <input type="text"  placeholder="身份证号" class="pubtest_inputText pubtest_inputText-w400 fl" id="idCardNo_uc" />
+         
+        <input type="button" class="inputbtn_h30" value="修改" onclick="updateUserInfo();closeDiv($(this).parents('.openDiv'))">
+         <input type="button" class="inputbtn_h30" value="取消" onclick="closeDiv($(this).parents('.openDiv'))">
+    </div>
+</div>
+<!--end 修改面板-->
+        
+        
+
+	<script type="text/javascript">
+		$(function(){
+			//getCodeInfo();
+		});
+	
+		// 获取当前列表总数量
+		function getCodeInfo(){
+			var  param = {};
+			var userRealName = 	$("#userRealName_uc").val();
+			var phone = 	$("#phone_uc").val();
+			var payCode = 	$("#pay_code_uc").val();
+			
+			if((userRealName == null || userRealName=="" )&&(phone== null || phone=="" )&&(payCode == null || payCode=="" )){
+				alert("必须存在一个搜索条件");
+				return ;
+			}
+				
+				
+			 if(userRealName != null && userRealName!="" ){
+				 param.userRealName = userRealName;
+			 }
+			 
+			 if(phone != null && phone!="" ){
+				 param.phone = phone;
+			 }
+			 
+			 if(payCode != null && payCode!="" ){
+				 param.payCode = payCode;
+			 }
+            //遮罩层
+			showLoad();
+			$.ajax({
+				type : "POST",
+				url : "http://127.0.0.1:8180/DbManage/db/getDbCodeInfo",
+				async:false,
+				data : param,
+				success: function(msg){
+					
+					$("#codeInfo").html(template('table_codeInfo', {data:msg}));
+					//遮罩层结束
+				 subSomething();
+				}
+			}); 
+		}	
+	
+		
+	
+	</script>
+	
+	<script id="table_codeInfo" type="text/html">
+ <tr>
+      <th width="50">序号</th>
+     <th width="100">pay_code</th>
+      <th width="100">user_real_name</th>
+      <th width="100">phone</th>
+      <th width="200">certif_no</th>
+      <th width="400">mailing_address</th>
+      <th width="200">org_name</th>
+      <th width="50">pay_type</th>
+      <th width="100">pay_status</th>
+  </tr>
+{{each data.scList as value i}}
+  <tr>
+   	<td >{{i+1}}</td>
+    <td title={{value.payCode}}>{{value.payCode}}</td>
+	<td title={{value.userRealName}}>{{value.userRealName}}</td>
+ 	<td title={{value.phone}}>{{value.phone}}</td>
+	<td title={{value.certifNo}}>{{value.certifNo}}</td>
+ 	<td title={{value.mailingAddress}}>{{value.mailingAddress}}</td>
+ 	<td title={{value.orgName}}>{{value.orgName}}</td>
+	<td title={{value.payType}}>{{value.payType}}</td>
+ 	<td title={{value.payStatus}}>{{value.payStatus}}</td>
+     </tr>
+{{/each}}
+
+</script>
+	
+	
+	
+	
+	
+	
+	
+	
+
+	
+</body>
+</html>
